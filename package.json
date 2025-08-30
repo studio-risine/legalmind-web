@@ -1,0 +1,52 @@
+{
+	"name": "tc96-convex-starter",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"check": "biome check .",
+		"prepare": "husky"
+	},
+	"lint-staged": {
+		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": [
+			"biome check --files-ignore-unknown=true",
+			"biome check --write --no-errors-on-unmatched",
+			"biome check --write --unsafe --no-errors-on-unmatched",
+			"biome format --write --no-errors-on-unmatched",
+			"biome lint --write --no-errors-on-unmatched"
+		]
+	},
+	"dependencies": {
+		"class-variance-authority": "^0.7.1",
+		"clsx": "^2.1.1",
+		"convex": "^1.26.2",
+		"lucide-react": "^0.542.0",
+		"next": "15.5.2",
+		"react": "19.1.0",
+		"react-dom": "19.1.0",
+		"tailwind-merge": "^3.3.1",
+		"zod": "^4.1.5"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.2",
+		"@commitlint/cli": "^19.8.1",
+		"@commitlint/config-conventional": "^19.8.1",
+		"@faker-js/faker": "^10.0.0",
+		"@tailwindcss/postcss": "^4",
+		"@tc96/biome-config": "^2.0.0",
+		"@types/node": "^20",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.1.5",
+		"tailwindcss": "^4",
+		"tw-animate-css": "^1.3.7",
+		"typescript": "^5"
+	}
+}

@@ -1,0 +1,20 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
+	"extends": ["@tc96/biome-config"],
+	"files": {
+		"includes": ["**/src/**/*", "**/convex/*", "!**/convex/_generated/*"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"suspicious": {
+				"noExplicitAny": "error",
+				"noImplicitAnyLet": "error",
+				"noUnknownAtRules": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
+			}
+		}
+	}
+}
