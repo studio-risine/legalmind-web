@@ -1,4 +1,4 @@
-# Coding Rules and Standards
+# User Rules and Standards
 
 ## Language Requirements
 
@@ -31,7 +31,7 @@
   if (inventory < 0) {
     throw new Error("Invalid inventory");
   }
-  
+
   // GOOD: Self-documenting code
   if (hasNegativeInventory(inventory)) {
     throw new Error("Inventory cannot be negative");
@@ -43,7 +43,7 @@
   // BAD
   // Set user name
   user.name = "John";
-  
+
   // GOOD
   user.name = "John";
   ```
@@ -151,12 +151,12 @@ throw new Error(`Product with ID ${productId} not found. Please verify the produ
 ```typescript
 /**
  * Calculates the total price including taxes and discounts for a product order.
- * 
+ *
  * @param basePrice - The original price of the product in cents
  * @param taxRate - The tax rate as a decimal (e.g., 0.08 for 8%)
  * @param discountPercentage - The discount percentage as a decimal (e.g., 0.15 for 15%)
  * @returns The final price in cents after applying tax and discount
- * 
+ *
  * @example
  * ```typescript
  * const finalPrice = calculateTotalPrice(10000, 0.08, 0.10);
@@ -254,11 +254,11 @@ function validateUserRegistrationData(userData: UserRegistrationData): boolean {
   if (!hasValidName(userData.name)) {
     return false;
   }
-  
+
   if (!hasValidEmailFormat(userData.email)) {
     return false;
   }
-  
+
   return true;
 }
 

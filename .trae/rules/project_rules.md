@@ -1,232 +1,418 @@
-# Coding Rules and Standards
+# Frontend
+You are an expert in TypeScript, Node.js, Next.js App Router, React, Shadcn UI, Radix UI and Tailwind.
 
-## Language Requirements
+## Code Style and Structure
+  - Write concise, technical TypeScript code with accurate examples.
+  - Use functional and declarative programming patterns; avoid classes.
+  - Prefer iteration and modularization over code duplication.
+  - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError).
+  - Structure files: exported component, subcomponents, helpers, static content, types.
 
-### Code Language
-- **All code MUST be written in English**
-  - Variable names, function names, class names
-  - File names and directory names
-  - API endpoints and database field names
-  - Error messages and log statements
+## Naming Conventions
+  - Use lowercase with dashes for directories (e.g., components/auth-wizard).
+  - Favor named exports for components.
 
-### Comments Language
-- **All comments MUST be written in English**
-  - Documentation comments
-  - Inline explanations
-  - TODO/FIXME notes
+## TypeScript Usage
+  - Use TypeScript for all code; prefer interfaces over types.
+  - Avoid enums; use maps instead.
+  - Use functional components with TypeScript interfaces.
 
-## Comment Guidelines
+## Syntax and Formatting
+  - Use the "function" keyword for pure functions.
+  - Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
+  - Use declarative JSX.
 
-### When to Write Comments
-- **Documentation purposes only** - Write comments that explain the "why" and "what", not the "how"
-- **Complex business logic** - Explain algorithms, formulas, or non-obvious business rules
-- **API documentation** - Document function parameters, return values, and usage examples
-- **Architecture decisions** - Explain why certain patterns or approaches were chosen
+## UI and Styling
+  - Use Shadcn UI and Tailwind for components and styling.
+  - Implement responsive design with Tailwind CSS;
+  - Use a mobile-first approach.
 
-### When NOT to Write Comments
-- **Avoid simple descriptive comments** that just repeat what the code does
-  ```typescript
-  // BAD: Simple descriptive comments
-  // Validate inventory
-  if (inventory < 0) {
-    throw new Error("Invalid inventory");
+## Performance Optimization
+  - Minimize 'use client', 'useEffect', and 'setState'; favor React Server Components (RSC).
+  - Wrap client components in Suspense with fallback.
+  - Use dynamic loading for non-critical components.
+  - Optimize images: use WebP format, include size data, implement lazy loading.
+
+## Key Conventions
+  - Use 'nuqs' for URL search parameter state management.
+  - Optimize Web Vitals (LCP, CLS, FID).
+  - Limit 'use client':
+    - Favor server components and Next.js SSR.
+    - Use only for Web API access in small components.
+    - Avoid for data fetching or state management.
+
+  Follow Next.js docs for Data Fetching, Rendering, and Routing.
+
+# Convex Update Best Practices
+This document describes best practices for performing updates in Convex, focusing on performance and recommended patterns.
+
+## Update Performance
+### Spread Operator vs Prepare Update
+
+The spread operator (`...`) is a powerful tool for immutable updates and is widely recommended in Convex:
+
+#### ✅ Recommended: Using the Spread Operator
+
+```typescript
+// Update with spread operator
+const updatedUser = {
+  ...existingUser,
+  name: "New Name",
+  updatedAt: Date.now()
+};
+
+await ctx.db.patch(userId, updatedUser);
+```
+
+**Advantages:**
+- Creates immutable copies of objects
+- Clear and readable syntax
+- Automatically maintains existing properties
+- Allows partial updates easily
+- Adequate performance for most cases
+
+#### ⚠️ Caution with Nested Objects
+
+The spread operator creates only shallow copies:
+
+```typescript
+// ❌ Problematic for nested objects
+const user = {
+  profile: { name: "John", settings: { theme: "dark" } }
+};
+
+const updated = { ...user };
+updated.profile.name = "Mary"; // Modifies the original object!
+
+// ✅ Correct for nested objects
+const updated = {
+  ...user,
+  profile: {
+    ...user.profile,
+    name: "Mary"
+  }
+};
+```
+
+### Efficient Update Patterns
+
+#### 1. Conditional Updates
+
+```typescript
+export const updateUserIfChanged = mutation({
+  args: { userId: v.id("users"), updates: v.object({}) },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
+    // Only update if there are changes
+    const hasChanges = Object.keys(args.updates).some(
+      key => user[key] !== args.updates[key]
+    );
+
+    if (hasChanges) {
+      await ctx.db.patch(args.userId, {
+        ...args.updates,
+        updatedAt: Date.now()
+      });
+    }
+
+    return user;
+  }
+});
+```
+
+#### 2. Batch Updates
+
+```typescript
+// ✅ Efficient for multiple updates
+export const updateMultipleUsers = mutation({
+  args: { updates: v.array(v.object({ id: v.id("users"), data: v.any() })) },
+  handler: async (ctx, args) => {
+    const promises = args.updates.map(update =>
+      ctx.db.patch(update.id, {
+        ...update.data,
+        updatedAt: Date.now()
+      })
+    );
+
+    await Promise.all(promises);
+  }
+});
+```
+
+#### 3. Validation Before Update
+
+```typescript
+export const updateAccountSafely = mutation({
+  args: { accountId: v.id("accounts"), updates: v.object({}) },
+  handler: async (ctx, args) => {
+    // Check permissions
+    await requireAccountAccess(ctx, args.accountId);
+
+    // Fetch current data
+    const account = await ctx.db.get(args.accountId);
+    if (!account) throw new Error("Account not found");
+
+    // Validate limits if necessary
+    if (args.updates.maxUsers) {
+      await validateAccountLimits(ctx, args.accountId, {
+        maxUsers: args.updates.maxUsers
+      });
+    }
+
+    // Apply update
+    const updatedAccount = {
+      ...account,
+      ...args.updates,
+      updatedAt: Date.now()
+    };
+
+    await ctx.db.patch(args.accountId, updatedAccount);
+
+    // Log activity
+    await logActivity(ctx, {
+      accountId: args.accountId,
+      action: "account_updated",
+      details: { updatedFields: Object.keys(args.updates) }
+    });
+
+    return updatedAccount;
+  }
+});
+```
+
+## Performance Optimizations
+
+### 1. Use Indexes for Frequent Queries
+
+```typescript
+// ❌ Avoid full table scans
+const users = await ctx.db.query("users")
+  .filter(q => q.eq(q.field("accountId"), accountId))
+  .collect();
+
+// ✅ Use indexes
+const users = await ctx.db.query("users")
+  .withIndex("by_account", q => q.eq("accountId", accountId))
+  .collect();
+```
+
+### 2. Avoid Loading Unnecessary Documents
+
+```typescript
+// ❌ Loads all documents
+const allProducts = await ctx.db.query("products").collect();
+const activeProducts = allProducts.filter(p => p.status === "active");
+
+// ✅ Filter in the database
+const activeProducts = await ctx.db.query("products")
+  .withIndex("by_status", q => q.eq("status", "active"))
+  .collect();
+```
+
+### 3. Use Pagination for Large Sets
+
+```typescript
+export const getProductsPaginated = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    return await ctx.db.query("products")
+      .withIndex("by_creation_time")
+      .order("desc")
+      .paginate(args.paginationOpts);
+  }
+});
+```
+
+## Anti-Performance Patterns
+
+### ❌ Avoid These Patterns
+
+```typescript
+// 1. Multiple queries in loop
+for (const userId of userIds) {
+  const user = await ctx.db.get(userId); // N+1 queries
+}
+
+// 2. Unnecessary updates
+await ctx.db.patch(userId, { updatedAt: Date.now() }); // No real changes
+
+// 3. Loading unused data
+const user = await ctx.db.get(userId);
+return { name: user.name }; // Loaded unnecessary data
+```
+
+### ✅ Optimized Versions
+
+```typescript
+// 1. Batch fetch
+const users = await Promise.all(
+  userIds.map(id => ctx.db.get(id))
+);
+
+// 2. Conditional updates
+if (hasRealChanges) {
+  await ctx.db.patch(userId, changes);
+}
+
+// 3. Field projection (when available)
+const user = await ctx.db.get(userId);
+return { name: user.name, email: user.email };
+```
+
+## Conclusion
+
+The spread operator is the recommended approach for updates in Convex due to its:
+- Simplicity and readability
+- Native support for immutability
+- Adequate performance for typical applications
+- Natural integration with TypeScript
+
+Avoid complex "prepare update" patterns unless you have very specific performance needs that justify the additional complexity.
+
+
+# Next.js 15 App Router Patterns
+
+## Server vs Client Components
+- **Default to Server Components** - Only use `'use client'` when necessary
+- **Server Components** for: data fetching, SEO, performance, static content
+- **Client Components** for: interactivity, browser APIs, event handlers
+
+## Data Fetching Patterns
+```typescript
+// Server Component - Direct database access
+async function JobList() {
+  const jobs = await supabase.from('jobs').select('*')
+  return <JobGrid jobs={jobs.data || []} />
+}
+
+// Client Component - Interactive features
+'use client'
+function JobSearch() {
+  const [query, setQuery] = useState('')
+  // Client-side search logic
+}
+```
+
+## Route Groups and Layouts
+```typescript
+// Route group for auth (doesn't affect URL)
+app/(auth)/layout.tsx
+app/(auth)/login/page.tsx
+app/(auth)/register/page.tsx
+
+// Nested layouts
+app/(company)/layout.tsx          // Company dashboard layout
+app/(company)/company/layout.tsx  // Company-specific layout
+```
+
+## Dynamic Routes
+```typescript
+// Dynamic segments
+app/j/[publicId]/page.tsx         // Job details
+app/u/[publicId]/page.tsx         // User profile
+app/c/[name]/page.tsx             // Company profile
+
+// Generate metadata dynamically
+export async function generateMetadata({ params }: { params: { publicId: string } }) {
+  const job = await getJob(params.publicId)
+  return { title: job.title }
+}
+```
+
+## Middleware Patterns
+```typescript
+// Authentication middleware
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Protect company routes
+  if (pathname.startsWith('/company') && !isAuthenticated(request)) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // GOOD: Self-documenting code
-  if (hasNegativeInventory(inventory)) {
-    throw new Error("Inventory cannot be negative");
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: ['/company/:path*', '/user/:path*']
+}
+```
+
+## Image Optimization
+```typescript
+import Image from 'next/image'
+
+// Optimized images with proper sizing
+<Image
+  src="/hero-kitchen.jpg"
+  alt="Kitchen workspace"
+  width={800}
+  height={600}
+  priority={true}  // For above-the-fold images
+  className="rounded-lg"
+/>
+```
+
+## Metadata and SEO
+```typescript
+// Static metadata
+export const metadata: Metadata = {
+  title: 'Chef Jobs - Find Your Next Culinary Position',
+  description: 'Browse thousands of chef and kitchen positions',
+  openGraph: {
+    title: 'Chef Jobs',
+    description: 'Find your next culinary career'
   }
-  ```
-
-- **Don't comment obvious code**
-  ```typescript
-  // BAD
-  // Set user name
-  user.name = "John";
-
-  // GOOD
-  user.name = "John";
-  ```
-
-## Variable Naming Standards
-
-### Prefer Clear, Contextual Names
-- **Use descriptive names** that explain the purpose and context
-- **Avoid abbreviations** unless they are widely understood
-- **Include units or types** when relevant
-
-### Examples of Good Variable Names
-```typescript
-// BAD: Unclear names requiring comments
-const d = 30; // days
-const p = calculatePrice(); // product price
-const isValid = true; // is user authenticated
-
-// GOOD: Self-documenting names
-const subscriptionDurationInDays = 30;
-const productPriceInCents = calculatePrice();
-const isUserAuthenticated = true;
-```
-
-### Function Naming
-```typescript
-// BAD: Requires comments to understand
-function process(data: any) {
-  // Validates user input and saves to database
-  // ...
 }
 
-// GOOD: Self-explanatory
-function validateAndSaveUserProfile(userProfileData: UserProfile) {
-  // ...
-}
-```
-
-### Boolean Variables
-```typescript
-// BAD
-const valid = checkUser();
-const access = hasPermission();
-
-// GOOD
-const isUserValid = checkUser();
-const hasAccountAccess = hasPermission();
-```
-
-## Code Organization
-
-### File and Directory Names
-- Use **kebab-case** for file names: `user-profile.ts`, `account-settings.tsx`
-- Use **PascalCase** for component files: `UserProfile.tsx`, `AccountSettings.tsx`
-- Use **camelCase** for utility files: `dateUtils.ts`, `apiHelpers.ts`
-
-### Function Organization
-- **Group related functions** together
-- **Order functions** from public to private
-- **Use meaningful function names** that describe the action and result
-
-## Type Safety
-
-### TypeScript Usage
-- **Always use explicit types** for function parameters and return values
-- **Avoid `any` type** - use specific types or `unknown` when necessary
-- **Use type guards** for runtime type checking
-
-```typescript
-// BAD
-function updateUser(data: any): any {
-  // ...
-}
-
-// GOOD
-function updateUserProfile(userData: UserProfileUpdateData): Promise<UpdatedUser> {
-  // ...
+// Dynamic metadata
+export async function generateMetadata({ params }: Props) {
+  const job = await getJob(params.publicId)
+  return {
+    title: `${job.title} at ${job.company}`,
+    description: job.description
+  }
 }
 ```
 
 ## Error Handling
-
-### Error Messages
-- **Write clear, actionable error messages** in English
-- **Include context** about what went wrong and how to fix it
-- **Use consistent error formats** across the application
-
 ```typescript
-// BAD
-throw new Error("Error");
+// Error boundaries
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <h2 className="text-2xl font-bold">Something went wrong!</h2>
+      <Button onClick={reset}>Try again</Button>
+    </div>
+  )
+}
 
-// GOOD
-throw new Error(`Product with ID ${productId} not found. Please verify the product exists and try again.`);
-```
-
-## Documentation Comments
-
-### When Documentation is Required
-- **Public API functions** - Document parameters, return values, and usage
-- **Complex algorithms** - Explain the approach and any mathematical formulas
-- **Business logic** - Document rules and constraints
-- **Configuration objects** - Explain each property and its purpose
-
-### JSDoc Format
-```typescript
-/**
- * Calculates the total price including taxes and discounts for a product order.
- *
- * @param basePrice - The original price of the product in cents
- * @param taxRate - The tax rate as a decimal (e.g., 0.08 for 8%)
- * @param discountPercentage - The discount percentage as a decimal (e.g., 0.15 for 15%)
- * @returns The final price in cents after applying tax and discount
- *
- * @example
- * ```typescript
- * const finalPrice = calculateTotalPrice(10000, 0.08, 0.10);
- * // Returns: 9720 (10000 - 10% discount + 8% tax)
- * ```
- */
-function calculateTotalPrice(
-  basePrice: number,
-  taxRate: number,
-  discountPercentage: number
-): number {
-  const discountAmount = basePrice * discountPercentage;
-  const discountedPrice = basePrice - discountAmount;
-  const taxAmount = discountedPrice * taxRate;
-  return discountedPrice + taxAmount;
+// Not found pages
+export default function NotFound() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <h2 className="text-2xl font-bold">Page not found</h2>
+      <Link href="/">Return home</Link>
+    </div>
+  )
 }
 ```
 
-## Enforcement
-
-### Linting Rules
-- Configure ESLint/Biome to enforce English-only identifiers
-- Set up rules to detect overly simple comments
-- Use TypeScript strict mode to enforce type safety
-
-### Code Review Checklist
-- [ ] All code and comments are in English
-- [ ] Variable names are clear and contextual
-- [ ] No unnecessary simple comments
-- [ ] Documentation exists for complex logic
-- [ ] Error messages are clear and actionable
-- [ ] Types are explicit and avoid `any`
-
-## Examples
-
-### Before (Bad)
-```typescript
-// Validate user data
-function validate(data: any): boolean {
-  // Check if name exists
-  if (!data.name) {
-    return false;
-  }
-  // Check if email is valid
-  if (!data.email.includes('@')) {
-    return false;
-  }
-  return true;
-}
-```
-
-### After (Good)
-```typescript
-function validateUserRegistrationData(userData: UserRegistrationData): boolean {
-  if (!hasValidName(userData.name)) {
-    return false;
-  }
-
-  if (!hasValidEmailFormat(userData.email)) {
-    return false;
-  }
-
-  return true;
-}
-
-function hasValidName(name: string): boolean {
-  return name && name.trim().length > 0;
-}
-
-function hasValidEmailFormat(email: string): boolean {
-  return email && email.includes('@') && email.includes('.');
-}
-```
+## Performance Optimization
+- Use `loading.tsx` for route loading states
+- Implement proper Suspense boundaries
+- Use `generateStaticParams` for static generation
+- Optimize bundle size with dynamic imports
+- Implement proper caching strategies
+description:
+globs:
+alwaysApply: false
+---
