@@ -43,25 +43,59 @@ You are an expert in TypeScript, Node.js, Next.js App Router, React, Shadcn UI, 
 
   Follow Next.js docs for Data Fetching, Rendering, and Routing.
 
-# Convex Update Best Practices
-This document describes best practices for performing updates in Convex, focusing on performance and recommended patterns.
+# Convex Best Practices
+This document describes best practices for Convex development, focusing on mutations, queries, performance optimization, and maintainable code patterns.
 
-## Update Performance
-### Spread Operator vs Prepare Update
+## Mutation Best Practices
 
-The spread operator (`...`) is a powerful tool for immutable updates and is widely recommended in Convex:
+### 1. Always Await Promises
+```typescript
+// ✅ Correct - await all database operations
+export const createProcess = mutation({
+  args: { title: v.string(), clientId: v.id("clients") },
+  handler: async (ctx, args) => {
+    const processId = await ctx.db.insert("processes", {
+      title: args.title,
+      clientId: args.clientId,
+      createdAt: Date.now()
+    });
+    
+    // Await related operations
+    await ctx.db.insert("activities", {
+      processId,
+      action: "created",
+      timestamp: Date.now()
+    });
+    
+    return processId;
+  }
+});
 
-#### ✅ Recommended: Using the Spread Operator
+// ❌ Incorrect - missing await
+const processId = ctx.db.insert("processes", data); // Missing await!
+```
+
+### 2. Use Spread Operator for Updates
+The spread operator (`...`) is the recommended approach for immutable updates:
 
 ```typescript
-// Update with spread operator
-const updatedUser = {
-  ...existingUser,
-  name: "New Name",
-  updatedAt: Date.now()
-};
-
-await ctx.db.patch(userId, updatedUser);
+// ✅ Recommended: Using the Spread Operator
+export const updateProcess = mutation({
+  args: { id: v.id("processes"), updates: v.object({}) },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db.get(args.id);
+    if (!existing) throw new Error("Process not found");
+    
+    const updated = {
+      ...existing,
+      ...args.updates,
+      updatedAt: Date.now()
+    };
+    
+    await ctx.db.patch(args.id, updated);
+    return updated;
+  }
+});
 ```
 
 **Advantages:**
@@ -182,31 +216,87 @@ export const updateAccountSafely = mutation({
 });
 ```
 
-## Performance Optimizations
+### 3. Argument Validation
+```typescript
+// ✅ Always validate arguments
+export const updateClient = mutation({
+  args: {
+    id: v.id("clients"),
+    name: v.optional(v.string()),
+    email: v.optional(v.string()),
+    phone: v.optional(v.string())
+  },
+  handler: async (ctx, args) => {
+    // Validate email format if provided
+    if (args.email && !isValidEmail(args.email)) {
+      throw new Error("Invalid email format");
+    }
+    
+    // Proceed with update
+    const updates = Object.fromEntries(
+      Object.entries(args).filter(([key, value]) => 
+        key !== 'id' && value !== undefined
+      )
+    );
+    
+    await ctx.db.patch(args.id, {
+      ...updates,
+      updatedAt: Date.now()
+    });
+  }
+});
+```
 
-### 1. Use Indexes for Frequent Queries
+### 4. Transactional Nature
+Mutations in Convex are automatically transactional - if any operation fails, all changes are rolled back:
+
+```typescript
+export const transferCase = mutation({
+  args: { processId: v.id("processes"), fromLawyer: v.id("users"), toLawyer: v.id("users") },
+  handler: async (ctx, args) => {
+    // All operations succeed or all fail together
+    await ctx.db.patch(args.processId, { assignedLawyer: args.toLawyer });
+    
+    await ctx.db.insert("activities", {
+      processId: args.processId,
+      action: "transferred",
+      fromUser: args.fromLawyer,
+      toUser: args.toLawyer,
+      timestamp: Date.now()
+    });
+    
+    // If this fails, all above operations are rolled back
+    await updateLawyerCaseCount(ctx, args.fromLawyer, -1);
+    await updateLawyerCaseCount(ctx, args.toLawyer, 1);
+  }
+});
+```
+
+## Query Performance Optimization
+
+### 1. Use Indexes for Efficient Filtering
 
 ```typescript
 // ❌ Avoid full table scans
-const users = await ctx.db.query("users")
+const processes = await ctx.db.query("processes")
   .filter(q => q.eq(q.field("accountId"), accountId))
   .collect();
 
 // ✅ Use indexes
-const users = await ctx.db.query("users")
+const processes = await ctx.db.query("processes")
   .withIndex("by_account", q => q.eq("accountId", accountId))
   .collect();
 ```
 
-### 2. Avoid Loading Unnecessary Documents
+### 2. Avoid collect() on Large Datasets
 
 ```typescript
-// ❌ Loads all documents
-const allProducts = await ctx.db.query("products").collect();
-const activeProducts = allProducts.filter(p => p.status === "active");
+// ❌ Loads all documents into memory
+const allProcesses = await ctx.db.query("processes").collect();
+const activeProcesses = allProcesses.filter(p => p.status === "active");
 
 // ✅ Filter in the database
-const activeProducts = await ctx.db.query("products")
+const activeProcesses = await ctx.db.query("processes")
   .withIndex("by_status", q => q.eq("status", "active"))
   .collect();
 ```
@@ -214,10 +304,10 @@ const activeProducts = await ctx.db.query("products")
 ### 3. Use Pagination for Large Sets
 
 ```typescript
-export const getProductsPaginated = query({
+export const getProcessesPaginated = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
-    return await ctx.db.query("products")
+    return await ctx.db.query("processes")
       .withIndex("by_creation_time")
       .order("desc")
       .paginate(args.paginationOpts);
@@ -225,51 +315,152 @@ export const getProductsPaginated = query({
 });
 ```
 
+### 4. Prefer Queries and Mutations over Actions
+```typescript
+// ✅ Use queries for data fetching
+export const getProcessDetails = query({
+  args: { id: v.id("processes") },
+  handler: async (ctx, args) => {
+    const process = await ctx.db.get(args.id);
+    if (!process) return null;
+    
+    // Fetch related data efficiently
+    const client = await ctx.db.get(process.clientId);
+    const deadlines = await ctx.db.query("deadlines")
+      .withIndex("by_process", q => q.eq("processId", args.id))
+      .collect();
+    
+    return { process, client, deadlines };
+  }
+});
+
+// ❌ Avoid actions for simple database operations
+// Actions should be used for external API calls, not database queries
+```
+
 ## Anti-Performance Patterns
 
 ### ❌ Avoid These Patterns
 
 ```typescript
-// 1. Multiple queries in loop
-for (const userId of userIds) {
-  const user = await ctx.db.get(userId); // N+1 queries
+// 1. N+1 queries - Multiple queries in loop
+for (const processId of processIds) {
+  const process = await ctx.db.get(processId); // Inefficient!
 }
 
 // 2. Unnecessary updates
-await ctx.db.patch(userId, { updatedAt: Date.now() }); // No real changes
+await ctx.db.patch(processId, { updatedAt: Date.now() }); // No real changes
 
 // 3. Loading unused data
-const user = await ctx.db.get(userId);
-return { name: user.name }; // Loaded unnecessary data
+const process = await ctx.db.get(processId);
+return { title: process.title }; // Loaded unnecessary fields
+
+// 4. Using collect() on large datasets
+const allProcesses = await ctx.db.query("processes").collect(); // Memory intensive
+
+// 5. Missing indexes
+const processes = await ctx.db.query("processes")
+  .filter(q => q.eq(q.field("status"), "active")) // Slow without index
+  .collect();
 ```
 
 ### ✅ Optimized Versions
 
 ```typescript
-// 1. Batch fetch
-const users = await Promise.all(
-  userIds.map(id => ctx.db.get(id))
+// 1. Batch operations
+const processes = await Promise.all(
+  processIds.map(id => ctx.db.get(id))
 );
 
-// 2. Conditional updates
-if (hasRealChanges) {
-  await ctx.db.patch(userId, changes);
+// 2. Conditional updates with change detection
+const hasChanges = Object.keys(updates).some(
+  key => existing[key] !== updates[key]
+);
+if (hasChanges) {
+  await ctx.db.patch(processId, { ...updates, updatedAt: Date.now() });
 }
 
-// 3. Field projection (when available)
-const user = await ctx.db.get(userId);
-return { name: user.name, email: user.email };
+// 3. Return only needed data
+const process = await ctx.db.get(processId);
+return {
+  title: process.title,
+  status: process.status,
+  clientName: process.clientName
+};
+
+// 4. Use pagination for large datasets
+const result = await ctx.db.query("processes")
+  .withIndex("by_creation_time")
+  .order("desc")
+  .paginate(paginationOpts);
+
+// 5. Use proper indexes
+const activeProcesses = await ctx.db.query("processes")
+  .withIndex("by_status", q => q.eq("status", "active"))
+  .collect();
+```
+
+## Error Handling Best Practices
+
+```typescript
+export const safeUpdateProcess = mutation({
+  args: { id: v.id("processes"), updates: v.object({}) },
+  handler: async (ctx, args) => {
+    try {
+      // Check if process exists
+      const process = await ctx.db.get(args.id);
+      if (!process) {
+        throw new Error(`Process with id ${args.id} not found`);
+      }
+      
+      // Validate permissions
+      await requireProcessAccess(ctx, args.id);
+      
+      // Perform update
+      const updated = {
+        ...process,
+        ...args.updates,
+        updatedAt: Date.now()
+      };
+      
+      await ctx.db.patch(args.id, updated);
+      
+      // Log activity
+      await logActivity(ctx, {
+        processId: args.id,
+        action: "updated",
+        changes: Object.keys(args.updates)
+      });
+      
+      return updated;
+      
+    } catch (error) {
+      // Log error for debugging
+      console.error("Failed to update process:", error);
+      
+      // Re-throw with user-friendly message
+      throw new Error(
+        error instanceof Error ? error.message : "Failed to update process"
+      );
+    }
+  }
+});
 ```
 
 ## Conclusion
 
-The spread operator is the recommended approach for updates in Convex due to its:
-- Simplicity and readability
-- Native support for immutability
-- Adequate performance for typical applications
-- Natural integration with TypeScript
+Key principles for performatic and maintainable Convex code:
 
-Avoid complex "prepare update" patterns unless you have very specific performance needs that justify the additional complexity.
+1. **Always await promises** - Convex operations are asynchronous
+2. **Use spread operator** for immutable updates
+3. **Validate arguments** thoroughly
+4. **Leverage indexes** for efficient queries
+5. **Avoid collect()** on large datasets
+6. **Prefer queries/mutations** over actions for database operations
+7. **Handle errors gracefully** with proper validation
+8. **Use pagination** for large result sets
+9. **Batch operations** when possible
+10. **Log activities** for audit trails
 
 
 # Next.js 15 App Router Patterns
