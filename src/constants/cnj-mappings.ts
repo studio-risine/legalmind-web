@@ -1,0 +1,125 @@
+export const JUDICIAL_SEGMENTS = {
+	'1': 'Supremo Tribunal Federal (STF)',
+	'2': 'Conselho Nacional de Justiça (CNJ)',
+	'3': 'Superior Tribunal de Justiça (STJ)',
+	'4': 'Justiça Federal',
+	'5': 'Justiça do Trabalho',
+	'6': 'Justiça Eleitoral',
+	'7': 'Justiça Militar da União',
+	'8': 'Justiça dos Estados e do DF',
+	'9': 'Justiça Militar Estadual',
+} as const
+
+export const STATE_COURT_CODES = {
+	'01': 'TJAC – Acre',
+	'02': 'TJAL – Alagoas',
+	'03': 'TJAP – Amapá',
+	'04': 'TJAM – Amazonas',
+	'05': 'TJBA – Bahia',
+	'06': 'TJCE – Ceará',
+	'07': 'TJDF – Distrito Federal',
+	'08': 'TJES – Espírito Santo',
+	'09': 'TJGO – Goiás',
+	'10': 'TJMA – Maranhão',
+	'11': 'TJMT – Mato Grosso',
+	'12': 'TJMS – Mato Grosso do Sul',
+	'13': 'TJMG – Minas Gerais',
+	'14': 'TJPA – Pará',
+	'15': 'TJPB – Paraíba',
+	'16': 'TJPR – Paraná',
+	'17': 'TJPE – Pernambuco',
+	'18': 'TJPI – Piauí',
+	'19': 'TJRJ – Rio de Janeiro',
+	'20': 'TJRN – Rio Grande do Norte',
+	'21': 'TJRS – Rio Grande do Sul',
+	'22': 'TJRO – Rondônia',
+	'23': 'TJRR – Roraima',
+	'24': 'TJSC – Santa Catarina',
+	'25': 'TJSE – Sergipe',
+	'26': 'TJSP – São Paulo',
+	'27': 'TJTO – Tocantins',
+} as const
+
+// Tribunais Regionais Federais (Segmento 4)
+export const FEDERAL_COURT_CODES = {
+	'01': 'TRF da 1ª Região',
+	'02': 'TRF da 2ª Região',
+	'03': 'TRF da 3ª Região',
+	'04': 'TRF da 4ª Região',
+	'05': 'TRF da 5ª Região',
+	'06': 'TRF da 6ª Região',
+} as const
+
+export const LABOR_COURT_CODES = {
+	'01': 'TRT da 1ª Região',
+	'02': 'TRT da 2ª Região',
+	'03': 'TRT da 3ª Região',
+	'04': 'TRT da 4ª Região',
+	'05': 'TRT da 5ª Região',
+	'06': 'TRT da 6ª Região',
+	'07': 'TRT da 7ª Região',
+	'08': 'TRT da 8ª Região',
+	'09': 'TRT da 9ª Região',
+	'10': 'TRT da 10ª Região',
+	'11': 'TRT da 11ª Região',
+	'12': 'TRT da 12ª Região',
+	'13': 'TRT da 13ª Região',
+	'14': 'TRT da 14ª Região',
+	'15': 'TRT da 15ª Região',
+	'16': 'TRT da 16ª Região',
+	'17': 'TRT da 17ª Região',
+	'18': 'TRT da 18ª Região',
+	'19': 'TRT da 19ª Região',
+	'20': 'TRT da 20ª Região',
+	'21': 'TRT da 21ª Região',
+	'22': 'TRT da 22ª Região',
+	'23': 'TRT da 23ª Região',
+	'24': 'TRT da 24ª Região',
+} as const
+
+export const ELECTORAL_COURT_CODES = {
+	'01': 'TRE do Acre',
+	'02': 'TRE de Alagoas',
+	'03': 'TRE do Amapá',
+	'04': 'TRE do Amazonas',
+	'05': 'TRE da Bahia',
+	'06': 'TRE do Ceará',
+	'07': 'TRE do Distrito Federal',
+	'08': 'TRE do Espírito Santo',
+	'09': 'TRE de Goiás',
+	'10': 'TRE do Maranhão',
+	'11': 'TRE de Mato Grosso',
+	'12': 'TRE de Mato Grosso do Sul',
+	'13': 'TRE de Minas Gerais',
+	'14': 'TRE do Pará',
+	'15': 'TRE da Paraíba',
+	'16': 'TRE do Paraná',
+	'17': 'TRE de Pernambuco',
+	'18': 'TRE do Piauí',
+	'19': 'TRE do Rio de Janeiro',
+	'20': 'TRE do Rio Grande do Norte',
+	'21': 'TRE do Rio Grande do Sul',
+	'22': 'TRE de Rondônia',
+	'23': 'TRE de Roraima',
+	'24': 'TRE de Santa Catarina',
+	'25': 'TRE de Sergipe',
+	'26': 'TRE de São Paulo',
+	'27': 'TRE de Tocantins',
+} as const
+
+export const CNJ_VALIDATION_RULES = {
+	MIN_YEAR: 1990,
+	MAX_YEAR: 2099,
+	SEQUENTIAL_LENGTH: 7,
+	CHECK_DIGITS_LENGTH: 2,
+	YEAR_LENGTH: 4,
+	SEGMENT_LENGTH: 1,
+	COURT_LENGTH: 2,
+	ORIGIN_LENGTH: 4,
+} as const
+
+export type JudicialSegmentType = keyof typeof JUDICIAL_SEGMENTS
+export type StateCourtCodeType = keyof typeof STATE_COURT_CODES
+export type FederalCourtCodeType = keyof typeof FEDERAL_COURT_CODES
+export type LaborCourtCodeType = keyof typeof LABOR_COURT_CODES
+export type ElectoralCourtCodeType = keyof typeof ELECTORAL_COURT_CODES
