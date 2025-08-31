@@ -8,11 +8,11 @@ import { internalMutation } from './_generated/server'
  * Seed script to populate the database with fake data for development and testing.
  *
  * This script creates:
- * - A super admin user with password "123456"
- * - Multiple accounts with different plans
- * - Users for each account with different roles
- * - Products for each account
- * - Activity logs
+ * - A super admin user
+ * - One account for the legal office
+ * - 10 legal processes with different clients
+ * - Deadlines for each process
+ * - Tribunals for the processes
  *
  * Usage:
  * - From CLI: npx convex run seed:populateDatabase
@@ -25,19 +25,12 @@ import { internalMutation } from './_generated/server'
 export const populateDatabase = internalMutation({
 	args: {
 		clearExisting: v.optional(v.boolean()),
-		accountsCount: v.optional(v.number()),
-		usersPerAccount: v.optional(v.number()),
-		productsPerAccount: v.optional(v.number()),
+		processesCount: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
-		const {
-			clearExisting = false,
-			accountsCount = 5,
-			usersPerAccount = 3,
-			productsPerAccount = 10,
-		} = args
+		const { clearExisting = false, processesCount = 10 } = args
 
-		// Set a consistent seed for reproducible results
+		// Set a consistent seed f	or reproducible results
 		faker.seed(123)
 
 		console.log('🌱 Starting database seeding...')
@@ -50,42 +43,45 @@ export const populateDatabase = internalMutation({
 		console.log('👑 Creating super admin user...')
 		const superAdminId = await createSuperAdmin(ctx)
 
-		console.log(`🏢 Creating ${accountsCount} accounts...`)
-		const accountIds = []
+		console.log('🏢 Creating legal office account...')
+		const accountId = await createAccount(ctx, superAdminId)
 
-		for (let i = 0; i < accountsCount; i++) {
-			const accountId = await createAccount(ctx, superAdminId)
-			accountIds.push(accountId)
+		console.log('🏛️ Creating tribunals...')
+		const tribunalIds = await createTribunals(ctx)
 
-			// Create users for this account
-			console.log(
-				`👥 Creating ${usersPerAccount} users for account ${i + 1}...`,
+		console.log(`👥 Creating ${processesCount} clients...`)
+		const clientIds = []
+		for (let i = 0; i < processesCount; i++) {
+			const clientId = await createClient(ctx, accountId, superAdminId)
+			clientIds.push(clientId)
+		}
+
+		console.log(`⚖️ Creating ${processesCount} legal processes...`)
+		const processIds = []
+		for (let i = 0; i < processesCount; i++) {
+			const processId = await createProcess(
+				ctx,
+				accountId,
+				superAdminId,
+				clientIds[i],
+				tribunalIds,
 			)
-			const userIds = []
-			for (let j = 0; j < usersPerAccount; j++) {
-				const userId = await createUser(
-					ctx,
-					accountId,
-					j === 0 ? 'ADMIN' : 'MEMBER',
-				)
-				userIds.push(userId)
-			}
+			processIds.push(processId)
+		}
 
-			// Create products for this account
-			console.log(
-				`📦 Creating ${productsPerAccount} products for account ${i + 1}...`,
-			)
-			for (let k = 0; k < productsPerAccount; k++) {
-				await createProduct(ctx, accountId, userIds[0]) // Created by account admin
-			}
+		console.log('📅 Creating deadlines for processes...')
+		for (const processId of processIds) {
+			await createDeadlines(ctx, processId, accountId, superAdminId)
 		}
 
 		console.log('✅ Database seeding completed successfully!')
 		console.log('📊 Summary:')
 		console.log('   - 1 Super Admin user')
-		console.log(`   - ${accountsCount} Accounts`)
-		console.log(`   - ${accountsCount * usersPerAccount} Users`)
-		console.log(`   - ${accountsCount * productsPerAccount} Products`)
+		console.log('   - 1 Legal Office Account')
+		console.log('   - 3 Tribunals')
+		console.log('   - 10 Clients')
+		console.log(`   - ${processesCount} Legal Processes`)
+		console.log('   - Multiple Deadlines per Process')
 	},
 })
 
@@ -103,9 +99,24 @@ async function clearDatabase(ctx: { db: DatabaseWriter }) {
 		await ctx.db.delete(invitation._id)
 	}
 
-	const products = await ctx.db.query('products').collect()
-	for (const product of products) {
-		await ctx.db.delete(product._id)
+	const deadlines = await ctx.db.query('deadlines').collect()
+	for (const deadline of deadlines) {
+		await ctx.db.delete(deadline._id)
+	}
+
+	const processes = await ctx.db.query('processes').collect()
+	for (const process of processes) {
+		await ctx.db.delete(process._id)
+	}
+
+	const clients = await ctx.db.query('clients').collect()
+	for (const client of clients) {
+		await ctx.db.delete(client._id)
+	}
+
+	const tribunals = await ctx.db.query('tribunals').collect()
+	for (const tribunal of tribunals) {
+		await ctx.db.delete(tribunal._id)
 	}
 
 	const users = await ctx.db.query('users').collect()
@@ -158,10 +169,10 @@ async function createAccount(
 
 	// Plan-based limits
 	const planLimits = {
-		FREE: { maxUsers: 3, maxProducts: 10 },
-		BASIC: { maxUsers: 10, maxProducts: 50 },
-		PRO: { maxUsers: 25, maxProducts: 200 },
-		ENTERPRISE: { maxUsers: 100, maxProducts: 1000 },
+		FREE: { maxUsers: 3, maxProcesses: 10 },
+		BASIC: { maxUsers: 10, maxProcesses: 50 },
+		PRO: { maxUsers: 25, maxProcesses: 200 },
+		ENTERPRISE: { maxUsers: 100, maxProcesses: 1000 },
 	}
 
 	const accountId = await ctx.db.insert('accounts', {
@@ -182,7 +193,7 @@ async function createAccount(
 		},
 		plan,
 		maxUsers: planLimits[plan].maxUsers,
-		maxProducts: planLimits[plan].maxProducts,
+		maxProcesses: planLimits[plan].maxProcesses,
 		isActive: true,
 		createdAt: now,
 		updatedAt: now,
@@ -192,190 +203,219 @@ async function createAccount(
 }
 
 /**
- * Create a fake user for an account
+ * Create tribunals for legal processes
  */
-async function createUser(
-	ctx: { db: DatabaseWriter },
-	accountId: Id<'accounts'>,
-	role: 'ADMIN' | 'MEMBER',
-) {
+async function createTribunals(ctx: { db: DatabaseWriter }) {
 	const now = Date.now()
-	const firstName = faker.person.firstName()
-	const lastName = faker.person.lastName()
+	const tribunalIds = []
 
-	const userId = await ctx.db.insert('users', {
-		email: faker.internet.email({ firstName, lastName }),
-		name: `${firstName} ${lastName}`,
-		avatarUrl: faker.image.avatar(),
-		accountId,
-		role,
-		isActive: faker.datatype.boolean(0.9), // 90% active
-		lastLoginAt: faker.date.recent({ days: 30 }).getTime(),
-		createdAt: now,
-		updatedAt: now,
-	})
+	const tribunalsData = [
+		{
+			name: 'Tribunal de Justiça do Estado de São Paulo',
+			code: 'TJSP',
+			jurisdiction: 'Estadual',
+			type: 'Cível',
+		},
+		{
+			name: 'Tribunal Regional do Trabalho da 2ª Região',
+			code: 'TRT2',
+			jurisdiction: 'Federal',
+			type: 'Trabalhista',
+		},
+		{
+			name: 'Tribunal Regional Federal da 3ª Região',
+			code: 'TRF3',
+			jurisdiction: 'Federal',
+			type: 'Federal',
+		},
+	]
 
-	return userId
+	for (const tribunalData of tribunalsData) {
+		const tribunalId = await ctx.db.insert('tribunals', {
+			name: tribunalData.name,
+			code: tribunalData.code,
+			jurisdiction: tribunalData.jurisdiction,
+			type: tribunalData.type,
+			address: {
+				street: faker.location.streetAddress(),
+				city: faker.location.city(),
+				state: faker.location.state(),
+				zipCode: faker.location.zipCode(),
+				country: 'Brasil',
+			},
+			contactInfo: {
+				phone: faker.phone.number(),
+				email: faker.internet.email(),
+				website: faker.internet.url(),
+			},
+			isActive: true,
+			createdAt: now,
+			updatedAt: now,
+		})
+		tribunalIds.push(tribunalId)
+	}
+
+	return tribunalIds
 }
 
 /**
- * Create a fake product for an account
+ * Create a client for legal processes
  */
-async function createProduct(
+async function createClient(
 	ctx: { db: DatabaseWriter },
 	accountId: Id<'accounts'>,
 	createdBy: Id<'users'>,
 ) {
 	const now = Date.now()
-	const productName = faker.commerce.productName()
-	const price = Number.parseFloat(faker.commerce.price({ min: 10, max: 1000 }))
-	const compareAtPrice = faker.datatype.boolean(0.3)
-		? price * faker.number.float({ min: 1.1, max: 1.5 })
-		: undefined
+	const firstName = faker.person.firstName()
+	const lastName = faker.person.lastName()
+	const clientType = faker.helpers.arrayElement([
+		'INDIVIDUAL',
+		'COMPANY',
+	] as const)
 
-	const categories = [
-		'Electronics',
-		'Clothing',
-		'Home & Garden',
-		'Sports',
-		'Books',
-		'Health & Beauty',
-		'Toys',
-		'Automotive',
-		'Food & Beverage',
-		'Art',
-	]
-
-	const statuses = ['DRAFT', 'ACTIVE', 'ARCHIVED'] as const
-	const currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']
-
-	const productId = await ctx.db.insert('products', {
-		name: productName,
-		slug: faker.helpers.slugify(productName).toLowerCase(),
-		description: faker.commerce.productDescription(),
-		category: faker.helpers.arrayElement(categories),
-		tags: faker.helpers.arrayElements(
-			[
-				'new',
-				'popular',
-				'sale',
-				'featured',
-				'limited',
-				'premium',
-				'eco-friendly',
-			],
-			{ min: 1, max: 3 },
-		),
-		imageUrl: faker.image.url({ width: 400, height: 400 }),
-		images: Array.from({ length: faker.number.int({ min: 1, max: 5 }) }, () =>
-			faker.image.url({ width: 400, height: 400 }),
-		),
-		price,
-		currency: faker.helpers.arrayElement(currencies),
-		compareAtPrice,
-		sku: faker.string.alphanumeric({ length: 8 }).toUpperCase(),
-		trackInventory: faker.datatype.boolean(0.7),
-		inventoryQuantity: faker.number.int({ min: 0, max: 1000 }),
-		allowBackorder: faker.datatype.boolean(0.3),
-		status: faker.helpers.arrayElement(statuses),
-		featured: faker.datatype.boolean(0.2), // 20% featured
-		metaTitle: `${productName} - Best Quality`,
-		metaDescription: faker.lorem.sentence(),
+	const clientId = await ctx.db.insert('clients', {
+		name:
+			clientType === 'INDIVIDUAL'
+				? `${firstName} ${lastName}`
+				: faker.company.name(),
+		document:
+			clientType === 'INDIVIDUAL'
+				? faker.string.numeric(11) // CPF
+				: faker.string.numeric(14), // CNPJ
+		documentType: clientType === 'INDIVIDUAL' ? 'CPF' : 'CNPJ',
+		clientType,
+		email: faker.internet.email(),
+		phone: faker.phone.number(),
+		address: {
+			street: faker.location.streetAddress(),
+			city: faker.location.city(),
+			state: faker.location.state(),
+			zipCode: faker.location.zipCode(),
+			country: 'Brasil',
+		},
+		notes: faker.lorem.paragraph(),
 		accountId,
+		createdBy,
+		updatedBy: createdBy,
+		isActive: true,
+		createdAt: now,
+		updatedAt: now,
+	})
+
+	return clientId
+}
+
+/**
+ * Create a legal process
+ */
+async function createProcess(
+	ctx: { db: DatabaseWriter },
+	accountId: Id<'accounts'>,
+	createdBy: Id<'users'>,
+	clientId: Id<'clients'>,
+	tribunalIds: Id<'tribunals'>[],
+) {
+	const now = Date.now()
+	const areas = [
+		'CIVIL',
+		'LABOR',
+		'CRIMINAL',
+		'FAMILY',
+		'TAX',
+		'ADMINISTRATIVE',
+	] as const
+	const statuses = ['ONGOING', 'SUSPENDED', 'ARCHIVED', 'CLOSED'] as const
+	const partyTypes = ['INDIVIDUAL', 'COMPANY', 'GOVERNMENT'] as const
+
+	const processId = await ctx.db.insert('processes', {
+		caseNumber: faker.string.numeric(20),
+		court: `${faker.company.name()} Court`,
+		tribunalId: faker.helpers.arrayElement(tribunalIds),
+		area: faker.helpers.arrayElement(areas),
+		type: faker.lorem.words(2),
+		parties: {
+			plaintiff: {
+				name: faker.person.fullName(),
+				type: faker.helpers.arrayElement(partyTypes),
+				document: faker.string.numeric(11),
+			},
+			defendant: {
+				name: faker.person.fullName(),
+				type: faker.helpers.arrayElement(partyTypes),
+				document: faker.string.numeric(11),
+			},
+			lawyers: {
+				plaintiff: [faker.person.fullName()],
+				defendant: [faker.person.fullName()],
+			},
+		},
+		status: faker.helpers.arrayElement(statuses),
+		isPublic: faker.datatype.boolean(0.7),
+		clientId,
+		description: faker.lorem.paragraph(),
+		value: faker.number.int({ min: 1000, max: 1000000 }),
+		accountId,
+		assignedTo: createdBy,
 		createdBy,
 		updatedBy: createdBy,
 		createdAt: now,
 		updatedAt: now,
 	})
 
-	return productId
+	return processId
 }
 
 /**
- * Create sample activity logs
+ * Create deadlines for a legal process
  */
-export const createSampleActivityLogs = internalMutation({
-	args: {
-		count: v.optional(v.number()),
-	},
-	handler: async (ctx: MutationCtx, args) => {
-		const { count = 50 } = args
+async function createDeadlines(
+	ctx: { db: DatabaseWriter },
+	processId: Id<'processes'>,
+	accountId: Id<'accounts'>,
+	createdBy: Id<'users'>,
+) {
+	const now = Date.now()
+	const priorities = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'] as const
+	const statuses = ['PENDING', 'DONE', 'MISSED'] as const
+	const timeUnits = ['BUSINESS_DAYS', 'CALENDAR_DAYS'] as const
 
-		faker.seed(456) // Different seed for activity logs
+	const deadlineTypes = [
+		'Contestação',
+		'Tréplica',
+		'Audiência de Conciliação',
+		'Apresentação de Documentos',
+		'Recurso',
+		'Cumprimento de Sentença',
+	]
 
-		const users = await ctx.db.query('users').collect()
-		const accounts = await ctx.db.query('accounts').collect()
-		const products = await ctx.db.query('products').collect()
+	// Create 2-4 deadlines per process
+	const deadlineCount = faker.number.int({ min: 2, max: 4 })
 
-		if (users.length === 0) {
-			throw new Error('No users found. Please run populateDatabase first.')
-		}
+	for (let i = 0; i < deadlineCount; i++) {
+		const deadlineDate = faker.date.future({ years: 1 }).getTime()
+		const deadlineType = faker.helpers.arrayElement(deadlineTypes)
 
-		const actions = [
-			'user.created',
-			'user.updated',
-			'user.deleted',
-			'user.login',
-			'account.created',
-			'account.updated',
-			'account.suspended',
-			'product.created',
-			'product.updated',
-			'product.deleted',
-			'invitation.sent',
-			'invitation.accepted',
-			'invitation.revoked',
-		]
-
-		const entityTypes = ['user', 'account', 'product', 'invitation']
-
-		for (let i = 0; i < count; i++) {
-			const actor = faker.helpers.arrayElement(users)
-			const action = faker.helpers.arrayElement(actions)
-			const entityType = faker.helpers.arrayElement(entityTypes)
-
-			let entityId: string
-			let accountId = actor.accountId
-
-			// Generate appropriate entity ID based on type
-			switch (entityType) {
-				case 'user':
-					entityId = faker.helpers.arrayElement(users)._id
-					break
-				case 'account': {
-					const account = faker.helpers.arrayElement(accounts)
-					entityId = account._id
-					accountId = account._id
-					break
-				}
-				case 'product':
-					entityId = faker.helpers.arrayElement(products)._id
-					break
-				default:
-					entityId = faker.string.uuid()
-			}
-
-			await ctx.db.insert('activityLogs', {
-				action,
-				entityType,
-				entityId,
-				actorId: actor._id,
-				actorEmail: actor.email,
-				actorRole: actor.role,
-				accountId,
-				metadata: {
-					userAgent: faker.internet.userAgent(),
-					timestamp: faker.date.recent({ days: 30 }).toISOString(),
-				},
-				ipAddress: faker.internet.ip(),
-				userAgent: faker.internet.userAgent(),
-				createdAt: faker.date.recent({ days: 30 }).getTime(),
-			})
-		}
-
-		console.log(`✅ Created ${count} activity logs`)
-	},
-})
+		await ctx.db.insert('deadlines', {
+			processId,
+			title: deadlineType,
+			taskDescription: `Realizar ${deadlineType.toLowerCase()} no processo`,
+			deadlineDate,
+			timeUnit: faker.helpers.arrayElement(timeUnits),
+			isExtendable: faker.datatype.boolean(0.6),
+			completionStatus: faker.helpers.arrayElement(statuses),
+			priority: faker.helpers.arrayElement(priorities),
+			assignedTo: createdBy,
+			notes: faker.lorem.sentence(),
+			reminders: [{ days: 7 }, { days: 3 }, { days: 1 }],
+			accountId,
+			createdBy,
+			updatedBy: createdBy,
+			createdAt: now,
+			updatedAt: now,
+		})
+	}
+}
 
 /**
  * Quick seed function for development - creates minimal data
@@ -389,13 +429,19 @@ export const quickSeed = internalMutation({
 		console.log('🚀 Quick seeding for development...')
 
 		const superAdminId = await createSuperAdmin(ctx)
-
 		const accountId = await createAccount(ctx, superAdminId)
+		const tribunalIds = await createTribunals(ctx)
 
-		const adminUserId = await createUser(ctx, accountId, 'ADMIN')
-
-		for (let i = 0; i < 5; i++) {
-			await createProduct(ctx, accountId, adminUserId)
+		for (let i = 0; i < 3; i++) {
+			const clientId = await createClient(ctx, accountId, superAdminId)
+			const processId = await createProcess(
+				ctx,
+				accountId,
+				superAdminId,
+				clientId,
+				tribunalIds,
+			)
+			await createDeadlines(ctx, processId, accountId, superAdminId)
 		}
 
 		console.log('✅ Quick seed completed!')
