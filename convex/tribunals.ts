@@ -102,7 +102,7 @@ export const updateTribunal = mutation({
 		website: v.optional(v.string()),
 	},
 	handler: async (ctx, args) => {
-		const { user } = await getCurrentUserAccount(ctx)
+		await getCurrentUserAccount(ctx)
 
 		const tribunal = await ctx.db.get(args.tribunalId)
 		if (!tribunal) {
@@ -155,7 +155,7 @@ export const deleteTribunal = mutation({
 		tribunalId: v.id('tribunals'),
 	},
 	handler: async (ctx: MutationCtx, args: { tribunalId: Id<'tribunals'> }) => {
-		const { user } = await getCurrentUserAccount(ctx)
+		await getCurrentUserAccount(ctx)
 
 		const tribunal = await ctx.db.get(args.tribunalId)
 		if (!tribunal) {
