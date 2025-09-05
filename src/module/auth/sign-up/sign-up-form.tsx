@@ -1,8 +1,10 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Anchor } from '@/components/ui/anchor'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,11 +16,13 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { AuthBox, AuthBoxFooter, AuthBoxHeader } from './auth-box'
-import { AuthSeparator } from './auth-separator'
-import { ProviderGoogleIcon } from './provide-google-icon'
+import { AuthBox, AuthBoxFooter, AuthBoxHeader } from '../components/auth-box'
+import { AuthSeparator } from '../components/auth-separator'
+import { ProviderGoogleIcon } from '../components/provide-google-icon'
+import { signUp } from './sign-up-action'
+import { useSignUp } from './use-sign-up'
 
-const _schema = z.object({
+const schema = z.object({
 	firstName: z.string().min(1, {
 		message: 'Por favor, insira seu nome.',
 	}),
@@ -31,16 +35,14 @@ const _schema = z.object({
 	password: z.string().min(6, {
 		message: 'A senha deve ter pelo menos 6 caracteres.',
 	}),
-	confirmPassword: z.string().min(6, {
-		message: 'A senha deve ter pelo menos 6 caracteres.',
-	}),
 })
 
-type SignUpFormData = z.infer<typeof _schema>
+export type SignUpFormData = z.infer<typeof schema>
 
 export function SignUpForm() {
+	const { push } = useRouter()
 	const form = useForm<SignUpFormData>({
-		resolver: zodResolver(_schema),
+		resolver: zodResolver(schema),
 		defaultValues: {
 			firstName: '',
 			lastName: '',
@@ -49,8 +51,22 @@ export function SignUpForm() {
 		},
 	})
 
-	const onSubmit = async (data: SignUpFormData) => {
-		console.log(data)
+	const { execute, isPending, isSuccess } = useSignUp(signUp, {
+		onSuccess: () => {
+			console.log(isSuccess)
+			form.reset()
+			push('/auth/login')
+		},
+		onError: (error) => {
+			form.setError('root', {
+				type: 'manual',
+				message: error.message,
+			})
+		},
+	})
+
+	const onSubmit = (data: SignUpFormData) => {
+		execute(data)
 	}
 
 	return (
@@ -63,6 +79,14 @@ export function SignUpForm() {
 					onSubmit={form.handleSubmit(onSubmit)}
 				>
 					<div className="grid gap-6">
+						{form.formState.errors.root && (
+							<Alert variant="destructive">
+								<AlertTitle>Invalid credentials</AlertTitle>
+								<AlertDescription>
+									{form.formState.errors.root.message}
+								</AlertDescription>
+							</Alert>
+						)}
 						<div className="flex gap-4 lg:gap-6">
 							<FormField
 								control={form.control}
@@ -117,8 +141,12 @@ export function SignUpForm() {
 								</FormItem>
 							)}
 						/>
-						<Button type="submit" className="w-full">
-							Criar
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={!form.formState.isValid}
+						>
+							{isPending ? 'Criando...' : 'Criar'}
 						</Button>
 					</div>
 				</form>
@@ -135,7 +163,7 @@ export function SignUpForm() {
 				<div className="text-center text-sm">
 					<p className="text-muted-foreground">
 						Já tem uma conta?{' '}
-						<Anchor href="/sign-in" prefetch>
+						<Anchor href="/auth/login" prefetch>
 							Entrar
 						</Anchor>
 					</p>

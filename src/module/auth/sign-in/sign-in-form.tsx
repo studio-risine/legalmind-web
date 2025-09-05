@@ -1,8 +1,10 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Anchor } from '@/components/ui/anchor'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,10 +16,11 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
-import { AuthBox, AuthBoxFooter, AuthBoxHeader } from './auth-box'
-import { AuthSeparator } from './auth-separator'
-import { ProviderGoogleIcon } from './provide-google-icon'
+import { AuthBox, AuthBoxFooter, AuthBoxHeader } from '../components/auth-box'
+import { AuthSeparator } from '../components/auth-separator'
+import { ProviderGoogleIcon } from '../components/provide-google-icon'
+import { signIn } from './sign-in-action'
+import { useSignIn } from './use-sign-in'
 
 const _schema = z.object({
 	email: z.email({
@@ -28,13 +31,10 @@ const _schema = z.object({
 	}),
 })
 
-type SignInFormData = z.infer<typeof _schema>
+export type SignInFormData = z.infer<typeof _schema>
 
-interface SignInFormProps {
-	className?: string
-}
-
-export function SignInForm({ className }: SignInFormProps) {
+export function SignInForm() {
+	const { push } = useRouter()
 	const form = useForm<SignInFormData>({
 		resolver: zodResolver(_schema),
 		defaultValues: {
@@ -43,8 +43,20 @@ export function SignInForm({ className }: SignInFormProps) {
 		},
 	})
 
-	const onSubmit = async (data: SignInFormData) => {
-		console.log(data)
+	const { execute, isPending } = useSignIn(signIn, {
+		onError: (error) => {
+			form.setError('root', {
+				message: error.message,
+			})
+		},
+		onSuccess: () => {
+			form.reset()
+			push('/dashboard')
+		},
+	})
+
+	const onSubmit = (data: SignInFormData) => {
+		execute(data)
 	}
 
 	return (
@@ -53,10 +65,18 @@ export function SignInForm({ className }: SignInFormProps) {
 
 			<Form {...form}>
 				<form
-					className={cn('flex flex-col gap-10', className)}
+					className="flex flex-col gap-10"
 					onSubmit={form.handleSubmit(onSubmit)}
 				>
 					<div className="grid gap-6">
+						{form.formState.errors.root && (
+							<Alert variant="destructive">
+								<AlertTitle>Invalid login credentials</AlertTitle>
+								<AlertDescription>
+									{form.formState.errors.root.message}
+								</AlertDescription>
+							</Alert>
+						)}
 						<FormField
 							control={form.control}
 							name="email"
@@ -83,8 +103,12 @@ export function SignInForm({ className }: SignInFormProps) {
 								</FormItem>
 							)}
 						/>
-						<Button type="submit" className="w-full">
-							Entrar
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={!form.formState.isValid}
+						>
+							{isPending ? 'Entrando...' : 'Entrar'}
 						</Button>
 					</div>
 				</form>
@@ -100,7 +124,7 @@ export function SignInForm({ className }: SignInFormProps) {
 
 				<div className="text-center text-sm">
 					Não tem uma conta?{' '}
-					<Anchor href="/sign-up" prefetch>
+					<Anchor href="/auth/register" prefetch>
 						Cadastre-se
 					</Anchor>
 				</div>
