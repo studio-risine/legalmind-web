@@ -1,7 +1,5 @@
-import { config } from 'dotenv'
-
-config()
+import 'dotenv/config'
 
 export default {
-  schema: './src/lib/prisma/schema.prisma'
+  schema: './src/libs/prisma/schema.prisma'
 }
