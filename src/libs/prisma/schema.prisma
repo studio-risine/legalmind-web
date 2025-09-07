@@ -1,0 +1,228 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRoleType {
+  ADMIN
+  LAWYER
+  CLIENT
+}
+
+model User {
+  id          String        @id @default(uuid())
+  supabaseId  String?       @unique @map("supabase_id")
+  firstName   String        @map("first_name")
+  lastName    String        @map("last_name")
+  displayName String?       @map("display_name")
+  email       String        @unique
+  phone       String?
+  avatar      String?
+  role        UserRoleType? @default(ADMIN)
+  isActive    Boolean       @default(true)
+
+  // 1:1 relationship with Profile
+  profile Profile?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Organization {
+  id          String  @id @default(uuid())
+  name        String
+  description String?
+  slug        String  @unique
+  logo        String?
+
+  settings Json?
+
+  spaces Space[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("organizations")
+}
+
+enum SpaceType {
+  INDIVIDUAL // Individual lawyer practice
+  // FIRM         // Law firm/partnership
+  // DEPARTMENT   // Legal department
+  // ENTERPRISE   // Large organization
+}
+
+model Space {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  slug        String    @unique
+  type        SpaceType @default(INDIVIDUAL)
+
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?       @map("organization_id")
+
+  // Profiles participate in spaces with specific roles
+  profileSpaces ProfileSpace[]
+  processes     Process[]
+  clients       Client[]
+
+  settings Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("spaces")
+}
+
+enum SpaceRole {
+  ADMIN // Space administrator
+  LAWYER // Practicing lawyer
+  ASSISTANT // Legal assistant
+  CLIENT // Client access
+  VIEWER // Read-only access
+}
+
+// Junction table for Profile-Space many-to-many relationship
+model ProfileSpace {
+  id String @id @default(uuid())
+
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String  @map("profile_id")
+
+  space   Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  spaceId String @map("space_id")
+
+  role     SpaceRole
+  isActive Boolean   @default(true)
+
+  // Invitation and access tracking
+  invitedAt DateTime?
+  joinedAt  DateTime?
+
+  // Role-specific permissions and settings
+  permissions Json?
+  settings    Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([profileId, spaceId])
+  @@map("profile_spaces")
+}
+
+enum ProfileType {
+  ADMIN
+  LAWYER
+  ASSISTANT
+  CLIENT
+}
+
+model Profile {
+  id   String      @id @default(uuid())
+  type ProfileType @default(ADMIN)
+
+  // 1:1 relationship with User
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique @map("user_id")
+
+  // Professional information
+  bio         String?
+  specialties String[]
+  oabNumber   String?  @map("oab_number")
+
+  // Profile settings and preferences
+  settings Json?
+
+  // Many-to-many relationship with spaces
+  profileSpaces     ProfileSpace[]
+  assignedProcesses Process[]      @relation("AssignedLawyer")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("profiles")
+}
+
+enum ProcessArea {
+  CIVIL
+  LABOR
+  CRIMINAL
+  FAMILY
+  TAX
+  ADMINISTRATIVE
+  CONSTITUTIONAL
+  INTERNATIONAL
+}
+
+enum ProcessStatus {
+  ONGOING
+  SUSPENDED
+  ARCHIVED
+  CLOSED
+}
+
+enum ProcessPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Process {
+  id          String          @id @default(uuid())
+  publicId    String          @unique @map("public_id")
+  title       String
+  description String?
+  area        ProcessArea
+  status      ProcessStatus   @default(ONGOING)
+  priority    ProcessPriority @default(MEDIUM)
+
+  space   Space  @relation(fields: [spaceId], references: [id])
+  spaceId String @map("space_id")
+
+  assignedLawyer   Profile? @relation("AssignedLawyer", fields: [assignedLawyerId], references: [id])
+  assignedLawyerId String?  @map("assigned_lawyer_id")
+
+  client   Client? @relation(fields: [clientId], references: [id])
+  clientId String? @map("client_id")
+
+  tags     String[]
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("processes")
+}
+
+model Client {
+  id       String  @id @default(uuid())
+  name     String
+  email    String?
+  phone    String?
+  document String?
+  address  Json?
+
+  space   Space  @relation(fields: [spaceId], references: [id])
+  spaceId String @map("space_id")
+
+  processes Process[]
+
+  notes    String?
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([email, spaceId])
+  @@map("clients")
+}

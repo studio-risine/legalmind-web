@@ -12,12 +12,10 @@ const schema = z.object({
 	NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string(),
 })
 
-console.log(process.env)
-
 const _env = schema.safeParse(process.env)
 
 if (_env.success === false) {
-	// console.error('❌ Invalid environment variables:', _env.error.format())
+	console.error('❌ Invalid environment variables:', _env.error.format())
 
 	const errorMessages = _env.error.issues
 		.map((issue) => {
