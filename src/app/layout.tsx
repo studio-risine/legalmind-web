@@ -2,6 +2,7 @@ import './globals.css'
 
 import type { Metadata } from 'next'
 import { Providers } from '@/components/providers'
+import { Toaster } from '@/components/ui/sonner'
 import { fontFamily } from '@/config/font-family'
 
 export const metadata: Metadata = {
@@ -18,6 +19,7 @@ export default function RootLayout({
 		<html lang="pt-BR" suppressHydrationWarning>
 			<body className={`${fontFamily} antialiased`}>
 				<Providers>{children}</Providers>
+				<Toaster />
 			</body>
 		</html>
 	)

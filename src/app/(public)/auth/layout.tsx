@@ -1,6 +1,6 @@
+import AuthLayout from '@modules/auth/layout/auth-layout'
 import type { ReactNode } from 'react'
-import AppLayout from '@/module/app/layout/app-layout'
 
 export default function Layout({ children }: { children: ReactNode }) {
-	return <AppLayout>{children}</AppLayout>
+	return <AuthLayout>{children}</AuthLayout>
 }

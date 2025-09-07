@@ -1,3 +1,9 @@
-export default function DashboardPage() {
-	return <h1>Dashboard</h1>
+import { PageHeader, PageHeaderTitle } from '@/components/ui/page-header'
+
+export default async function DashboardPage() {
+	return (
+		<PageHeader>
+			<PageHeaderTitle>Dashboard</PageHeaderTitle>
+		</PageHeader>
+	)
 }
