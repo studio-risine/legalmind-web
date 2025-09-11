@@ -4,7 +4,7 @@
 	"files": {
 		"includes": [
 			"**/src/**/*",
-			"!**/convex/**/*",
+			"!**/src/types/supabase/supabase-generated.ts",
 			"!**/src/lib/prisma/generated/**/*",
 			"!**/src/lib/prisma/migrations/**/*"
 		]
