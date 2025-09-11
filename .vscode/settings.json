@@ -31,6 +31,7 @@
 		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"cSpell.words": [
+		"Postgrest",
 		"supabase"
 	]
 }
