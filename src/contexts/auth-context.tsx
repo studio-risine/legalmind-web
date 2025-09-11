@@ -1,10 +1,11 @@
 'use client'
 
-import { createClient } from '@libs/supabase/client'
+import { supabase } from '@libs/supabase/client'
 import type { Session, User } from '@supabase/supabase-js'
 import {
 	createContext,
 	type ReactNode,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -31,8 +32,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 	const [loading, setLoading] = useState<boolean>(false)
 	const [session, setSession] = useState<Session | null>(null)
 	const [error, setError] = useState<string | null>(null)
-
-	const supabase = createClient()
 
 	useEffect(() => {
 		setLoading(true)
@@ -62,13 +61,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		return () => {
 			subscription.unsubscribe()
 		}
-	}, [supabase.auth.getSession, supabase.auth.onAuthStateChange])
+	}, [])
 
-	async function signOut() {
-		await supabase.auth.signOut()
-		setUser(null)
-		setSession(null)
-	}
+	const signOut = useCallback(async () => {
+		const { error } = await supabase.auth.signOut()
+
+		if (error) {
+			setError(error.message)
+		}
+	}, [])
 
 	const initialValue = {
 		user,
