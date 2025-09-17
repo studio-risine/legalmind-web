@@ -10,7 +10,8 @@
 			"suspicious": {
 				"noExplicitAny": "error",
 				"noImplicitAnyLet": "error",
-				"noUnknownAtRules": "off"
+				"noUnknownAtRules": "off",
+				"useIterableCallbackReturn": "off"
 			},
 			"style": {
 				"noNonNullAssertion": "off"
