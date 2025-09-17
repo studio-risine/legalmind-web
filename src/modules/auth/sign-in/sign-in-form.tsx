@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Anchor } from '@/components/ui/anchor'
@@ -22,7 +23,7 @@ import { ProviderGoogleIcon } from '../components/provide-google-icon'
 import { signIn } from './sign-in-action'
 import { useSignIn } from './use-sign-in'
 
-const _schema = z.object({
+const schema = z.object({
 	email: z.email({
 		message: 'Por favor, insira um endereço de e-mail válido.',
 	}),
@@ -31,12 +32,12 @@ const _schema = z.object({
 	}),
 })
 
-export type SignInFormData = z.infer<typeof _schema>
+export type SignInFormData = z.infer<typeof schema>
 
 export function SignInForm() {
 	const { push } = useRouter()
 	const form = useForm<SignInFormData>({
-		resolver: zodResolver(_schema),
+		resolver: zodResolver(schema),
 		defaultValues: {
 			email: '',
 			password: '',
@@ -51,6 +52,11 @@ export function SignInForm() {
 		},
 		onSuccess: () => {
 			form.reset()
+
+			toast('Bem-vindo de volta!', {
+				description: 'Você está logado na sua conta.',
+			})
+
 			push('/dashboard')
 		},
 	})

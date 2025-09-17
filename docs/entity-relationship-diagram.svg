@@ -1,0 +1,242 @@
+<svg width="1400" height="900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .entity { fill: #ffffff; stroke: #2c3e50; stroke-width: 2; }
+      .entity-header { fill: #3498db; }
+      .entity-title { fill: white; font-family: 'Segoe UI', Arial, sans-serif; font-size: 16px; font-weight: bold; }
+      .attribute { fill: #2c3e50; font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; }
+      .pk-attribute { fill: #e74c3c; font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; font-weight: bold; }
+      .fk-attribute { fill: #9b59b6; font-family: 'Segoe UI', Arial, sans-serif; font-size: 12px; font-style: italic; }
+      .relationship { stroke: #34495e; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+      .one-to-one { stroke: #27ae60; stroke-width: 3; }
+      .one-to-many { stroke: #e67e22; stroke-width: 2; }
+      .many-to-many { stroke: #8e44ad; stroke-width: 2; stroke-dasharray: 5,5; }
+      .cardinality { fill: #2c3e50; font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; font-weight: bold; }
+      .relationship-label { fill: #2c3e50; font-family: 'Segoe UI', Arial, sans-serif; font-size: 10px; }
+      .junction-entity { fill: #ecf0f1; stroke: #95a5a6; stroke-width: 2; }
+      .junction-header { fill: #95a5a6; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34495e" />
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="700" y="30" text-anchor="middle" class="entity-title" font-size="24" fill="#2c3e50">LegalTrack Entity Relationship Diagram</text>
+  
+  <!-- User Entity -->
+  <g id="user-entity">
+    <rect x="50" y="80" width="200" height="180" class="entity"/>
+    <rect x="50" y="80" width="200" height="35" class="entity-header"/>
+    <text x="150" y="102" text-anchor="middle" class="entity-title">USER</text>
+    
+    <text x="60" y="125" class="pk-attribute">🔑 id (UUID)</text>
+    <text x="60" y="145" class="attribute">supabaseId (String?)</text>
+    <text x="60" y="165" class="attribute">firstName (String)</text>
+    <text x="60" y="185" class="attribute">lastName (String)</text>
+    <text x="60" y="205" class="attribute">email (String) UNIQUE</text>
+    <text x="60" y="225" class="attribute">phone (String?)</text>
+    <text x="60" y="245" class="attribute">avatar (String?)</text>
+  </g>
+  
+  <!-- Profile Entity -->
+  <g id="profile-entity">
+    <rect x="350" y="80" width="220" height="220" class="entity"/>
+    <rect x="350" y="80" width="220" height="35" class="entity-header"/>
+    <text x="460" y="102" text-anchor="middle" class="entity-title">PROFILE</text>
+    
+    <text x="360" y="125" class="pk-attribute">🔑 id (UUID)</text>
+    <text x="360" y="145" class="fk-attribute">🔗 userId (UUID) FK → User.id</text>
+    <text x="360" y="165" class="attribute">type (ProfileType)</text>
+    <text x="360" y="185" class="attribute">displayName (String?)</text>
+    <text x="360" y="205" class="attribute">bio (String?)</text>
+    <text x="360" y="225" class="attribute">specialties (String[])</text>
+    <text x="360" y="245" class="attribute">oabNumber (String?)</text>
+    <text x="360" y="265" class="attribute">settings (Json?)</text>
+    <text x="360" y="285" class="attribute">isActive (Boolean)</text>
+  </g>
+  
+  <!-- ProfileSpace Junction Entity -->
+  <g id="profilespace-entity">
+    <rect x="650" y="80" width="240" height="240" class="junction-entity"/>
+    <rect x="650" y="80" width="240" height="35" class="junction-header"/>
+    <text x="770" y="102" text-anchor="middle" class="entity-title">PROFILE_SPACE</text>
+    <text x="770" y="115" text-anchor="middle" class="relationship-label">(Junction Table)</text>
+    
+    <text x="660" y="140" class="pk-attribute">🔑 id (UUID)</text>
+    <text x="660" y="160" class="fk-attribute">🔗 profileId (UUID) FK → Profile.id</text>
+    <text x="660" y="180" class="fk-attribute">🔗 spaceId (UUID) FK → Space.id</text>
+    <text x="660" y="200" class="attribute">role (SpaceRole)</text>
+    <text x="660" y="220" class="attribute">isActive (Boolean)</text>
+    <text x="660" y="240" class="attribute">invitedAt (DateTime?)</text>
+    <text x="660" y="260" class="attribute">joinedAt (DateTime?)</text>
+    <text x="660" y="280" class="attribute">permissions (Json?)</text>
+    <text x="660" y="300" class="attribute">settings (Json?)</text>
+  </g>
+  
+  <!-- Space Entity -->
+  <g id="space-entity">
+    <rect x="950" y="80" width="220" height="200" class="entity"/>
+    <rect x="950" y="80" width="220" height="35" class="entity-header"/>
+    <text x="1060" y="102" text-anchor="middle" class="entity-title">SPACE</text>
+    
+    <text x="960" y="125" class="pk-attribute">🔑 id (UUID)</text>
+    <text x="960" y="145" class="attribute">name (String)</text>
+    <text x="960" y="165" class="attribute">description (String?)</text>
+    <text x="960" y="185" class="attribute">slug (String) UNIQUE</text>
+    <text x="960" y="205" class="attribute">type (SpaceType)</text>
+    <text x="960" y="225" class="fk-attribute">🔗 organizationId (UUID?) FK</text>
+    <text x="960" y="245" class="attribute">settings (Json?)</text>
+    <text x="960" y="265" class="attribute">createdAt (DateTime)</text>
+  </g>
+  
+  <!-- Organization Entity -->
+  <g id="organization-entity">
+    <rect x="950" y="350" width="220" height="160" class="entity"/>
+    <rect x="950" y="350" width="220" height="35" class="entity-header"/>
+    <text x="1060" y="372" text-anchor="middle" class="entity-title">ORGANIZATION</text>
+    
+    <text x="960" y="395" class="pk-attribute">🔑 id (UUID)</text>
+    <text x="960" y="415" class="attribute">name (String)</text>
+    <text x="960" y="435" class="attribute">description (String?)</text>
+    <text x="960" y="455" class="attribute">slug (String) UNIQUE</text>
+    <text x="960" y="475" class="attribute">logo (String?)</text>
+    <text x="960" y="495" class="attribute">settings (Json?)</text>
+  </g>
+  
+  <!-- Process Entity -->
+  <g id="process-entity">
+    <rect x="350" y="380" width="240" height="280" class="entity"/>
+    <rect x="350" y="380" width="240" height="35" class="entity-header"/>
+    <text x="470" y="402" text-anchor="middle" class="entity-title">PROCESS</text>
+    
+    <text x="360" y="425" class="pk-attribute">🔑 id (UUID)</text>
+    <text x="360" y="445" class="attribute">publicId (String) UNIQUE</text>
+    <text x="360" y="465" class="attribute">title (String)</text>
+    <text x="360" y="485" class="attribute">description (String?)</text>
+    <text x="360" y="505" class="attribute">area (ProcessArea)</text>
+    <text x="360" y="525" class="attribute">status (ProcessStatus)</text>
+    <text x="360" y="545" class="attribute">priority (ProcessPriority)</text>
+    <text x="360" y="565" class="fk-attribute">🔗 spaceId (UUID) FK → Space.id</text>
+    <text x="360" y="585" class="fk-attribute">🔗 assignedLawyerId (UUID?) FK</text>
+    <text x="360" y="605" class="fk-attribute">🔗 clientId (UUID?) FK → Client.id</text>
+    <text x="360" y="625" class="attribute">tags (String[])</text>
+    <text x="360" y="645" class="attribute">metadata (Json?)</text>
+  </g>
+  
+  <!-- Client Entity -->
+  <g id="client-entity">
+    <rect x="650" y="380" width="220" height="200" class="entity"/>
+    <rect x="650" y="380" width="220" height="35" class="entity-header"/>
+    <text x="760" y="402" text-anchor="middle" class="entity-title">CLIENT</text>
+    
+    <text x="660" y="425" class="pk-attribute">🔑 id (UUID)</text>
+    <text x="660" y="445" class="attribute">name (String)</text>
+    <text x="660" y="465" class="attribute">email (String?)</text>
+    <text x="660" y="485" class="attribute">phone (String?)</text>
+    <text x="660" y="505" class="attribute">document (String?)</text>
+    <text x="660" y="525" class="attribute">address (Json?)</text>
+    <text x="660" y="545" class="fk-attribute">🔗 spaceId (UUID) FK → Space.id</text>
+    <text x="660" y="565" class="attribute">notes (String?)</text>
+    <text x="660" y="585" class="attribute">metadata (Json?)</text>
+  </g>
+  
+  <!-- Relationships -->
+  
+  <!-- User to Profile (1:1) -->
+  <line x1="250" y1="170" x2="350" y2="170" class="one-to-one"/>
+  <text x="280" y="160" class="cardinality">1</text>
+  <text x="320" y="160" class="cardinality">1</text>
+  <text x="300" y="185" class="relationship-label">has</text>
+  
+  <!-- Profile to ProfileSpace (1:N) -->
+  <line x1="570" y1="190" x2="650" y2="190" class="one-to-many"/>
+  <text x="590" y="180" class="cardinality">1</text>
+  <text x="630" y="180" class="cardinality">N</text>
+  <text x="610" y="205" class="relationship-label">participates</text>
+  
+  <!-- Space to ProfileSpace (1:N) -->
+  <line x1="950" y1="190" x2="890" y2="190" class="one-to-many"/>
+  <text x="930" y="180" class="cardinality">1</text>
+  <text x="910" y="180" class="cardinality">N</text>
+  <text x="920" y="205" class="relationship-label">contains</text>
+  
+  <!-- Organization to Space (1:N) -->
+  <line x1="1060" y1="350" x2="1060" y2="280" class="one-to-many"/>
+  <text x="1070" y="330" class="cardinality">1</text>
+  <text x="1070" y="300" class="cardinality">N</text>
+  <text x="1080" y="315" class="relationship-label">owns</text>
+  
+  <!-- Space to Process (1:N) -->
+  <path d="M 950 250 Q 900 300 590 480" class="one-to-many" fill="none"/>
+  <text x="920" y="270" class="cardinality">1</text>
+  <text x="610" y="470" class="cardinality">N</text>
+  <text x="750" y="350" class="relationship-label">contains</text>
+  
+  <!-- Space to Client (1:N) -->
+  <path d="M 950 220 Q 900 250 870 450" class="one-to-many" fill="none"/>
+  <text x="920" y="240" class="cardinality">1</text>
+  <text x="880" y="440" class="cardinality">N</text>
+  <text x="910" y="330" class="relationship-label">has</text>
+  
+  <!-- Profile to Process (1:N) - Assigned Lawyer -->
+  <line x1="460" y1="300" x2="460" y2="380" class="one-to-many"/>
+  <text x="470" y="320" class="cardinality">1</text>
+  <text x="470" y="360" class="cardinality">N</text>
+  <text x="480" y="340" class="relationship-label">assigned to</text>
+  
+  <!-- Client to Process (1:N) -->
+  <line x1="650" y1="480" x2="590" y2="480" class="one-to-many"/>
+  <text x="630" y="470" class="cardinality">1</text>
+  <text x="610" y="470" class="cardinality">N</text>
+  <text x="620" y="495" class="relationship-label">owns</text>
+  
+  <!-- Cardinality Legend -->
+  <g id="legend">
+    <rect x="50" y="720" width="400" height="150" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2"/>
+    <text x="250" y="740" text-anchor="middle" class="entity-title" font-size="14">Relationship Types & Cardinalities</text>
+    
+    <line x1="70" y1="760" x2="120" y2="760" class="one-to-one"/>
+    <text x="130" y="765" class="attribute">One-to-One (1:1) - Each User has exactly one Profile</text>
+    
+    <line x1="70" y1="780" x2="120" y2="780" class="one-to-many"/>
+    <text x="130" y="785" class="attribute">One-to-Many (1:N) - One Space contains many Processes</text>
+    
+    <line x1="70" y1="800" x2="120" y2="800" class="many-to-many"/>
+    <text x="130" y="805" class="attribute">Many-to-Many (M:N) - Profiles participate in multiple Spaces</text>
+    
+    <text x="70" y="825" class="pk-attribute">🔑 Primary Key</text>
+    <text x="200" y="825" class="fk-attribute">🔗 Foreign Key</text>
+    
+    <text x="70" y="845" class="attribute">Junction Table: ProfileSpace manages M:N relationship</text>
+    <text x="70" y="860" class="attribute">between Profiles and Spaces with role-based access control</text>
+  </g>
+  
+  <!-- Business Rules -->
+  <g id="business-rules">
+    <rect x="500" y="720" width="450" height="150" fill="#fff3cd" stroke="#ffeaa7" stroke-width="2"/>
+    <text x="725" y="740" text-anchor="middle" class="entity-title" font-size="14">Key Business Rules</text>
+    
+    <text x="510" y="760" class="attribute">• Each User has exactly one Profile (professional identity)</text>
+    <text x="510" y="775" class="attribute">• Profiles can participate in multiple Spaces with different roles</text>
+    <text x="510" y="790" class="attribute">• Spaces isolate data (clients, processes) between workspaces</text>
+    <text x="510" y="805" class="attribute">• Processes are assigned to Profiles (lawyers) within a Space</text>
+    <text x="510" y="820" class="attribute">• Clients are unique per Space (email constraint per workspace)</text>
+    <text x="510" y="835" class="attribute">• Organizations can own multiple Spaces (enterprise feature)</text>
+    <text x="510" y="850" class="attribute">• ProfileSpace junction enables role-based permissions</text>
+  </g>
+  
+  <!-- Data Flow Arrows -->
+  <g id="data-flow">
+    <text x="1000" y="60" class="entity-title" font-size="12" fill="#7f8c8d">Data Flow Direction</text>
+    <path d="M 50 700 Q 100 680 150 700" stroke="#3498db" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    <text x="100" y="675" class="relationship-label">User creates Profile</text>
+    
+    <path d="M 200 700 Q 250 680 300 700" stroke="#3498db" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    <text x="250" y="675" class="relationship-label">Profile joins Spaces</text>
+    
+    <path d="M 350 700 Q 400 680 450 700" stroke="#3498db" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+    <text x="400" y="675" class="relationship-label">Space manages work</text>
+  </g>
+  
+</svg>

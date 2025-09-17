@@ -1,0 +1,243 @@
+<svg width="1200" height="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .table { fill: #f8f9fa; stroke: #dee2e6; stroke-width: 2; }
+      .table-header { fill: #495057; }
+      .table-title { fill: white; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; }
+      .field-text { fill: #212529; font-family: Arial, sans-serif; font-size: 11px; }
+      .pk { fill: #ffd43b; }
+      .fk { fill: #74c0fc; }
+      .relationship { stroke: #6c757d; stroke-width: 2; fill: none; }
+      .one-to-one { stroke: #28a745; stroke-width: 3; }
+      .one-to-many { stroke: #dc3545; stroke-width: 2; }
+      .many-to-many { stroke: #fd7e14; stroke-width: 2; }
+      .enum-box { fill: #e9ecef; stroke: #adb5bd; stroke-width: 1; }
+      .enum-title { fill: #495057; font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; }
+      .enum-value { fill: #6c757d; font-family: Arial, sans-serif; font-size: 10px; }
+    </style>
+  </defs>
+  
+  <!-- Title -->
+  <text x="600" y="25" text-anchor="middle" class="table-title" font-size="18">LegalTrack Database Schema</text>
+  
+  <!-- User Table -->
+  <g id="user-table">
+    <rect x="50" y="50" width="180" height="160" class="table"/>
+    <rect x="50" y="50" width="180" height="25" class="table-header"/>
+    <text x="140" y="67" text-anchor="middle" class="table-title">User</text>
+    
+    <rect x="55" y="80" width="8" height="8" class="pk"/>
+    <text x="68" y="87" class="field-text">id: String (PK)</text>
+    <text x="68" y="102" class="field-text">supabaseId: String?</text>
+    <text x="68" y="117" class="field-text">firstName: String</text>
+    <text x="68" y="132" class="field-text">lastName: String</text>
+    <text x="68" y="147" class="field-text">email: String (unique)</text>
+    <text x="68" y="162" class="field-text">phone: String?</text>
+    <text x="68" y="177" class="field-text">avatar: String?</text>
+    <text x="68" y="192" class="field-text">createdAt: DateTime</text>
+  </g>
+  
+  <!-- Profile Table -->
+  <g id="profile-table">
+    <rect x="300" y="50" width="200" height="200" class="table"/>
+    <rect x="300" y="50" width="200" height="25" class="table-header"/>
+    <text x="400" y="67" text-anchor="middle" class="table-title">Profile</text>
+    
+    <rect x="305" y="80" width="8" height="8" class="pk"/>
+    <text x="318" y="87" class="field-text">id: String (PK)</text>
+    <text x="318" y="102" class="field-text">type: ProfileType</text>
+    <rect x="305" y="110" width="8" height="8" class="fk"/>
+    <text x="318" y="117" class="field-text">userId: String (FK, unique)</text>
+    <text x="318" y="132" class="field-text">displayName: String?</text>
+    <text x="318" y="147" class="field-text">bio: String?</text>
+    <text x="318" y="162" class="field-text">specialties: String[]</text>
+    <text x="318" y="177" class="field-text">oabNumber: String?</text>
+    <text x="318" y="192" class="field-text">settings: Json?</text>
+    <text x="318" y="207" class="field-text">isActive: Boolean</text>
+    <text x="318" y="222" class="field-text">createdAt: DateTime</text>
+  </g>
+  
+  <!-- ProfileSpace Table -->
+  <g id="profilespace-table">
+    <rect x="580" y="50" width="200" height="200" class="table"/>
+    <rect x="580" y="50" width="200" height="25" class="table-header"/>
+    <text x="680" y="67" text-anchor="middle" class="table-title">ProfileSpace</text>
+    
+    <rect x="585" y="80" width="8" height="8" class="pk"/>
+    <text x="598" y="87" class="field-text">id: String (PK)</text>
+    <rect x="585" y="95" width="8" height="8" class="fk"/>
+    <text x="598" y="102" class="field-text">profileId: String (FK)</text>
+    <rect x="585" y="110" width="8" height="8" class="fk"/>
+    <text x="598" y="117" class="field-text">spaceId: String (FK)</text>
+    <text x="598" y="132" class="field-text">role: SpaceRole</text>
+    <text x="598" y="147" class="field-text">isActive: Boolean</text>
+    <text x="598" y="162" class="field-text">invitedAt: DateTime?</text>
+    <text x="598" y="177" class="field-text">joinedAt: DateTime?</text>
+    <text x="598" y="192" class="field-text">permissions: Json?</text>
+    <text x="598" y="207" class="field-text">settings: Json?</text>
+    <text x="598" y="222" class="field-text">createdAt: DateTime</text>
+  </g>
+  
+  <!-- Space Table -->
+  <g id="space-table">
+    <rect x="850" y="50" width="200" height="180" class="table"/>
+    <rect x="850" y="50" width="200" height="25" class="table-header"/>
+    <text x="950" y="67" text-anchor="middle" class="table-title">Space</text>
+    
+    <rect x="855" y="80" width="8" height="8" class="pk"/>
+    <text x="868" y="87" class="field-text">id: String (PK)</text>
+    <text x="868" y="102" class="field-text">name: String</text>
+    <text x="868" y="117" class="field-text">description: String?</text>
+    <text x="868" y="132" class="field-text">slug: String (unique)</text>
+    <text x="868" y="147" class="field-text">type: SpaceType</text>
+    <rect x="855" y="155" width="8" height="8" class="fk"/>
+    <text x="868" y="162" class="field-text">organizationId: String? (FK)</text>
+    <text x="868" y="177" class="field-text">settings: Json?</text>
+    <text x="868" y="192" class="field-text">createdAt: DateTime</text>
+    <text x="868" y="207" class="field-text">updatedAt: DateTime</text>
+  </g>
+  
+  <!-- Organization Table -->
+  <g id="organization-table">
+    <rect x="850" y="280" width="200" height="140" class="table"/>
+    <rect x="850" y="280" width="200" height="25" class="table-header"/>
+    <text x="950" y="297" text-anchor="middle" class="table-title">Organization</text>
+    
+    <rect x="855" y="310" width="8" height="8" class="pk"/>
+    <text x="868" y="317" class="field-text">id: String (PK)</text>
+    <text x="868" y="332" class="field-text">name: String</text>
+    <text x="868" y="347" class="field-text">description: String?</text>
+    <text x="868" y="362" class="field-text">slug: String (unique)</text>
+    <text x="868" y="377" class="field-text">logo: String?</text>
+    <text x="868" y="392" class="field-text">settings: Json?</text>
+    <text x="868" y="407" class="field-text">createdAt: DateTime</text>
+  </g>
+  
+  <!-- Process Table -->
+  <g id="process-table">
+    <rect x="300" y="300" width="200" height="220" class="table"/>
+    <rect x="300" y="300" width="200" height="25" class="table-header"/>
+    <text x="400" y="317" text-anchor="middle" class="table-title">Process</text>
+    
+    <rect x="305" y="330" width="8" height="8" class="pk"/>
+    <text x="318" y="337" class="field-text">id: String (PK)</text>
+    <text x="318" y="352" class="field-text">publicId: String (unique)</text>
+    <text x="318" y="367" class="field-text">title: String</text>
+    <text x="318" y="382" class="field-text">description: String?</text>
+    <text x="318" y="397" class="field-text">area: ProcessArea</text>
+    <text x="318" y="412" class="field-text">status: ProcessStatus</text>
+    <text x="318" y="427" class="field-text">priority: ProcessPriority</text>
+    <rect x="305" y="435" width="8" height="8" class="fk"/>
+    <text x="318" y="442" class="field-text">spaceId: String (FK)</text>
+    <rect x="305" y="450" width="8" height="8" class="fk"/>
+    <text x="318" y="457" class="field-text">assignedLawyerId: String? (FK)</text>
+    <rect x="305" y="465" width="8" height="8" class="fk"/>
+    <text x="318" y="472" class="field-text">clientId: String? (FK)</text>
+    <text x="318" y="487" class="field-text">tags: String[]</text>
+    <text x="318" y="502" class="field-text">metadata: Json?</text>
+  </g>
+  
+  <!-- Client Table -->
+  <g id="client-table">
+    <rect x="580" y="300" width="200" height="180" class="table"/>
+    <rect x="580" y="300" width="200" height="25" class="table-header"/>
+    <text x="680" y="317" text-anchor="middle" class="table-title">Client</text>
+    
+    <rect x="585" y="330" width="8" height="8" class="pk"/>
+    <text x="598" y="337" class="field-text">id: String (PK)</text>
+    <text x="598" y="352" class="field-text">name: String</text>
+    <text x="598" y="367" class="field-text">email: String?</text>
+    <text x="598" y="382" class="field-text">phone: String?</text>
+    <text x="598" y="397" class="field-text">document: String?</text>
+    <text x="598" y="412" class="field-text">address: Json?</text>
+    <rect x="585" y="420" width="8" height="8" class="fk"/>
+    <text x="598" y="427" class="field-text">spaceId: String (FK)</text>
+    <text x="598" y="442" class="field-text">notes: String?</text>
+    <text x="598" y="457" class="field-text">metadata: Json?</text>
+    <text x="598" y="472" class="field-text">createdAt: DateTime</text>
+  </g>
+  
+  <!-- Enums -->
+  <g id="enums">
+    <!-- ProfileType -->
+    <rect x="50" y="280" width="120" height="100" class="enum-box"/>
+    <text x="110" y="295" text-anchor="middle" class="enum-title">ProfileType</text>
+    <text x="60" y="310" class="enum-value">ADMIN</text>
+    <text x="60" y="325" class="enum-value">LAWYER</text>
+    <text x="60" y="340" class="enum-value">ASSISTANT</text>
+    <text x="60" y="355" class="enum-value">CLIENT</text>
+    
+    <!-- SpaceRole -->
+    <rect x="50" y="400" width="120" height="120" class="enum-box"/>
+    <text x="110" y="415" text-anchor="middle" class="enum-title">SpaceRole</text>
+    <text x="60" y="430" class="enum-value">ADMIN</text>
+    <text x="60" y="445" class="enum-value">LAWYER</text>
+    <text x="60" y="460" class="enum-value">ASSISTANT</text>
+    <text x="60" y="475" class="enum-value">CLIENT</text>
+    <text x="60" y="490" class="enum-value">VIEWER</text>
+    
+    <!-- SpaceType -->
+    <rect x="50" y="540" width="120" height="100" class="enum-box"/>
+    <text x="110" y="555" text-anchor="middle" class="enum-title">SpaceType</text>
+    <text x="60" y="570" class="enum-value">INDIVIDUAL</text>
+    <text x="60" y="585" class="enum-value">FIRM</text>
+    <text x="60" y="600" class="enum-value">DEPARTMENT</text>
+    <text x="60" y="615" class="enum-value">ENTERPRISE</text>
+  </g>
+  
+  <!-- Relationships -->
+  
+  <!-- User to Profile (1:1) -->
+  <line x1="230" y1="130" x2="300" y2="130" class="one-to-one"/>
+  <text x="265" y="125" class="field-text" font-size="10">1:1</text>
+  
+  <!-- Profile to ProfileSpace (1:N) -->
+  <line x1="500" y1="150" x2="580" y2="150" class="one-to-many"/>
+  <text x="540" y="145" class="field-text" font-size="10">1:N</text>
+  
+  <!-- Space to ProfileSpace (1:N) -->
+  <line x1="850" y1="150" x2="780" y2="150" class="one-to-many"/>
+  <text x="815" y="145" class="field-text" font-size="10">1:N</text>
+  
+  <!-- Organization to Space (1:N) -->
+  <line x1="950" y1="280" x2="950" y2="230" class="one-to-many"/>
+  <text x="955" y="255" class="field-text" font-size="10">1:N</text>
+  
+  <!-- Space to Process (1:N) -->
+  <line x1="850" y1="200" x2="500" y2="400" class="one-to-many"/>
+  <text x="675" y="300" class="field-text" font-size="10">1:N</text>
+  
+  <!-- Space to Client (1:N) -->
+  <line x1="850" y1="180" x2="780" y2="380" class="one-to-many"/>
+  <text x="815" y="280" class="field-text" font-size="10">1:N</text>
+  
+  <!-- Profile to Process (1:N) - Assigned Lawyer -->
+  <line x1="400" y1="250" x2="400" y2="300" class="one-to-many"/>
+  <text x="405" y="275" class="field-text" font-size="10">1:N</text>
+  
+  <!-- Client to Process (1:N) -->
+  <line x1="580" y1="400" x2="500" y2="400" class="one-to-many"/>
+  <text x="540" y="395" class="field-text" font-size="10">1:N</text>
+  
+  <!-- Legend -->
+  <g id="legend">
+    <rect x="50" y="680" width="300" height="100" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1"/>
+    <text x="200" y="695" text-anchor="middle" class="enum-title">Legend</text>
+    
+    <rect x="60" y="705" width="8" height="8" class="pk"/>
+    <text x="75" y="712" class="field-text">Primary Key (PK)</text>
+    
+    <rect x="60" y="720" width="8" height="8" class="fk"/>
+    <text x="75" y="727" class="field-text">Foreign Key (FK)</text>
+    
+    <line x1="60" y1="740" x2="90" y2="740" class="one-to-one"/>
+    <text x="95" y="743" class="field-text">One-to-One</text>
+    
+    <line x1="60" y1="755" x2="90" y2="755" class="one-to-many"/>
+    <text x="95" y="758" class="field-text">One-to-Many</text>
+    
+    <line x1="60" y1="770" x2="90" y2="770" class="many-to-many"/>
+    <text x="95" y="773" class="field-text">Many-to-Many</text>
+  </g>
+  
+</svg>

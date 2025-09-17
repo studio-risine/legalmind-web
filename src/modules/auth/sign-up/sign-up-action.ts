@@ -1,7 +1,7 @@
 'use server'
 
 import type { User } from '@supabase/supabase-js'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/libs/supabase/server'
 import { type Either, left, right } from '@/utils/either'
 import { type ActionError, createActionError } from '../shared/action-error'
 import type { SignUpFormData } from './sign-up-form'

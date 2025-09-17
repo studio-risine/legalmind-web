@@ -1,6 +1,7 @@
 import { supabase } from '@/libs/supabase/client'
+import type { UpdateProfile } from '@/types/supabase/profile'
 
-export async function updateProfile(args: any) {
+export async function updateProfile(args: UpdateProfile & { id: string }) {
 	const { status, error } = await supabase
 		.from('profiles')
 		.update({

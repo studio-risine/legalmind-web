@@ -1,8 +1,8 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import z from 'zod'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Anchor } from '@/components/ui/anchor'
@@ -16,6 +16,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useRedirect } from '@/hooks/use-redirect'
 import { AuthBox, AuthBoxFooter, AuthBoxHeader } from '../components/auth-box'
 import { AuthSeparator } from '../components/auth-separator'
 import { ProviderGoogleIcon } from '../components/provide-google-icon'
@@ -40,7 +41,8 @@ const schema = z.object({
 export type SignUpFormData = z.infer<typeof schema>
 
 export function SignUpForm() {
-	const { push } = useRouter()
+	const { redirectTo } = useRedirect()
+
 	const form = useForm<SignUpFormData>({
 		resolver: zodResolver(schema),
 		defaultValues: {
@@ -51,11 +53,17 @@ export function SignUpForm() {
 		},
 	})
 
-	const { execute, isPending, isSuccess } = useSignUp(signUp, {
+	const { execute, isPending } = useSignUp(signUp, {
 		onSuccess: () => {
-			console.log(isSuccess)
 			form.reset()
-			push('/auth/login')
+
+			toast('Conta criada com sucesso!', {
+				description: 'Verifique sua caixa de e-mail para ativar sua conta.',
+			})
+
+			setTimeout(() => {
+				redirectTo({ route: '/auth/login' })
+			}, 3000)
 		},
 		onError: (error) => {
 			form.setError('root', {

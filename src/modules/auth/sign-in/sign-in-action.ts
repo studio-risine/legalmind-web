@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/libs/supabase/server'
 import { type Either, left, right } from '@/utils/either'
 import { type ActionError, createActionError } from '../shared/action-error'
 import type { SignInFormData } from './sign-in-form'

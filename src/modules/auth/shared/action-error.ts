@@ -19,7 +19,6 @@ export function createActionError(
 	}
 }
 
-// Common error codes
 export const ERROR_CODES = {
 	AUTHENTICATION_FAILED: 'AUTHENTICATION_FAILED',
 	VALIDATION_ERROR: 'VALIDATION_ERROR',

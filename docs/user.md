@@ -1,0 +1,2 @@
+- [] Usuário deve atualizar table user pela primeira vez
+- [] Usuário deve criar um profile quando autenticado pela primeira vez

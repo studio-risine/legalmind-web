@@ -2,12 +2,11 @@
 
 import { useMutation } from '@tanstack/react-query'
 import { useTransition } from 'react'
-import type { SignInFormData } from '@/module/auth/components/sign-in-form'
 import type { ActionError } from '@/module/auth/shared/action-error'
 import { type Either, isLeft } from '@/utils/either'
+import type { SignInFormData } from './sign-in-form'
 
 type SignInSuccess = {
-	redirectTo: string
 	user: {
 		id: string
 		email: string
