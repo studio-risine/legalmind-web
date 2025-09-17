@@ -57,14 +57,14 @@ export async function updateSession(request: NextRequest) {
 		const url = request.nextUrl.clone()
 		url.pathname = '/auth/login'
 
-		const redirectRes = NextResponse.redirect(url)
+		const redirectResponse = NextResponse.redirect(url)
 
-		// Copy Set-Cookie headers from supabaseResponse to preserve auth cookies
-		supabaseResponse.headers.getSetCookie().forEach((cookie) => {
-			redirectRes.headers.append('set-cookie', cookie)
-		})
+		// Propagate cookies that were set during `setAll`
+		for (const { name, value } of supabaseResponse.cookies.getAll()) {
+			redirectResponse.cookies.set(name, value)
+		}
 
-		return redirectRes
+		return redirectResponse
 	}
 
 	return supabaseResponse
