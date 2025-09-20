@@ -4,6 +4,10 @@
 	"files": {
 		"includes": ["**/src/**/*"]
 	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {

@@ -7,20 +7,19 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "biome check .",
-		"lint:fix": "biome check --write .",
-		"format": "biome format --write .",
-		"check": "biome check .",
 		"prepare": "husky",
-		"types:generate": "supabase gen types typescript --linked > src/types/database.ts"
+		"types:generate": "supabase gen types typescript --linked > src/types/database.ts",
+		"check": "biome check .",
+		"fix": "biome check --write .",
+		"ci": "biome check --error-on-warnings .",
+		"format": "biome format --write ."
 	},
 	"lint-staged": {
 		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx}": [
-			"biome check --files-ignore-unknown=true",
-			"biome check --write --no-errors-on-unmatched",
-			"biome check --write --unsafe --no-errors-on-unmatched",
-			"biome format --write --no-errors-on-unmatched",
-			"biome lint --write --no-errors-on-unmatched"
+			"biome check --write"
+		],
+		"*.{json}": [
+			"biome format --write"
 		]
 	},
 	"dependencies": {

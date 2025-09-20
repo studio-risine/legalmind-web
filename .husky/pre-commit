@@ -1,1 +1,13 @@
-lint-staged
+echo "🔍 Running pre-commit checks..."
+
+# Run lint-staged to check and fix staged files
+npx lint-staged
+
+# Check if lint-staged succeeded
+if [ $? -ne 0 ]; then
+  echo "❌ Pre-commit checks failed. Please fix the issues above and try again."
+  echo "💡 You can run 'npm run fix' to fix issues automatically."
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed!"
