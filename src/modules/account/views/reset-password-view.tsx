@@ -4,7 +4,10 @@ import { AuthBox, AuthBoxContent, AuthBoxHeader } from '../components'
 export function ResetPasswordView() {
 	return (
 		<AuthBox>
-			<AuthBoxHeader title="Recuperar senha" />
+			<AuthBoxHeader
+				title="Esqueci minha senha"
+				description="Digite seu email que enviamos um link de recuperação"
+			/>
 
 			<AuthBoxContent>
 				<ResetPasswordForm />

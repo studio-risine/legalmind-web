@@ -89,7 +89,7 @@ export function ResetPasswordForm() {
 						className="w-full"
 						disabled={!form.formState.isValid}
 					>
-						{isPending ? 'Enviando...' : 'Recuperar senha'}
+						{isPending ? 'Enviando...' : 'Enviar'}
 					</Button>
 				</div>
 			</form>

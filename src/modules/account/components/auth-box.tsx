@@ -19,12 +19,10 @@ export interface AuthFormHeaderProps {
 
 export function AuthBoxHeader({ title, description }: AuthFormHeaderProps) {
 	return (
-		<div className="flex flex-col gap-2">
-			<h1 className="font-bold text-3xl">{title}</h1>
+		<div className="flex flex-col gap-1">
+			<h1 className="font-bold text-3xl text-foreground">{title}</h1>
 			{description && (
-				<p className="text-balance text-base text-muted-foreground">
-					{description}
-				</p>
+				<p className="text-balance text-foreground/80 text-sm">{description}</p>
 			)}
 		</div>
 	)
