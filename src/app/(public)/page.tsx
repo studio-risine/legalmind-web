@@ -1,15 +1,11 @@
-import { createClient } from '@/libs/supabase/server'
+import Link from 'next/link'
 
 export default async function HomePage() {
-	const supabase = await createClient()
-	const {
-		data: { session },
-	} = await supabase.auth.getSession()
-
 	return (
 		<div>
 			<h1>Home</h1>
-			<pre>{JSON.stringify(session, null, 2)}</pre>
+			<Link href="/account/login">Login</Link>
+			<Link href="/account/register">Register</Link>
 		</div>
 	)
 }
