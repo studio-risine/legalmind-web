@@ -9,6 +9,7 @@ export interface ResetPasswordServerInput {
 
 export interface ResetPasswordServerOutput {
 	error: AuthError | null
+	onSuccess: boolean
 }
 
 export async function resetPasswordServer(
@@ -23,10 +24,12 @@ export async function resetPasswordServer(
 	if (error) {
 		return {
 			error,
+			onSuccess: false,
 		}
 	}
 
 	return {
 		error: null,
+		onSuccess: true,
 	}
 }

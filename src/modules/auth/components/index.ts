@@ -1,4 +1,5 @@
 export * from './auth-guard'
-export * from './auth-guard-metadata'
+export * from './cooldown-timer'
 export * from './protected-guard'
 export * from './provide-google-icon'
+export * from './submit-button'

@@ -1,7 +1,6 @@
 'use client'
 
 import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert'
-import { Button } from '@components/ui/button'
 import {
 	Form,
 	FormControl,
@@ -12,11 +11,14 @@ import {
 } from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { resetPasswordServer } from '@modules/auth'
+import { CooldownTimer, SubmitButton } from '@modules/auth/components'
+import { RiErrorWarningFill } from '@remixicon/react'
+import { useCallback, useMemo, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { resetPasswordServer } from '@/modules/auth/reset-password/reset-password-action'
+import { useResetPasswordCooldown } from '@/hooks/use-reset-password-cooldown'
 
 const schema = z.object({
 	email: z.email({
@@ -27,7 +29,9 @@ const schema = z.object({
 export type ResetPasswordFormData = z.infer<typeof schema>
 
 export function ResetPasswordForm() {
-	const [isPending, setIsPending] = useState(false)
+	const [isPending, startTransition] = useTransition()
+	const { isOnCooldown, remainingTime, canSubmit, startCooldown } =
+		useResetPasswordCooldown()
 
 	const form = useForm<ResetPasswordFormData>({
 		resolver: zodResolver(schema),
@@ -36,25 +40,48 @@ export function ResetPasswordForm() {
 		},
 	})
 
-	const onSubmit = async (data: ResetPasswordFormData) => {
-		setIsPending(true)
-		const { error } = await resetPasswordServer({ email: data.email })
+	const formState = useMemo(
+		() => ({
+			isValid: form.formState.isValid,
+			errors: form.formState.errors,
+		}),
+		[form.formState.isValid, form.formState.errors],
+	)
 
-		if (error) {
-			setIsPending(false)
-			form.setError('root', {
-				message: 'Erro ao enviar email de recuperação.',
+	const isButtonDisabled = useMemo(() => {
+		return !formState.isValid || !canSubmit || isPending
+	}, [formState.isValid, canSubmit, isPending])
+
+	const onSubmit = useCallback(
+		async (data: ResetPasswordFormData) => {
+			if (!canSubmit || isPending) {
+				return
+			}
+
+			startTransition(async () => {
+				const { error, onSuccess } = await resetPasswordServer({
+					email: data.email,
+				})
+
+				if (error) {
+					form.setError('root', {
+						message: error?.message ?? 'Erro ao enviar email de recuperação.',
+					})
+					return
+				}
+
+				if (onSuccess) {
+					startCooldown()
+					form.reset()
+
+					toast.success('Email de recuperação enviado com sucesso!', {
+						description: 'Verifique sua caixa de entrada.',
+					})
+				}
 			})
-		}
-
-		if (!error) {
-			setIsPending(false)
-			form.reset()
-			toast.success(
-				'Email de recuperação enviado com sucesso! Verifique sua caixa de entrada.',
-			)
-		}
-	}
+		},
+		[canSubmit, isPending, form, startCooldown],
+	)
 
 	return (
 		<Form {...form}>
@@ -63,14 +90,18 @@ export function ResetPasswordForm() {
 				onSubmit={form.handleSubmit(onSubmit)}
 			>
 				<div className="grid gap-6">
-					{form.formState.errors.root && (
+					{formState.errors.root && (
 						<Alert variant="destructive">
-							<AlertTitle>Erro ao enviar email</AlertTitle>
+							<RiErrorWarningFill />
+							<AlertTitle>Erro</AlertTitle>
 							<AlertDescription>
-								{form.formState.errors.root.message}
+								{formState.errors.root.message}
 							</AlertDescription>
 						</Alert>
 					)}
+
+					{isOnCooldown && <CooldownTimer remainingTime={remainingTime} />}
+
 					<FormField
 						control={form.control}
 						name="email"
@@ -78,19 +109,24 @@ export function ResetPasswordForm() {
 							<FormItem>
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-									<Input type="email" placeholder="" {...field} />
+									<Input
+										type="email"
+										placeholder="Digite seu email"
+										disabled={isOnCooldown || isPending}
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-					<Button
-						type="submit"
-						className="w-full"
-						disabled={!form.formState.isValid}
-					>
-						{isPending ? 'Enviando...' : 'Enviar'}
-					</Button>
+
+					<SubmitButton
+						isDisabled={isButtonDisabled}
+						isLoading={isPending}
+						text="Enviar"
+						loadingText="Enviando..."
+					/>
 				</div>
 			</form>
 		</Form>

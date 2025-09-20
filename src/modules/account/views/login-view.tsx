@@ -10,7 +10,7 @@ import {
 export function LoginView() {
 	return (
 		<AuthBox>
-			<AuthBoxHeader title="Crie sua conta" />
+			<AuthBoxHeader title="Entre na sua conta" />
 
 			<AuthBoxContent>
 				<SignInPasswordForm />

@@ -2,6 +2,7 @@
 
 import { Button } from '@components/ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { RiErrorWarningFill } from '@remixicon/react'
 import { useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -40,12 +41,12 @@ export function SignInPasswordForm() {
 	})
 
 	const onSubmit = async (data: SignInFormData) => {
-		const { onSuccess } = await signInWithPassword(data)
+		const { error } = await signInWithPassword(data)
 
-		if (!onSuccess) {
+		if (error) {
 			startTransition(() => {
 				form.setError('root', {
-					message: 'Verifique suas credenciais.',
+					message: error?.message ?? 'Verifique suas credenciais.',
 				})
 			})
 		}
@@ -60,7 +61,8 @@ export function SignInPasswordForm() {
 				<div className="grid gap-6">
 					{form.formState.errors.root && (
 						<Alert variant="destructive">
-							<AlertTitle>Invalid login credentials</AlertTitle>
+							<RiErrorWarningFill />
+							<AlertTitle>Alert</AlertTitle>
 							<AlertDescription>
 								{form.formState.errors.root.message}
 							</AlertDescription>

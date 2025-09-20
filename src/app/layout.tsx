@@ -4,6 +4,7 @@ import './globals.css'
 
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
+import { Toaster } from 'sonner'
 import { Providers } from '@/components/providers'
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function RootLayout({
 			</head>
 			<body className={`${fontFamily.className} antialiased`}>
 				<Providers>{children}</Providers>
+				<Toaster position="top-right" />
 			</body>
 		</html>
 	)
