@@ -10,5 +10,9 @@
 	},
 	"files.autoSave": "off",
 	"typescript.suggest.autoImports": true,
-	"javascript.suggest.autoImports": true
+	"javascript.suggest.autoImports": true,
+	"cSpell.words": [
+		"cooldown",
+		"supabase"
+	]
 }
