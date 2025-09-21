@@ -112,14 +112,87 @@ Sets up git hooks for:
 - **commit-msg**: Validates commit messages using Commitlint
 
 ### Commitlint
-Enforces conventional commit standards:
+Enforces conventional commit standards with specific rules for this project:
+
+#### Commit Types
 - `feat:` - New feature
 - `fix:` - Bug fix
 - `docs:` - Documentation
 - `style:` - Formatting
 - `refactor:` - Refactoring
+- `perf:` - Performance improvements
 - `test:` - Tests
+- `build:` - Build system changes
+- `ci:` - CI/CD changes
 - `chore:` - Maintenance tasks
+- `revert:` - Revert previous commit
+
+#### Commit Scopes
+- `setup` - Initial setup
+- `config` - Configuration files
+- `deps` - Dependencies
+- `ui` - User interface
+- `api` - API/backend
+- `auth` - Authentication
+- `db` - Database
+- `docs` - Documentation
+- `test` - Testing
+- `build` - Build/compilation
+- `ci` - Continuous integration
+- `release` - Release/version
+
+#### Valid Commit Examples
+```bash
+# New features
+feat(auth): add google oauth integration
+feat(ui): implement user dashboard
+
+# Bug fixes
+fix(api): resolve authentication token issue
+fix(ui): correct button alignment problem
+
+# Documentation
+docs(api): update authentication endpoints
+docs(setup): add installation guide
+
+# Refactoring
+refactor(db): optimize user queries
+refactor(ui): improve component structure
+
+# Performance
+perf(api): optimize database queries
+perf(ui): reduce bundle size
+
+# Testing
+test(auth): add login validation tests
+test(api): implement endpoint tests
+
+# Configuration
+chore(config): update eslint rules
+chore(deps): upgrade dependencies
+
+# Build and CI
+build(ci): update deployment pipeline
+ci(config): add automated testing
+```
+
+#### Commit Message Format
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Rules:**
+- Type and scope must be lowercase
+- Description should be lowercase (no sentence case)
+- No period at the end of description
+- Description cannot be empty
+- Use imperative mood ("add feature" not "added feature")****
+
+For complete commit conventions documentation, see [docs/COMMIT_CONVENTIONS.md](./docs/COMMIT_CONVENTIONS.md)
 
 ## 🎨 Included Pages
 

@@ -2,7 +2,11 @@
 	"$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
 	"extends": ["@tc96/biome-config"],
 	"files": {
-		"includes": ["**/src/**/*", "**/convex/*", "!**/convex/_generated/*"]
+		"includes": ["**/src/**/*", "!**/src/.cursor/**/*"]
+	},
+	"formatter": {
+		"enabled": true,
+		"formatWithErrors": false
 	},
 	"linter": {
 		"enabled": true,
