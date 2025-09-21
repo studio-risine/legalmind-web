@@ -43,5 +43,7 @@ export function formatPercentage(value: number, decimals = 1): string {
  * @returns The formatted number
  */
 export function formatInteger(value: number): string {
-	return new Intl.NumberFormat('pt-BR').format(Math.floor(value))
+	if (!Number.isFinite(value)) return String(value)
+
+	return new Intl.NumberFormat('pt-BR').format(Math.trunc(value))
 }
