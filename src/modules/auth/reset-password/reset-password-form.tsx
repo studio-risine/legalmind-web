@@ -125,7 +125,6 @@ export function ResetPasswordForm() {
 						isDisabled={isButtonDisabled}
 						isLoading={isPending}
 						text="Enviar"
-						loadingText="Enviando..."
 					/>
 				</div>
 			</form>
