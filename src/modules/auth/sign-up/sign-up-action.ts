@@ -27,7 +27,7 @@ export async function signUpWithEmail(
 		email: input.email,
 		password: input.password,
 		options: {
-			emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/app/dashboard`,
+			emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
 			data: {
 				display_name: input.firstName,
 				first_name: input.firstName,

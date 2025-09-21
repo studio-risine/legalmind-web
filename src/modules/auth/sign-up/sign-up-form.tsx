@@ -1,11 +1,11 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useCallback, useMemo, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
 import {
 	Form,
 	FormControl,
@@ -15,6 +15,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { SubmitButton } from '../components'
 import { signUpWithEmail } from './sign-up-action'
 
 const formSchema = z.object({
@@ -35,6 +36,8 @@ const formSchema = z.object({
 export type SignUpFormData = z.infer<typeof formSchema>
 
 export function SignUpForm() {
+	const [isPending, startTransition] = useTransition()
+
 	const form = useForm<SignUpFormData>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -45,27 +48,45 @@ export function SignUpForm() {
 		},
 	})
 
-	const onSubmit = async (data: SignUpFormData) => {
-		const { user, error } = await signUpWithEmail({
-			firstName: data.firstName,
-			lastName: data.lastName,
-			email: data.email,
-			password: data.password,
-		})
+	const formState = useMemo(
+		() => ({
+			isValid: form.formState.isValid,
+			errors: form.formState.errors,
+		}),
+		[form.formState.isValid, form.formState.errors],
+	)
 
-		if (error) {
-			form.setError('root', {
-				message: 'Erro ao criar conta.',
-			})
-		}
+	const isButtonDisabled = useMemo(() => {
+		return !formState.isValid || isPending
+	}, [formState.isValid, isPending])
 
-		if (user) {
-			form.reset()
-			toast.success('Conta criada com sucesso!', {
-				description: 'Verifique sua caixa de e-mail para ativar sua conta.',
+	const onSubmit = useCallback(
+		(data: SignUpFormData) => {
+			startTransition(async () => {
+				const { user, error } = await signUpWithEmail({
+					firstName: data.firstName,
+					lastName: data.lastName,
+					email: data.email,
+					password: data.password,
+				})
+
+				if (error) {
+					form.setError('root', {
+						message: 'Erro ao criar conta.',
+					})
+				}
+
+				if (user) {
+					toast.success('Conta criada com sucesso!', {
+						description: 'Verifique sua caixa de e-mail para ativar sua conta.',
+					})
+					await new Promise((resolve) => setTimeout(resolve, 2 * 1000))
+					form.reset()
+				}
 			})
-		}
-	}
+		},
+		[form],
+	)
 
 	return (
 		<Form {...form}>
@@ -74,11 +95,11 @@ export function SignUpForm() {
 				onSubmit={form.handleSubmit(onSubmit)}
 			>
 				<div className="grid gap-6">
-					{form.formState.errors.root && (
+					{formState.errors.root && (
 						<Alert variant="destructive">
 							<AlertTitle>Invalid credentials</AlertTitle>
 							<AlertDescription>
-								{form.formState.errors.root.message}
+								{formState.errors.root.message}
 							</AlertDescription>
 						</Alert>
 					)}
@@ -90,7 +111,12 @@ export function SignUpForm() {
 								<FormItem>
 									<FormLabel>Nome</FormLabel>
 									<FormControl>
-										<Input type="text" placeholder="" {...field} />
+										<Input
+											type="text"
+											placeholder=""
+											autoComplete="given-name"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -103,7 +129,12 @@ export function SignUpForm() {
 								<FormItem>
 									<FormLabel>Sobrenome</FormLabel>
 									<FormControl>
-										<Input type="text" placeholder="" {...field} />
+										<Input
+											type="text"
+											placeholder=""
+											autoComplete="family-name"
+											{...field}
+										/>
 									</FormControl>
 									<FormMessage />
 								</FormItem>
@@ -117,7 +148,12 @@ export function SignUpForm() {
 							<FormItem>
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-									<Input type="email" placeholder="" {...field} />
+									<Input
+										type="email"
+										placeholder=""
+										autoComplete="email"
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -130,19 +166,18 @@ export function SignUpForm() {
 							<FormItem>
 								<FormLabel>Senha</FormLabel>
 								<FormControl>
-									<Input type="password" placeholder="" {...field} />
+									<Input
+										type="password"
+										placeholder=""
+										autoComplete="new-password"
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-					<Button
-						type="submit"
-						className="w-full"
-						disabled={!form.formState.isValid}
-					>
-						{form.formState.isSubmitting ? 'Criando...' : 'Criar'}
-					</Button>
+					<SubmitButton text="Criar" isDisabled={isButtonDisabled} />
 				</div>
 			</form>
 		</Form>
