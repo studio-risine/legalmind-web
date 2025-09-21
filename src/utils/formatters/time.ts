@@ -4,7 +4,8 @@
  * @returns The formatted number
  */
 export function formatTime(milliseconds: number): string {
-	const seconds = Math.ceil(milliseconds / 1000)
+	const minimumMilliseconds = Math.max(0, milliseconds)
+	const seconds = Math.ceil(minimumMilliseconds / 1000)
 	const minutes = Math.floor(seconds / 60)
 	const remainingSeconds = seconds % 60
 
