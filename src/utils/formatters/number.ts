@@ -19,12 +19,21 @@ export function formatNumber(value: number, decimals = 0): string {
  * @returns The formatted number
  */
 export function formatPercentage(value: number, decimals = 1): string {
-	const normalizedValue = value > 1 ? value / 100 : value
+	// Guard against non-finite values
+	if (!Number.isFinite(value) || !Number.isFinite(decimals)) {
+		return '-'
+	}
+
+	// Clamp decimals to valid Intl range (0-20)
+	const clampedDecimals = Math.min(Math.max(Math.trunc(decimals), 0), 20)
+
+	// Use Math.abs for comparison while preserving sign
+	const normalizedValue = Math.abs(value) > 1 ? value / 100 : value
 
 	return new Intl.NumberFormat('pt-BR', {
 		style: 'percent',
-		minimumFractionDigits: decimals,
-		maximumFractionDigits: decimals,
+		minimumFractionDigits: clampedDecimals,
+		maximumFractionDigits: clampedDecimals,
 	}).format(normalizedValue)
 }
 
