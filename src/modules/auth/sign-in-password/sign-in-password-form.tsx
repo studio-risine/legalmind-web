@@ -1,9 +1,8 @@
 'use client'
 
-import { Button } from '@components/ui/button'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { RiErrorWarningFill } from '@remixicon/react'
-import { useTransition } from 'react'
+import { useCallback, useMemo, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -17,6 +16,7 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { SubmitButton } from '../components'
 import { signInWithPassword } from './sign-in-password-action'
 
 const schema = z.object({
@@ -32,6 +32,7 @@ export type SignInFormData = z.infer<typeof schema>
 
 export function SignInPasswordForm() {
 	const [isPending, startTransition] = useTransition()
+
 	const form = useForm<SignInFormData>({
 		resolver: zodResolver(schema),
 		defaultValues: {
@@ -40,17 +41,36 @@ export function SignInPasswordForm() {
 		},
 	})
 
-	const onSubmit = async (data: SignInFormData) => {
-		const { error } = await signInWithPassword(data)
+	const formState = useMemo(
+		() => ({
+			isValid: form.formState.isValid,
+			errors: form.formState.errors,
+		}),
+		[form.formState.isValid, form.formState.errors],
+	)
 
-		if (error) {
-			startTransition(() => {
-				form.setError('root', {
-					message: error?.message ?? 'Verifique suas credenciais.',
-				})
+	const isButtonDisabled = useMemo(() => {
+		return !formState.isValid || isPending
+	}, [formState.isValid, isPending])
+
+	const onSubmit = useCallback(
+		(data: SignInFormData) => {
+			if (!formState.isValid || isPending) {
+				return
+			}
+
+			startTransition(async () => {
+				const { error } = await signInWithPassword(data)
+
+				if (error) {
+					form.setError('root', {
+						message: error?.message ?? 'Verifique suas credenciais.',
+					})
+				}
 			})
-		}
-	}
+		},
+		[form, formState, isPending],
+	)
 
 	return (
 		<Form {...form}>
@@ -59,12 +79,12 @@ export function SignInPasswordForm() {
 				onSubmit={form.handleSubmit(onSubmit)}
 			>
 				<div className="grid gap-6">
-					{form.formState.errors.root && (
+					{formState.errors.root && (
 						<Alert variant="destructive">
 							<RiErrorWarningFill />
-							<AlertTitle>Alert</AlertTitle>
+							<AlertTitle>Erro ao Entrar</AlertTitle>
 							<AlertDescription>
-								{form.formState.errors.root.message}
+								{formState.errors.root.message}
 							</AlertDescription>
 						</Alert>
 					)}
@@ -75,7 +95,12 @@ export function SignInPasswordForm() {
 							<FormItem>
 								<FormLabel>Email</FormLabel>
 								<FormControl>
-									<Input type="email" placeholder="" {...field} />
+									<Input
+										type="email"
+										placeholder=""
+										autoComplete="email"
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -93,19 +118,22 @@ export function SignInPasswordForm() {
 									</Anchor>
 								</div>
 								<FormControl>
-									<Input type="password" placeholder="" {...field} />
+									<Input
+										type="password"
+										placeholder=""
+										autoComplete="current-password"
+										{...field}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-					<Button
-						type="submit"
-						className="w-full"
-						disabled={!form.formState.isValid}
-					>
-						{isPending ? 'Entrando...' : 'Entrar'}
-					</Button>
+					<SubmitButton
+						isDisabled={isButtonDisabled}
+						isLoading={isPending}
+						text="Entrar"
+					/>
 				</div>
 			</form>
 		</Form>
