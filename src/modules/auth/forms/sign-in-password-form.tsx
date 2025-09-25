@@ -16,8 +16,8 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { signInWithPassword } from '../actions'
 import { SubmitButton } from '../components'
-import { signInWithPassword } from './sign-in-password-action'
 
 const schema = z.object({
 	email: z.email({

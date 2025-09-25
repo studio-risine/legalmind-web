@@ -1,5 +1,5 @@
-import { ResetPasswordForm } from '@/modules/auth'
-import { AuthBox, AuthBoxContent, AuthBoxHeader } from '../components'
+import { ResetPasswordForm } from '@modules/auth/forms'
+import { AuthBox, AuthBoxContent, AuthBoxHeader } from '.'
 
 export function ResetPasswordView() {
 	return (

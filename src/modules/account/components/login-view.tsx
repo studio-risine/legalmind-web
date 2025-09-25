@@ -1,11 +1,6 @@
-import { Anchor } from '@/components/ui/anchor'
-import { SignInPasswordForm } from '@/modules/auth/sign-in-password/sign-in-password-form'
-import {
-	AuthBox,
-	AuthBoxContent,
-	AuthBoxFooter,
-	AuthBoxHeader,
-} from '../components'
+import { Anchor } from '@components/ui/anchor'
+import { SignInPasswordForm } from '@modules/auth/forms/sign-in-password-form'
+import { AuthBox, AuthBoxContent, AuthBoxFooter, AuthBoxHeader } from '.'
 
 export function LoginView() {
 	return (

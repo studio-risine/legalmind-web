@@ -16,7 +16,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import z from 'zod'
-import { updatePassword } from './update-password-action'
+import { updatePassword } from '../actions'
 
 const schema = z
 	.object({
