@@ -1,5 +1,5 @@
+import { Button } from '@components/ui/button'
 import { RiGoogleFill } from '@remixicon/react'
-import { Button } from '@/components/ui/button'
 
 export function GoogleProvider() {
 	return (

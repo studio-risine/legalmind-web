@@ -1,5 +1,5 @@
-import { Anchor } from '@/components/ui/anchor'
-import { SignUpForm } from '@/modules/auth'
+import { Anchor } from '@components/ui/anchor'
+import { SignUpForm } from '@modules/auth/forms'
 import {
 	AuthBox,
 	AuthBoxContent,

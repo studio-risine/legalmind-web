@@ -15,8 +15,8 @@ import {
 	FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { signUpWithEmail } from '../actions'
 import { SubmitButton } from '../components'
-import { signUpWithEmail } from './sign-up-action'
 
 const formSchema = z.object({
 	firstName: z.string().min(1, {
