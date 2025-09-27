@@ -1,0 +1,205 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Enums
+enum ProcessArea {
+  CIVIL
+  LABOR
+  CRIMINAL
+  FAMILY
+  TAX
+  ADMINISTRATIVE
+  CONSTITUTIONAL
+  INTERNATIONAL
+}
+
+enum ProcessPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ProcessStatus {
+  ONGOING
+  SUSPENDED
+  ARCHIVED
+  CLOSED
+}
+
+enum ProfileType {
+  ADMIN
+  LAWYER
+  ASSISTANT
+  CLIENT
+}
+
+enum SpaceRole {
+  ADMIN
+  LAWYER
+  ASSISTANT
+  CLIENT
+  VIEWER
+}
+
+enum SpaceType {
+  INDIVIDUAL
+}
+
+enum UserRoleType {
+  ADMIN
+  LAWYER
+}
+
+// Models
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  firstName    String       @map("first_name")
+  lastName     String       @map("last_name")
+  displayName  String?      @map("display_name")
+  phone        String?
+  avatar       String?
+  isActive     Boolean      @default(true) @map("isActive")
+  role         UserRoleType? @map("role") @default(LAWYER)
+  supabaseId   String?      @unique @map("supabase_id")
+  createdAt    DateTime     @default(now()) @map("createdAt")
+  updatedAt    DateTime     @updatedAt @map("updatedAt")
+
+  @@map("users")
+}
+
+model Profile {
+  id          String      @id @default(cuid())
+  userId      String      @unique @map("user_id")
+  bio         String?
+  oabNumber   String?     @map("oab_number")
+  specialties String[]
+  type        ProfileType @default(LAWYER)
+  settings    Json?
+  createdAt   DateTime    @default(now()) @map("createdAt")
+  updatedAt   DateTime    @updatedAt @map("updatedAt")
+
+  // Relations
+  // user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // profileSpaces ProfileSpace[]
+
+  @@map("profiles")
+}
+
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  logo        String?
+  settings    Json?
+  createdAt   DateTime @default(now()) @map("createdAt")
+  updatedAt   DateTime @updatedAt @map("updatedAt")
+
+  // Relations
+  // spaces Space[]
+
+  @@map("organizations")
+}
+
+model Space {
+  id             String     @id @default(cuid())
+  name           String
+  slug           String     @unique
+  description    String?
+  type           SpaceType  @default(INDIVIDUAL)
+  settings       Json?
+  organizationId String?    @map("organization_id")
+  createdAt      DateTime   @default(now()) @map("createdAt")
+  updatedAt      DateTime   @updatedAt @map("updatedAt")
+
+  // Relations
+  // organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  // profileSpaces  ProfileSpace[]
+  // processes      Process[]
+
+  @@map("spaces")
+}
+
+model ProfileSpace {
+  id          String    @id @default(cuid())
+  profileId   String    @map("profile_id")
+  spaceId     String    @map("space_id")
+  role        SpaceRole
+  isActive    Boolean   @default(true) @map("isActive")
+  permissions Json?
+  settings    Json?
+  invitedAt   DateTime? @map("invitedAt")
+  joinedAt    DateTime? @map("joinedAt")
+  createdAt   DateTime  @default(now()) @map("createdAt")
+  updatedAt   DateTime  @updatedAt @map("updatedAt")
+
+  // Relations
+  // profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  // space   Space   @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId])
+  @@map("profile_spaces")
+}
+
+enum ClientStatus {
+  LEAD
+  PROSPECT
+  ACTIVE
+  DORMANT
+  CHURNED
+}
+
+model Client {
+  id        String   @id @default(uuid())
+  name      String
+  document  String?
+  email     String?
+  phone     String?
+  address   Json?
+  notes     String?
+  metadata  Json?
+
+  status    ClientStatus @default(LEAD) @map("status")
+  createdAt DateTime @default(now()) @map("createdAt")
+  updatedAt DateTime @updatedAt @map("updatedAt")
+
+  processes Process[]
+
+  @@map("clients")
+}
+
+model Process {
+  id               String          @id @default(uuid())
+  publicId         String          @unique @map("public_id")
+  title            String
+  description      String?
+  area             ProcessArea
+  status           ProcessStatus   @default(ONGOING)
+  priority         ProcessPriority @default(MEDIUM)
+  tags             String[]
+  metadata         Json?
+  clientId         String?          @map("client_id")
+  assignedLawyerId String?          @map("assigned_lawyer_id")
+  // spaceId          String          @map("space_id")
+  createdAt        DateTime        @default(now()) @map("createdAt")
+  updatedAt        DateTime        @updatedAt @map("updatedAt")
+
+  // Relations
+  client         Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  // assignedLawyer Profile? @relation(fields: [assignedLawyerId], references: [id], onDelete: SetNull)
+  // space          Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@map("processes")
+}
