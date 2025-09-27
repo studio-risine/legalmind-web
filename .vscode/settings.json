@@ -13,6 +13,7 @@
 	"javascript.suggest.autoImports": true,
 	"cSpell.words": [
 		"cooldown",
+		"nuqs",
 		"remixicon",
 		"supabase"
 	]
