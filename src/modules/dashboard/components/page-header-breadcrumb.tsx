@@ -20,7 +20,7 @@ export function PageHeaderWithBreadcrumb({
 	children,
 }: PageHeaderBreadcrumbProps) {
 	return (
-		<div className="flex justify-between px-1">
+		<div className="py- flex items-center justify-between px-6 py-4">
 			<Breadcrumb>
 				<BreadcrumbList>
 					{breadcrumb.map((item, index) => {

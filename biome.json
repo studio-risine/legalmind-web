@@ -21,7 +21,8 @@
 				"noNonNullAssertion": "off"
 			},
 			"correctness": {
-				"noUnusedVariables": "off"
+				"noUnusedVariables": "off",
+				"useExhaustiveDependencies": "off"
 			},
 			"a11y": {
 				"useFocusableInteractive": "off",

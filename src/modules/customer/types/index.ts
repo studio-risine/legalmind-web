@@ -1,12 +1,15 @@
-// Client Types Barrel Export
-// Export all client-related TypeScript types and interfaces
+import type {
+	Tables,
+	TablesInsert,
+	TablesUpdate,
+} from '@/libs/supabase/database'
 
-// Main types
-export type {
-	Client,
-	ClientAddress,
-	ClientFilters,
-	ClientFormData,
-	ClientSearchResult,
-	ClientValidationError,
-} from './client'
+export type Client = Tables<'clients'>
+export type ClientInsert = TablesInsert<'clients'>
+export type ClientUpdate = TablesUpdate<'clients'>
+
+export type ClientDatabase = Pick<
+	Tables<'clients'>,
+	'id' | 'name' | 'email' | 'phone' | 'createdAt' | 'status'
+>
+export type ClientStatus = Tables<'clients'>['status']
