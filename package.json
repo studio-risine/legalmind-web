@@ -1,6 +1,6 @@
 {
 	"name": "legaltrack",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -12,12 +12,7 @@
 		"check": "biome check .",
 		"fix": "biome check --write .",
 		"ci": "biome check --error-on-warnings .",
-		"format": "biome format --write .",
-		"db:generate": "prisma generate",
-		"db:migrate": "prisma migrate dev",
-		"db:deploy": "prisma migrate deploy",
-		"db:studio": "prisma studio",
-		"db:seed": "prisma db seed"
+		"format": "biome format --write ."
 	},
 	"lint-staged": {
 		"src/**/*.{ts,tsx,js,jsx}": [
@@ -58,6 +53,8 @@
 		"clsx": "^2.1.1",
 		"cmdk": "^1.1.1",
 		"date-fns": "^4.1.0",
+		"dotenv": "^17.2.3",
+		"drizzle-orm": "^0.44.6",
 		"framer-motion": "^12.23.22",
 		"lucide-react": "^0.544.0",
 		"motion": "^12.23.22",
@@ -65,7 +62,7 @@
 		"next": "15.5.2",
 		"next-themes": "^0.4.6",
 		"nuqs": "^2.6.0",
-		"prisma": "^6.16.2",
+		"postgres": "^3.4.7",
 		"react": "19.1.0",
 		"react-day-picker": "^9.11.0",
 		"react-dom": "19.1.0",
@@ -86,10 +83,12 @@
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"drizzle-kit": "^0.31.5",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.1.5",
 		"shadcn": "^3.3.1",
 		"tailwindcss": "^4",
+		"tsx": "^4.20.6",
 		"tw-animate-css": "^1.3.7",
 		"typescript": "^5"
 	}
