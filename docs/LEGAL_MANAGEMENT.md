@@ -9,7 +9,6 @@ A comprehensive system for managing legal processes, deadlines, clients, and tri
 ---
 
 ## Core Entities
-
 ### 1. Users
 Represents system users with role-based access control.
 
