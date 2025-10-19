@@ -2,22 +2,26 @@
 
 import { Button } from '@components/ui/button'
 import { RiLoader4Fill } from '@remixicon/react'
-import { memo } from 'react'
+import { type ComponentProps, memo } from 'react'
 
-interface SubmitButtonProps {
-	isDisabled: boolean
+interface SubmitButtonProps extends ComponentProps<'button'> {
 	isLoading: boolean
 	text: string
+	textLoading: string
 }
 
 export const SubmitButton = memo(function SubmitButton({
-	isDisabled,
 	isLoading,
 	text,
+	textLoading,
+	...props
 }: SubmitButtonProps) {
 	return (
-		<Button type="submit" className="w-full" disabled={isDisabled}>
-			{isLoading ? <RiLoader4Fill className="size-5 animate-spin" /> : text}
+		<Button type="submit" {...props}>
+			{isLoading && <RiLoader4Fill className="size-5 animate-spin" />}
+			{isLoading ? textLoading : text}
 		</Button>
 	)
 })
+
+SubmitButton.displayName = 'SubmitButton'

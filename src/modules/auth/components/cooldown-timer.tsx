@@ -2,7 +2,7 @@
 
 import { Alert, AlertDescription } from '@components/ui/alert'
 import { RiTimeLine } from '@remixicon/react'
-import { formatTime } from '@/utils/formatters'
+import { formatTime } from '@utils/formatters'
 
 export function CooldownTimer({ remainingTime }: { remainingTime: number }) {
 	const timer = formatTime(remainingTime)
