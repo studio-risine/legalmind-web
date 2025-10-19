@@ -1,7 +1,7 @@
 'use server'
 
+import { createClient } from '@libs/supabase/server'
 import type { AuthError, User } from '@supabase/supabase-js'
-import { createClient } from '@/libs/supabase/server'
 
 export interface AuthSignUpInput {
 	firstName: string

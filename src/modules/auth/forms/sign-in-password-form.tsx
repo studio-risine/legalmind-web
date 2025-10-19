@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { signInWithPassword } from '../actions'
-import { SubmitButton } from '../components'
+import { SubmitButton } from '../components/submit-button'
 
 const schema = z.object({
 	email: z.email({
@@ -130,9 +130,10 @@ export function SignInPasswordForm() {
 						)}
 					/>
 					<SubmitButton
-						isDisabled={isButtonDisabled}
+						disabled={isButtonDisabled}
 						isLoading={isPending}
 						text="Entrar"
+						textLoading="Entrando..."
 					/>
 				</div>
 			</form>

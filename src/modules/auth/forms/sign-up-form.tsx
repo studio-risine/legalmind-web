@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { signUpWithEmail } from '../actions'
-import { SubmitButton } from '../components'
+import { SubmitButton } from '../components/submit-button'
 
 const formSchema = z.object({
 	firstName: z.string().min(1, {
@@ -177,7 +177,12 @@ export function SignUpForm() {
 							</FormItem>
 						)}
 					/>
-					<SubmitButton text="Criar" isDisabled={isButtonDisabled} />
+					<SubmitButton
+						text="Criar"
+						disabled={isButtonDisabled}
+						isLoading={isPending}
+						textLoading="Criando..."
+					/>
 				</div>
 			</form>
 		</Form>
