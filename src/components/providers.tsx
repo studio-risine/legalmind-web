@@ -1,7 +1,9 @@
 'use client'
 
+import { QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import type { ReactNode } from 'react'
+import { queryClient } from '@/libs/react-query-client'
 
 export function Providers({ children }: { children: ReactNode }) {
 	return (
@@ -12,7 +14,7 @@ export function Providers({ children }: { children: ReactNode }) {
 			disableTransitionOnChange
 			enableColorScheme
 		>
-			{children}
+			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 		</NextThemesProvider>
 	)
 }
