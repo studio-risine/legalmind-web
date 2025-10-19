@@ -1,12 +1,13 @@
+import { SidebarInset, SidebarProvider } from '@components/ui/sidebar'
+import { DashboardSidebar } from '@modules/dashboard/components/app-sidebar'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import type { ReactNode } from 'react'
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
-import { DashboardSidebar } from '@/modules/dashboard/components/app-sidebar'
-import ProtectedGuard from '../../auth/components/protected-guard'
+import { OperationHost } from '../components'
+import { OperationProvider } from '../components/operation-context'
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
 	return (
-		<ProtectedGuard>
+		<OperationProvider>
 			<SidebarProvider>
 				<div className="relative flex h-screen w-full">
 					<DashboardSidebar />
@@ -14,9 +15,10 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 						<NuqsAdapter>
 							<div className="flex flex-col gap-4">{children}</div>
 						</NuqsAdapter>
+						<OperationHost />
 					</SidebarInset>
 				</div>
 			</SidebarProvider>
-		</ProtectedGuard>
+		</OperationProvider>
 	)
 }
