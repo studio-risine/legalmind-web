@@ -9,3 +9,4 @@
 
 // Placeholder for future forms
 // Remove this comment when forms are implemented
+export {}

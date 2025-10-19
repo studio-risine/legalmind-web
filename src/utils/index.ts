@@ -1,4 +1,3 @@
-// Formatters
 export * from './formatters'
 
 // Future utility categories can be added here:

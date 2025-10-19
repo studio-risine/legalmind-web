@@ -10,3 +10,4 @@
 
 // Placeholder for future actions
 // Remove this comment when actions are implemented
+export {}
