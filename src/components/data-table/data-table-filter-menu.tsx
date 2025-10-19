@@ -38,11 +38,11 @@ import {
 } from '@/components/ui/select'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
 import { getDefaultFilterOperator, getFilterOperators } from '@/libs/data-table'
-import { formatDate } from '@/libs/format'
 import { generateId } from '@/libs/id'
 import { getFiltersStateParser } from '@/libs/parsers'
 import { cn } from '@/libs/utils'
 import type { ExtendedColumnFilter, FilterOperator } from '@/types/data-table'
+import { formatDate } from '@/utils/formatters/date'
 
 const FILTERS_KEY = 'filters'
 const DEBOUNCE_MS = 300

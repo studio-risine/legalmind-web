@@ -58,7 +58,6 @@ import {
 import { dataTableConfig } from '@/config/data-table'
 import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
 import { getDefaultFilterOperator, getFilterOperators } from '@/libs/data-table'
-import { formatDate } from '@/libs/format'
 import { generateId } from '@/libs/id'
 import { getFiltersStateParser } from '@/libs/parsers'
 import { cn } from '@/libs/utils'
@@ -67,6 +66,7 @@ import type {
 	FilterOperator,
 	JoinOperator,
 } from '@/types/data-table'
+import { formatDate } from '@/utils/formatters/date'
 
 const FILTERS_KEY = 'filters'
 const JOIN_OPERATOR_KEY = 'joinOperator'
