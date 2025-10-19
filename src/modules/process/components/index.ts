@@ -12,3 +12,4 @@
 
 // Placeholder for future components
 // Remove this comment when components are implemented
+export {}

@@ -1,6 +1,7 @@
 'use client'
 
 import { Check, ChevronsUpDown } from 'lucide-react'
+import type { ReactNode } from 'react'
 import * as React from 'react'
 
 import { Badge } from '@/components/ui/badge'
@@ -46,7 +47,7 @@ interface FacetedProps<Multiple extends boolean = false>
 	extends React.ComponentProps<typeof Popover> {
 	value?: FacetedValue<Multiple>
 	onValueChange?: (value: FacetedValue<Multiple> | undefined) => void
-	children?: React.ReactNode
+	children?: ReactNode
 	multiple?: Multiple
 }
 

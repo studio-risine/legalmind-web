@@ -4,8 +4,8 @@ import './globals.css'
 
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
-import { Toaster } from 'sonner'
 import { Providers } from '@/components/providers'
+import { Toaster } from '@/components/ui/sonner'
 
 export const metadata: Metadata = {
 	title: 'legaltrack',

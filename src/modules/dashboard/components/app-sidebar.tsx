@@ -113,7 +113,7 @@ const dashboardRoutes: Route[] = [
 		id: 'clients',
 		title: 'Clients',
 		icon: <Users className="size-4" />,
-		link: '/dashboard/customers',
+		link: '/dashboard/clients',
 	},
 	{
 		id: 'sales',

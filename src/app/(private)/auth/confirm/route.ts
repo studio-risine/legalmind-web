@@ -1,29 +1,40 @@
 import { createClient } from '@libs/supabase/server'
-import type { EmailOtpType } from '@supabase/supabase-js'
 import { type NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: NextRequest) {
-	const { searchParams } = new URL(request.url)
-	const token_hash = searchParams.get('token_hash')
-	const type = searchParams.get('type') as EmailOtpType | null
-	const next = searchParams.get('next') ?? '/'
-	const redirectTo = request.nextUrl.clone()
-	redirectTo.pathname = next
+// Handles Supabase email confirmation and password recovery links
+export async function GET(req: NextRequest) {
+	const url = new URL(req.url)
+	const token_hash = url.searchParams.get('token_hash')
+	const type = url.searchParams.get('type') as
+		| 'email'
+		| 'recovery'
+		| 'invite'
+		| 'magiclink'
+		| null
+	const next = url.searchParams.get('next')
 
-	if (token_hash && type) {
-		const supabase = await createClient()
-
-		const { error } = await supabase.auth.verifyOtp({
-			type,
-			token_hash,
-		})
-
-		if (!error) {
-			return NextResponse.redirect(redirectTo)
-		}
+	// If required params are missing, redirect to error page
+	if (!token_hash || !type) {
+		return NextResponse.redirect(new URL('/auth/auth-code-error', url.origin))
 	}
 
-	redirectTo.pathname = '/auth/auth-code-error'
+	const supabase = await createClient()
+	const { error } = await supabase.auth.verifyOtp({ token_hash, type })
 
-	return NextResponse.redirect(redirectTo)
+	if (error) {
+		// Invalid or expired token
+		console.error('Auth verification error:', error.message)
+		return NextResponse.redirect(new URL('/auth/auth-code-error', url.origin))
+	}
+
+	// Decide where to go next
+	const redirectPath = (() => {
+		if (next) return next
+		if (type === 'recovery') return '/account/update-password'
+		if (type === 'magiclink' || type === 'invite') return '/dashboard'
+		// For email confirmation, send the user to login
+		return '/account/login'
+	})()
+
+	return NextResponse.redirect(new URL(redirectPath, url.origin))
 }

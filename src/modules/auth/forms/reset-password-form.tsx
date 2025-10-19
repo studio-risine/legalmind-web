@@ -11,14 +11,15 @@ import {
 } from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CooldownTimer, SubmitButton } from '@modules/auth/components'
+import { useResetPasswordCooldown } from '@hooks/use-reset-password-cooldown'
+import { CooldownTimer } from '@modules/auth/components'
 import { RiErrorWarningFill } from '@remixicon/react'
 import { useCallback, useMemo, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { useResetPasswordCooldown } from '@/hooks/use-reset-password-cooldown'
 import { resetPasswordServer } from '../actions'
+import { SubmitButton } from '../components/submit-button'
 
 const schema = z.object({
 	email: z.email({
@@ -122,9 +123,10 @@ export function ResetPasswordForm() {
 					/>
 
 					<SubmitButton
-						isDisabled={isButtonDisabled}
+						disabled={isButtonDisabled}
 						isLoading={isPending}
 						text="Enviar"
+						textLoading="Enviando..."
 					/>
 				</div>
 			</form>

@@ -1,5 +1,6 @@
 import { flexRender, type Table as TanstackTable } from '@tanstack/react-table'
 import type * as React from 'react'
+import type { ReactNode } from 'react'
 
 import { DataTablePagination } from '@/components/data-table/data-table-pagination'
 import {
@@ -15,7 +16,7 @@ import { cn } from '@/libs/utils'
 
 interface DataTableProps<TData> extends React.ComponentProps<'div'> {
 	table: TanstackTable<TData>
-	actionBar?: React.ReactNode
+	actionBar?: ReactNode
 }
 
 export function DataTable<TData>({

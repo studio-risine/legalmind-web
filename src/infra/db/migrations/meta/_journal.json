@@ -43,6 +43,13 @@
 			"when": 1760809352342,
 			"tag": "0005_amazing_network",
 			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1760907927292,
+			"tag": "0006_gray_amphibian",
+			"breakpoints": true
 		}
 	]
 }
