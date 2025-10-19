@@ -1,6 +1,7 @@
 import { accounts } from './accounts'
 import { clients } from './clients'
 import { deadlines } from './deadlines'
+import { notifications } from './notifications'
 import { processes } from './processes'
 import { spaces } from './spaces'
 
@@ -10,4 +11,5 @@ export const schema = {
 	deadlines,
 	processes,
 	spaces,
+	notifications,
 }
