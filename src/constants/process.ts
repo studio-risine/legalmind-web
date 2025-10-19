@@ -1,10 +1,7 @@
-import type {
-	ProcessAreaType,
-	ProcessPartyType,
-	ProcessStatusType,
-} from '@/types/process'
+// NOTE: Using generic string types to avoid drift with evolving Process type definitions.
+// TODO: Align these constants with src/modules/process/types once enums are finalized.
 
-export const PROCESS_STATUS: { value: ProcessStatusType; label: string }[] = [
+export const PROCESS_STATUS: { value: string; label: string }[] = [
 	{ value: 'active', label: 'Ativo' },
 	{ value: 'undefined', label: 'Indefinido' },
 	{ value: 'dismissed', label: 'Baixado' },
@@ -13,7 +10,7 @@ export const PROCESS_STATUS: { value: ProcessStatusType; label: string }[] = [
 	{ value: 'archived', label: 'Arquivado' },
 ]
 
-export const PROCESS_AREAS: { value: ProcessAreaType; label: string }[] = [
+export const PROCESS_AREAS: { value: string; label: string }[] = [
 	{ value: 'civil', label: 'Cível' },
 	{ value: 'labor', label: 'Trabalhista' },
 	{ value: 'criminal', label: 'Criminal' },
@@ -24,7 +21,10 @@ export const PROCESS_AREAS: { value: ProcessAreaType; label: string }[] = [
 	{ value: 'international', label: 'Internacional' },
 ]
 
-export const PARTY_TYPES: { value: ProcessPartyType; label: string }[] = [
+export const PARTY_TYPES: {
+	value: 'individual' | 'company' | 'government'
+	label: string
+}[] = [
 	{ value: 'individual', label: 'Pessoa Física' },
 	{ value: 'company', label: 'Pessoa Jurídica' },
 	{ value: 'government', label: 'Governo' },
