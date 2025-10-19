@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -12,7 +13,7 @@ interface PageHeaderBreadcrumbProps {
 		label: string
 		href: string
 	}[]
-	children?: React.ReactNode
+	children?: ReactNode
 }
 
 export function PageHeaderWithBreadcrumb({

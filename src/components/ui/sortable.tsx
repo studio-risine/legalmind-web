@@ -37,6 +37,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Slot } from '@radix-ui/react-slot'
+import type { ReactNode } from 'react'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
@@ -309,7 +310,7 @@ SortableContentContext.displayName = CONTENT_NAME
 
 interface SortableContentProps extends React.ComponentPropsWithoutRef<'div'> {
 	strategy?: SortableContextProps['strategy']
-	children: React.ReactNode
+	children: ReactNode
 	asChild?: boolean
 	withoutSlot?: boolean
 }
@@ -539,9 +540,7 @@ const dropAnimation: DropAnimation = {
 interface SortableOverlayProps
 	extends Omit<React.ComponentPropsWithoutRef<typeof DragOverlay>, 'children'> {
 	container?: Element | DocumentFragment | null
-	children?:
-		| ((params: { value: UniqueIdentifier }) => React.ReactNode)
-		| React.ReactNode
+	children?: ((params: { value: UniqueIdentifier }) => ReactNode) | ReactNode
 }
 
 function SortableOverlay(props: SortableOverlayProps) {

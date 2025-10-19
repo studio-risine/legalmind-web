@@ -2,7 +2,7 @@
 
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import Link from 'next/link'
-import type React from 'react'
+import type { ReactNode } from 'react'
 import { useState } from 'react'
 import {
 	Collapsible,
@@ -23,12 +23,12 @@ import { cn } from '@/libs/utils'
 export type Route = {
 	id: string
 	title: string
-	icon?: React.ReactNode
+	icon?: ReactNode
 	link: string
 	subs?: {
 		title: string
 		link: string
-		icon?: React.ReactNode
+		icon?: ReactNode
 	}[]
 }
 
