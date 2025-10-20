@@ -1,243 +1,157 @@
-# SaaS Starter Kit
+<div align="center">
 
-A complete starter kit for SaaS applications built with Next.js 15, TypeScript, Tailwind CSS, and Convex.
+# LegalTrack
 
-## 🚀 Technologies Included
+Modern legal process and deadline management for law firms and solo practitioners.
 
-- **Next.js 15** - React framework with App Router
-- **TypeScript** - Static typing
-- **Tailwind CSS** - Utility-first CSS framework
-- **Shadcn/ui** - Modern UI components
-- **Convex** - Backend-as-a-Service with real-time database
-- **Biome** - Code linter and formatter
-- **Husky** - Git hooks for code quality
-- **Commitlint** - Conventional commit standardization
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
+[![Supabase](https://img.shields.io/badge/Supabase-Postgres-3FCF8E?logo=supabase&logoColor=white)](https://supabase.com)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle-ORM-0A0A0A)](https://orm.drizzle.team)
+[![Vitest](https://img.shields.io/badge/Vitest-3.2-6E9F18?logo=vitest)](https://vitest.dev)
+[![Biome](https://img.shields.io/badge/Biome-2.2-60A5FA)](https://biomejs.dev)
 
-## 📁 Project Structure
+</div>
+
+## Overview
+
+LegalTrack helps you organize clients, processes, and deadlines with multi-tenant RBAC, calendar-friendly metadata, and a clean UX built on shadcn/ui. The core MVP centers on deadline tracking (prazos), with notifications and process linking.
+
+Key domain entities: Clients, Processes, Deadlines, Notifications, Users/Accounts.
+
+## Features
+
+- Deadline management with priority, status, and due dates
+- Link deadlines to processes and clients
+- Multi-tenancy via accounts with RBAC (SUPER_ADMIN, ADMIN, LAWYER)
+- Supabase Postgres with Drizzle migrations and typed queries
+- Notification records (email/system/push) with scheduling metadata
+- Modern UI with Tailwind CSS v4 and shadcn/ui
+- Tooling: Biome, Husky, Commitlint, Vitest
+
+See documentation at `docs/` for deeper architecture and product notes.
+
+## Tech Stack
+
+- Frontend: Next.js 15 (App Router), React 19, Tailwind CSS v4, shadcn/ui
+- Backend: Supabase (Postgres), Drizzle ORM (postgres-js), Next.js server actions
+- Auth: Supabase SSR helpers (`@supabase/ssr`) for client/server
+- Types & Validation: TypeScript, Zod, drizzle-zod
+- State/Data: TanStack Query, TanStack Table
+- Testing & DX: Vitest, Testing Library, Biome, Husky, Commitlint
+
+## Monorepo layout (excerpt)
 
 ```
 src/
-├── app/
-│   ├── (auth)/              # Route group for authentication
-│   │   ├── sign-in/         # Login page
-│   │   ├── sign-up/         # Registration page
-│   │   └── forgot-password/ # Password recovery page
-│   ├── (public)/            # Route group for public pages
-│   │   ├── about/           # About page
-│   │   └── page.tsx         # Home page
-│   ├── ConvexClientProvider.tsx
-│   ├── layout.tsx
-│   └── globals.css
-├── lib/
-│   └── utils.ts             # Utilities (cn function)
-convex/
-├── _generated/              # Convex generated files
-└── tasks.ts                 # Convex query example
+├─ app/                # Next.js app router
+├─ components/         # UI and data table primitives
+├─ infra/              # Env + database (Drizzle + Postgres)
+│  ├─ db/
+│  │  ├─ schemas/      # Drizzle schema (accounts, clients, processes, deadlines, ...)
+│  │  └─ migrations/   # Generated SQL migrations
+│  └─ env.ts           # Zod-validated runtime env
+├─ libs/supabase/      # Supabase SSR/browser clients and types
+├─ modules/            # Domain modules (client, process, deadline, ...)
+└─ utils/              # Shared helpers (formatters, masks, etc.)
+docs/
+└─ ...                 # Centralized documentation (schema, RBAC, roadmap)
 ```
 
-## 🛠️ Setup and Installation
+## Getting Started
 
-### 1. Clone the repository
+Prerequisites:
+- Node.js 20+
+- pnpm 9+ (recommended) or npm
+- Optional: Docker (for local Postgres) and Supabase CLI (for types generation)
+
+### 1) Clone and install
+
 ```bash
-git clone <repository-url>
-cd tc96-saas-starter
+git clone https://github.com/studio-risine/legaltrack.git
+cd legaltrack
+pnpm install
 ```
 
-### 2. Install dependencies
-```bash
-npm install
-```
+### 2) Configure environment
 
-### 3. Configure Convex
-```bash
-# Initialize Convex (requires account)
-npx convex dev
-```
+Create your local env file from the example:
 
-### 4. Configure environment variables
-Copy the example environment file and configure your settings:
 ```bash
 cp .env.example .env.local
 ```
 
-Update the `.env.local` file with your settings:
-```env
-# Convex Configuration
-CONVEX_DEPLOY_KEY=your_convex_deploy_key_here
-CONVEX_DEPLOYMENT=your_convex_deployment_name
-NEXT_PUBLIC_CONVEX_URL=https://your-convex-url.convex.cloud
+Required variables (see `.env.example`):
+- DATABASE_URL (Postgres connection string)
+- NEXT_PUBLIC_SUPABASE_URL
+- NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY
+- NODE_ENV, PORT
 
-# Development Configuration
-NODE_ENV=dev
-PORT=3000
+### 3) Start a local Postgres (optional)
 
-# Super Admin Credentials for Database Seeding
-SUPER_ADMIN_EMAIL=admin@example.com
-SUPER_ADMIN_PASSWORD=your_secure_password_here
-```
+Use the provided Docker Compose to spin up Postgres:
 
-### 5. Run the project
 ```bash
-npm run dev
+docker compose up -d pg
 ```
 
-The project will be available at `http://localhost:3000`
+The default database is `postgresql://docker:docker@localhost:5432/legaltrack`.
 
-## 📝 Available Scripts
+### 4) Run migrations
 
-### Development Scripts
-- `npm run dev` - Start development server
-- `npm run build` - Generate production build
-- `npm run start` - Start production server
-- `npm run lint` - Run linter
-- `npm run lint:fix` - Run linter and fix issues automatically
-- `npm run format` - Format code
-
-### Database Seeding Scripts
-- `npx convex run seed:seedDatabase` - Populate database with complete fake data
-- `npx convex run seed:clearAllData` - Clear all database data
-- `npx convex run seed:quickSeed` - Quick seed for testing
-- `npx convex run seed:generateActivityLogs` - Generate additional activity logs
-
-For detailed seeding documentation, see [convex/README.md](./convex/README.md)
-
-## 🔧 Development Tools
-
-### Biome
-Configured for code linting and formatting with optimized rules for React and TypeScript.
-
-### Husky
-Sets up git hooks for:
-- **pre-commit**: Runs linting and formatting before each commit
-- **commit-msg**: Validates commit messages using Commitlint
-
-### Commitlint
-Enforces conventional commit standards with specific rules for this project:
-
-#### Commit Types
-- `feat:` - New feature
-- `fix:` - Bug fix
-- `docs:` - Documentation
-- `style:` - Formatting
-- `refactor:` - Refactoring
-- `perf:` - Performance improvements
-- `test:` - Tests
-- `build:` - Build system changes
-- `ci:` - CI/CD changes
-- `chore:` - Maintenance tasks
-- `revert:` - Revert previous commit
-
-#### Commit Scopes
-- `setup` - Initial setup
-- `config` - Configuration files
-- `deps` - Dependencies
-- `ui` - User interface
-- `api` - API/backend
-- `auth` - Authentication
-- `db` - Database
-- `docs` - Documentation
-- `test` - Testing
-- `build` - Build/compilation
-- `ci` - Continuous integration
-- `release` - Release/version
-
-#### Valid Commit Examples
 ```bash
-# New features
-feat(auth): add google oauth integration
-feat(ui): implement user dashboard
-
-# Bug fixes
-fix(api): resolve authentication token issue
-fix(ui): correct button alignment problem
-
-# Documentation
-docs(api): update authentication endpoints
-docs(setup): add installation guide
-
-# Refactoring
-refactor(db): optimize user queries
-refactor(ui): improve component structure
-
-# Performance
-perf(api): optimize database queries
-perf(ui): reduce bundle size
-
-# Testing
-test(auth): add login validation tests
-test(api): implement endpoint tests
-
-# Configuration
-chore(config): update eslint rules
-chore(deps): upgrade dependencies
-
-# Build and CI
-build(ci): update deployment pipeline
-ci(config): add automated testing
+pnpm db:generate && pnpm db:migrate
 ```
 
-#### Commit Message Format
-```
-<type>(<scope>): <description>
+### 5) Develop
 
-[optional body]
-
-[optional footer(s)]
-```
-
-**Rules:**
-- Type and scope must be lowercase
-- Description should be lowercase (no sentence case)
-- No period at the end of description
-- Description cannot be empty
-- Use imperative mood ("add feature" not "added feature")****
-
-For complete commit conventions documentation, see [docs/COMMIT_CONVENTIONS.md](./docs/COMMIT_CONVENTIONS.md)
-
-## 🎨 Included Pages
-
-### Public Pages (`(public)`)
-- **Home** (`/`) - Home page with technology demonstration
-- **About** (`/about`) - About page with company information
-
-### Authentication Pages (`(auth)`)
-- **Sign In** (`/sign-in`) - Login page
-- **Sign Up** (`/sign-up`) - Registration page
-- **Forgot Password** (`/forgot-password`) - Password recovery page
-
-## 🗃️ Database Seeding
-
-This project includes a comprehensive database seeding system using Faker.js:
-
-- **Super Admin User**: Configurable via environment variables
-- **Fake Accounts**: Realistic company data
-- **Users & Products**: Generated with proper relationships
-- **Activity Logs**: Audit trail data
-
-### Quick Start with Seeding
 ```bash
-# Clear existing data
-npx convex run seed:clearAllData
-
-# Populate with fake data
-npx convex run seed:seedDatabase
+pnpm dev
 ```
 
-The super admin credentials are:
-- **Email**: Configured via `SUPER_ADMIN_EMAIL`
-- **Password**: Configured via `SUPER_ADMIN_PASSWORD`
+App runs at http://localhost:3000
 
-## 🚀 Next Steps
+## Scripts
 
-1. **Configure Convex properly** by running `npx convex dev`
-2. **Set up environment variables** using `.env.example` as template
-3. **Seed the database** with initial data using the seeding scripts
-4. **Implement authentication logic** in auth pages
-5. **Add more Shadcn/ui components** as needed
-6. **Configure an authentication provider** (Auth0, Clerk, etc.)
-7. **Add tests** with Jest and Testing Library
-8. **Set up CI/CD** for automatic deployment
+- dev: Start Next.js in dev mode
+- build: Build for production
+- start: Run production server
+- check: Biome check
+- fix: Biome check with write
+- format: Biome format write
+- type-check: TypeScript noEmit
+- test, test:watch, test:coverage: Vitest
+- db:drift, db:generate, db:migrate, db:studio: Drizzle Kit
+- supabase:types: Generate TS types from local Supabase
 
-## 📄 License
+See `package.json` for the full list.
 
-This project is under the MIT license.
+## Database & Auth
+
+- Postgres via Supabase
+- Drizzle ORM with typed schema under `src/infra/db/schemas`
+- Supabase SSR helpers for cookie/session handling in `src/libs/supabase`
+- Multi-tenancy: every domain table includes `account_id`
+- RBAC roles: SUPER_ADMIN, ADMIN, LAWYER
+
+References:
+- Database schema: `docs/database/schema.md`
+- RBAC architecture: `docs/RBAC_ARCHITECTURE.md`
+- Migration guide (Convex → Supabase + Drizzle): `docs/migration/convex-to-supabase-drizzle.md`
+
+## Contribution
+
+- Follow Conventional Commits. See `docs/COMMIT_CONVENTIONS.md`.
+- Lint/format before commits (Husky + Biome are configured).
+- Prefer the domain module structure under `src/modules/*`.
+
+## Roadmap & Docs
+
+- Central docs: `docs/README.md`
+- Product/domain: `docs/LEGAL_MANAGEMENT.md`
+- Roadmap: `docs/roadmap/roadmap.md`
+
+## License
+
+MIT — see repository license for details.
