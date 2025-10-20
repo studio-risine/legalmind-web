@@ -1,10 +1,9 @@
+import type { Client } from '@infra/db/schemas/clients'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-
-import type { Client } from '@/infra/db/schemas/clients'
 
 let returningMock: Client[] = []
 
-vi.mock('@/infra/db', () => {
+vi.mock('@infra/db', () => {
 	const chain = {
 		values: vi.fn().mockReturnThis(),
 		returning: vi.fn().mockImplementation(async () => returningMock),
@@ -15,8 +14,8 @@ vi.mock('@/infra/db', () => {
 	return { db }
 })
 
+import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { revalidatePath } from 'next/cache'
-import { getCurrentAccountId } from '@/modules/account/utils/get-current-account'
 import { insertClientAction } from '../insert-client-action'
 
 describe('insertClientAction', () => {

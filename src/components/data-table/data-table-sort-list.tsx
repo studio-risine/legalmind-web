@@ -1,11 +1,7 @@
 'use client'
 
-import type { ColumnSort, SortDirection, Table } from '@tanstack/react-table'
-import { ArrowDownUp, ChevronsUpDown, GripVertical, Trash2 } from 'lucide-react'
-import * as React from 'react'
-
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@components/ui/badge'
+import { Button } from '@components/ui/button'
 import {
 	Command,
 	CommandEmpty,
@@ -13,28 +9,27 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from '@/components/ui/command'
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/ui/popover'
+} from '@components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover'
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '@/components/ui/select'
+} from '@components/ui/select'
 import {
 	Sortable,
 	SortableContent,
 	SortableItem,
 	SortableItemHandle,
 	SortableOverlay,
-} from '@/components/ui/sortable'
-import { dataTableConfig } from '@/config/data-table'
-import { cn } from '@/libs/utils'
+} from '@components/ui/sortable'
+import { dataTableConfig } from '@config/data-table'
+import { cn } from '@libs/utils'
+import type { ColumnSort, SortDirection, Table } from '@tanstack/react-table'
+import { ArrowDownUp, ChevronsUpDown, GripVertical, Trash2 } from 'lucide-react'
+import * as React from 'react'
 
 const OPEN_MENU_SHORTCUT = 's'
 const REMOVE_SORT_SHORTCUTS = ['backspace', 'delete']

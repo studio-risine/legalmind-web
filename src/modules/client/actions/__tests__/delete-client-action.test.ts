@@ -1,9 +1,9 @@
+import type { Client } from '@infra/db/schemas/clients'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Client } from '@/infra/db/schemas/clients'
 
 let returningMock: Client[] = []
 
-vi.mock('@/infra/db', () => {
+vi.mock('@infra/db', () => {
 	const chain = {
 		where: vi.fn().mockReturnThis(),
 		returning: vi.fn().mockImplementation(async () => returningMock),

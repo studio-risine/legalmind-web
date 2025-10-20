@@ -1,17 +1,17 @@
 'use client'
 
-import type { UseQueryOptions } from '@tanstack/react-query'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
-import { useCallback, useMemo, useState } from 'react'
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
-import type { Client } from '@/infra/db/schemas/clients'
+import { useDebouncedCallback } from '@hooks/use-debounced-callback'
+import type { Client } from '@infra/db/schemas/clients'
 import {
 	getClientByIdAction,
 	getClientsAction,
 	searchClientsAction,
-} from '@/modules/client/actions'
-import type { SearchClientsOutput } from '@/modules/client/actions/search-clients-action'
-import type { ClientStatus } from '@/modules/client/types'
+} from '@modules/client/actions'
+import type { SearchClientsOutput } from '@modules/client/actions/search-clients-action'
+import type { ClientStatus } from '@modules/client/types'
+import type { UseQueryOptions } from '@tanstack/react-query'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useCallback, useMemo, useState } from 'react'
 
 // =====================
 // Query: by ID

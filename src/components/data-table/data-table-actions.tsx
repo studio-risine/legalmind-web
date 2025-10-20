@@ -1,13 +1,9 @@
 'use client'
+import { Separator } from '@components/ui/separator'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ui/tooltip'
 import type { Table } from '@tanstack/react-table'
 import * as React from 'react'
 import { useCallback, useState } from 'react'
-import { Separator } from '@/components/ui/separator'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from '@/components/ui/tooltip'
 import {
 	DataTableActionBarAction,
 	DataTableActionBarSelection,

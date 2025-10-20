@@ -1,6 +1,6 @@
+import { formatPhoneWithMask, unformatPhone } from '@utils/phone-mask'
 import Link from 'next/link'
 import { memo } from 'react'
-import { formatPhoneWithMask, unformatPhone } from '@/utils/phone-mask'
 import { TableCellText } from './table-cell-text'
 
 interface TableCellPhoneProps {

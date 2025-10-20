@@ -1,6 +1,6 @@
+import { Input } from '@components/ui/input'
+import { applyPhoneMask, unformatPhone } from '@utils/phone-mask'
 import { forwardRef } from 'react'
-import { Input } from '@/components/ui/input'
-import { applyPhoneMask, unformatPhone } from '@/utils/phone-mask'
 
 interface PhoneInputProps
 	extends Omit<

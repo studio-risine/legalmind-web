@@ -1,6 +1,6 @@
+import type { EntityType } from '@modules/dashboard/components/operation-context'
+import { useOperation } from '@modules/dashboard/hooks/use-operation'
 import { RiMoreFill } from '@remixicon/react'
-import type { EntityType } from '@/modules/dashboard/components/operation-context'
-import { useOperation } from '@/modules/dashboard/hooks/use-operation'
 import { Button } from '../ui/button'
 import {
 	DropdownMenu,

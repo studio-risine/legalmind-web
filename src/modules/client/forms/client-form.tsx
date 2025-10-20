@@ -1,11 +1,11 @@
 import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert'
 import { DocumentInput } from '@components/ui/document-input'
+import { Field, FieldError, FieldGroup } from '@components/ui/field'
 import { Form, FormControl, FormLabel } from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { PhoneInput } from '@components/ui/phone-input'
 import { useMemo } from 'react'
 import { Controller, type UseFormReturn } from 'react-hook-form'
-import { Field, FieldError, FieldGroup } from '@/components/ui/field'
 
 // Narrow, local form values type to avoid deep generic instantiation issues
 export type ClientFormValues = {

@@ -1,11 +1,11 @@
 'use server'
 
+import { db } from '@infra/db'
+import { type Client, clients } from '@infra/db/schemas/clients'
+import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { revalidatePath } from 'next/cache'
 import type { z } from 'zod'
-import { db } from '@/infra/db'
-import { type Client, clients } from '@/infra/db/schemas/clients'
-import { getCurrentAccountId } from '@/modules/account/utils/get-current-account'
 
 const clientInsertSchema = createInsertSchema(clients).pick({
 	name: true,

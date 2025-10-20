@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { useClientById } from '../use-client-queries'
 
-vi.mock('@/modules/client/actions', () => {
+vi.mock('@modules/client/actions', () => {
 	return {
 		searchClientsAction: vi.fn(),
 		getClientsAction: vi.fn(),
@@ -12,8 +12,8 @@ vi.mock('@/modules/client/actions', () => {
 	}
 })
 
+import { getClientByIdAction } from '@modules/client/actions'
 import type { ReactNode } from 'react'
-import { getClientByIdAction } from '@/modules/client/actions'
 
 function createWrapper() {
 	const queryClient = new QueryClient({

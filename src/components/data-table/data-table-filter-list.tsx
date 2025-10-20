@@ -1,21 +1,9 @@
 'use client'
 
-import type { Column, ColumnMeta, Table } from '@tanstack/react-table'
-import {
-	CalendarIcon,
-	Check,
-	ChevronsUpDown,
-	GripVertical,
-	ListFilter,
-	Trash2,
-} from 'lucide-react'
-import { parseAsStringEnum, useQueryState } from 'nuqs'
-import * as React from 'react'
-
-import { DataTableRangeFilter } from '@/components/data-table/data-table-range-filter'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+import { DataTableRangeFilter } from '@components/data-table/data-table-range-filter'
+import { Badge } from '@components/ui/badge'
+import { Button } from '@components/ui/button'
+import { Calendar } from '@components/ui/calendar'
 import {
 	Command,
 	CommandEmpty,
@@ -23,7 +11,7 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from '@/components/ui/command'
+} from '@components/ui/command'
 import {
 	Faceted,
 	FacetedBadgeList,
@@ -34,39 +22,46 @@ import {
 	FacetedItem,
 	FacetedList,
 	FacetedTrigger,
-} from '@/components/ui/faceted'
-import { Input } from '@/components/ui/input'
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/ui/popover'
+} from '@components/ui/faceted'
+import { Input } from '@components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover'
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from '@/components/ui/select'
+} from '@components/ui/select'
 import {
 	Sortable,
 	SortableContent,
 	SortableItem,
 	SortableItemHandle,
 	SortableOverlay,
-} from '@/components/ui/sortable'
-import { dataTableConfig } from '@/config/data-table'
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
-import { getDefaultFilterOperator, getFilterOperators } from '@/libs/data-table'
-import { generateId } from '@/libs/id'
-import { getFiltersStateParser } from '@/libs/parsers'
-import { cn } from '@/libs/utils'
+} from '@components/ui/sortable'
+import { dataTableConfig } from '@config/data-table'
+import { useDebouncedCallback } from '@hooks/use-debounced-callback'
+import { getDefaultFilterOperator, getFilterOperators } from '@libs/data-table'
+import { generateId } from '@libs/id'
+import { getFiltersStateParser } from '@libs/parsers'
+import { cn } from '@libs/utils'
+import type { Column, ColumnMeta, Table } from '@tanstack/react-table'
+import { formatDate } from '@utils/formatters/date'
+import {
+	CalendarIcon,
+	Check,
+	ChevronsUpDown,
+	GripVertical,
+	ListFilter,
+	Trash2,
+} from 'lucide-react'
+import { parseAsStringEnum, useQueryState } from 'nuqs'
+import * as React from 'react'
 import type {
 	ExtendedColumnFilter,
 	FilterOperator,
 	JoinOperator,
-} from '@/types/data-table'
-import { formatDate } from '@/utils/formatters/date'
+} from '../../types/data-table'
 
 const FILTERS_KEY = 'filters'
 const JOIN_OPERATOR_KEY = 'joinOperator'

@@ -2,9 +2,9 @@
 
 import { db } from '@infra/db'
 import { type Client, clients } from '@infra/db/schemas/clients'
+import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { and, asc, count, desc, eq, ilike, or } from 'drizzle-orm'
 import { z } from 'zod'
-import { getCurrentAccountId } from '@/modules/account/utils/get-current-account'
 
 const getClientsInput = z.object({
 	searchQuery: z.string().optional(),

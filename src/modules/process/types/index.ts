@@ -2,14 +2,17 @@
 // Export all process-related TypeScript types and interfaces
 
 // Main types
-export type {
-	Process,
-	ProcessArea,
-	ProcessFilters,
-	ProcessFormData,
-	ProcessParties,
-	ProcessPriority,
-	ProcessSearchResult,
-	ProcessStatus,
-	ProcessWithRelations,
-} from './process'
+// Commented out until process types are properly implemented
+// export {
+// 	Process,
+// 	ProcessArea,
+// 	ProcessFilters,
+// 	ProcessFormData,
+// 	ProcessParties,
+// 	ProcessPriority,
+// 	ProcessSearchResult,
+// 	ProcessStatus,
+// 	ProcessWithRelations,
+// } from './process'
+
+export type { ProcessPlaceholder } from './process'

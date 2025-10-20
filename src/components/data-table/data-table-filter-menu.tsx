@@ -1,6 +1,32 @@
 'use client'
 
+import { DataTableRangeFilter } from '@components/data-table/data-table-range-filter'
+import { Button } from '@components/ui/button'
+import { Calendar } from '@components/ui/calendar'
+import {
+	Command,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from '@components/ui/command'
+import { Input } from '@components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@components/ui/select'
+import { useDebouncedCallback } from '@hooks/use-debounced-callback'
+import { getDefaultFilterOperator, getFilterOperators } from '@libs/data-table'
+import { generateId } from '@libs/id'
+import { getFiltersStateParser } from '@libs/parsers'
+import { cn } from '@libs/utils'
 import type { Column, Table } from '@tanstack/react-table'
+import { formatDate } from '@utils/formatters/date'
 import {
 	BadgeCheck,
 	CalendarIcon,
@@ -11,38 +37,10 @@ import {
 } from 'lucide-react'
 import { useQueryState } from 'nuqs'
 import * as React from 'react'
-
-import { DataTableRangeFilter } from '@/components/data-table/data-table-range-filter'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import {
-	Command,
-	CommandEmpty,
-	CommandGroup,
-	CommandInput,
-	CommandItem,
-	CommandList,
-} from '@/components/ui/command'
-import { Input } from '@/components/ui/input'
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/ui/popover'
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select'
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
-import { getDefaultFilterOperator, getFilterOperators } from '@/libs/data-table'
-import { generateId } from '@/libs/id'
-import { getFiltersStateParser } from '@/libs/parsers'
-import { cn } from '@/libs/utils'
-import type { ExtendedColumnFilter, FilterOperator } from '@/types/data-table'
-import { formatDate } from '@/utils/formatters/date'
+import type {
+	ExtendedColumnFilter,
+	FilterOperator,
+} from '../../types/data-table'
 
 const FILTERS_KEY = 'filters'
 const DEBOUNCE_MS = 300

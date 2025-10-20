@@ -1,10 +1,10 @@
 'use server'
 
+import { db } from '@infra/db'
+import { type Client, clients } from '@infra/db/schemas/clients'
+import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { and, count, desc, eq, ilike, or } from 'drizzle-orm'
 import { z } from 'zod'
-import { db } from '@/infra/db'
-import { type Client, clients } from '@/infra/db/schemas/clients'
-import { getCurrentAccountId } from '@/modules/account/utils/get-current-account'
 
 const searchClientsInput = z.object({
 	q: z.string().optional(),

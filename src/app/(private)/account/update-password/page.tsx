@@ -1,4 +1,4 @@
-import { UpdatePasswordView } from '@/modules/account/components'
+import { UpdatePasswordView } from '@modules/account/components'
 
 export default function Page() {
 	return <UpdatePasswordView />

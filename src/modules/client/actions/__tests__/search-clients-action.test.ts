@@ -1,12 +1,10 @@
+import type { Client } from '@infra/db/schemas/clients'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-
-// Dynamic mocks for db chain behavior
-import type { Client } from '@/infra/db/schemas/clients'
 
 let rowsMock: Client[] = []
 let countTotalMock = 0
 
-vi.mock('@/infra/db', () => {
+vi.mock('@infra/db', () => {
 	const selectChain = {
 		from: vi.fn().mockReturnThis(),
 		where: vi.fn().mockReturnThis(),
@@ -31,7 +29,7 @@ vi.mock('@/infra/db', () => {
 	return { db }
 })
 
-import { getCurrentAccountId } from '@/modules/account/utils/get-current-account'
+import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { searchClientsAction } from '../search-clients-action'
 
 describe('searchClientsAction', () => {

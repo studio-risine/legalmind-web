@@ -1,10 +1,6 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback, useId, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
-import z from 'zod'
-import { Button } from '@/components/ui/button'
+import { Button } from '@components/ui/button'
 import {
 	Dialog,
 	DialogContent,
@@ -12,12 +8,16 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@/components/ui/dialog'
-import { email, phone } from '@/libs/zod/inputs'
-import { SubmitButton } from '@/modules/auth/components/submit-button'
+} from '@components/ui/dialog'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { email, phone } from '@libs/zod/inputs'
+import { SubmitButton } from '@modules/auth/components/submit-button'
 // Use server action input type to avoid requiring account_id on client
-import type { ClientInsertInput } from '@/modules/client/actions/insert-client-action'
-import { useOperation } from '@/modules/dashboard/hooks/use-operation'
+import type { ClientInsertInput } from '@modules/client/actions/insert-client-action'
+import { useOperation } from '@modules/dashboard/hooks/use-operation'
+import { useCallback, useId, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
+import z from 'zod'
 import { ClientForm, type ClientFormValues } from '../forms/client-form'
 import { useClientMutation } from '../hooks/use-client-mutations'
 

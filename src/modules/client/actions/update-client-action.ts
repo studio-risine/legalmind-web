@@ -1,10 +1,10 @@
 'use server'
 
+import { db } from '@infra/db'
+import { type Client, clients } from '@infra/db/schemas/clients'
 import { eq } from 'drizzle-orm'
 import { createSelectSchema, createUpdateSchema } from 'drizzle-zod'
 import { z } from 'zod'
-import { db } from '@/infra/db'
-import { type Client, clients } from '@/infra/db/schemas/clients'
 
 const clientUpdateDataSchema = createUpdateSchema(clients).pick({
 	name: true,

@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { useClientPagination } from '../use-client-queries'
 
 // Mock actions aggregator used by hooks
-vi.mock('@/modules/client/actions', () => {
+vi.mock('@modules/client/actions', () => {
 	return {
 		searchClientsAction: vi.fn(),
 		getClientsAction: vi.fn(),
@@ -14,7 +14,7 @@ vi.mock('@/modules/client/actions', () => {
 	}
 })
 
-import { getClientsAction } from '@/modules/client/actions'
+import { getClientsAction } from '@modules/client/actions'
 
 function createWrapper() {
 	const queryClient = new QueryClient({

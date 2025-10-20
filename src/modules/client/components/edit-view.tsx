@@ -1,6 +1,6 @@
 // 'use client'
 
-// import { Button } from '@/components/ui/button'
+// import { Button } from '@components/ui/button'
 // import {
 // 	Drawer,
 // 	DrawerClose,
@@ -10,8 +10,8 @@
 // 	DrawerHeader,
 // 	DrawerTitle,
 // 	DrawerTrigger,
-// } from '@/components/ui/drawer'
-// import { useIsMobile } from '@/hooks/use-mobile'
+// } from '@components/ui/drawer'
+// import { useIsMobile } from '@hooks/use-mobile'
 // import { EditCustomerForm } from '../forms'
 // import type { Customer } from '../types'
 

@@ -1,11 +1,6 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useCallback, useMemo, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
-import z from 'zod'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert'
 import {
 	Form,
 	FormControl,
@@ -13,8 +8,13 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@components/ui/form'
+import { Input } from '@components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useCallback, useMemo, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import z from 'zod'
 import { signUpWithEmail } from '../actions'
 import { SubmitButton } from '../components/submit-button'
 

@@ -7,26 +7,26 @@ import { DataTableColumnHeader } from '@components/data-table/data-table-column-
 import { DataTableToolbar } from '@components/data-table/data-table-toolbar'
 import { TableCellEmail } from '@components/table/table-cell-email'
 import { TableCellPhone } from '@components/table/table-cell-phone'
-import { RiExpandDiagonalLine, RiMoreFill } from '@remixicon/react'
-import type { Column, ColumnDef } from '@tanstack/react-table'
-import { parseAsInteger, useQueryState } from 'nuqs'
-import { useMemo } from 'react'
 import {
 	TableCellText,
 	TableCellTextEmpty,
-} from '@/components/table/table-cell-text'
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
+} from '@components/table/table-cell-text'
+import { Button } from '@components/ui/button'
+import { Checkbox } from '@components/ui/checkbox'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { useDataTable } from '@/hooks/use-data-table'
-import type { Client } from '@/infra/db/schemas/clients'
-import { useOperation } from '@/modules/dashboard/hooks/use-operation'
-import { formatDocumentWithMask } from '@/utils/document-mask'
+} from '@components/ui/dropdown-menu'
+import { useDataTable } from '@hooks/use-data-table'
+import type { Client } from '@infra/db/schemas/clients'
+import { useOperation } from '@modules/dashboard/hooks/use-operation'
+import { RiExpandDiagonalLine, RiMoreFill } from '@remixicon/react'
+import type { Column, ColumnDef } from '@tanstack/react-table'
+import { formatDocumentWithMask } from '@utils/document-mask'
+import { parseAsInteger, useQueryState } from 'nuqs'
+import { useMemo } from 'react'
 
 interface DataTableClientsProps {
 	data: Client[]

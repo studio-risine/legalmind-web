@@ -2,7 +2,7 @@ import type {
 	Tables,
 	TablesInsert,
 	TablesUpdate,
-} from '@/libs/supabase/database'
+} from '@libs/supabase/database'
 
 export type Client = Tables<'clients'>
 export type ClientInsert = TablesInsert<'clients'>

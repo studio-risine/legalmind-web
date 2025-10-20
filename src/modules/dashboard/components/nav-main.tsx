@@ -1,14 +1,10 @@
 'use client'
 
-import { ChevronDown, ChevronUp } from 'lucide-react'
-import Link from 'next/link'
-import type { ReactNode } from 'react'
-import { useState } from 'react'
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+} from '@components/ui/collapsible'
 import {
 	SidebarMenu,
 	SidebarMenuButton,
@@ -17,8 +13,12 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuItem as SidebarMenuSubItem,
 	useSidebar,
-} from '@/components/ui/sidebar'
-import { cn } from '@/libs/utils'
+} from '@components/ui/sidebar'
+import { cn } from '@libs/utils'
+import { ChevronDown, ChevronUp } from 'lucide-react'
+import Link from 'next/link'
+import type { ReactNode } from 'react'
+import { useState } from 'react'
 
 export type Route = {
 	id: string
