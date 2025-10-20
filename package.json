@@ -26,7 +26,7 @@
 		"src/**/*.{ts,tsx,js,jsx}": [
 			"biome check --write"
 		],
-		"src/**/*.{json,md}": [
+		"src/**/*.{json}": [
 			"biome format --write"
 		]
 	},
