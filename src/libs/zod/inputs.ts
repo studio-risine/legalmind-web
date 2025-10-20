@@ -1,5 +1,5 @@
+import { isValidDocument } from '@utils/document-mask'
 import { z } from 'zod'
-import { isValidDocument } from '@/utils/document-mask'
 
 const email = z.email('Digite um email válido').optional().or(z.literal(''))
 

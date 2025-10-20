@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
 	Dialog,
 	DialogClose,
@@ -9,8 +8,9 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-} from '@/components/ui/dialog'
-// import { CreateClientDialog } from '@/modules/client/components'
+} from '@components/ui/dialog'
+import { useState } from 'react'
+// import { CreateClientDialog } from '@modules/client/components'
 import { useOperation } from '../hooks/use-operation'
 
 // const handler: Record<

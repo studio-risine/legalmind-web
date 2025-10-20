@@ -1,5 +1,7 @@
 'use client'
 
+import { useDebouncedCallback } from '@hooks/use-debounced-callback'
+import { getSortingStateParser } from '@libs/parsers'
 import {
 	type ColumnFiltersState,
 	getCoreRowModel,
@@ -18,6 +20,7 @@ import {
 	useReactTable,
 	type VisibilityState,
 } from '@tanstack/react-table'
+import type { ExtendedColumnSort } from '@typings/data-table'
 import {
 	type Parser,
 	parseAsArrayOf,
@@ -28,10 +31,6 @@ import {
 	useQueryStates,
 } from 'nuqs'
 import * as React from 'react'
-
-import { useDebouncedCallback } from '@/hooks/use-debounced-callback'
-import { getSortingStateParser } from '@/libs/parsers'
-import type { ExtendedColumnSort } from '@/types/data-table'
 
 const PAGE_KEY = 'page'
 const PER_PAGE_KEY = 'perPage'

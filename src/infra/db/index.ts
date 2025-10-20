@@ -1,6 +1,6 @@
+import { env } from '@env'
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
-import { env } from '@/env'
 import { schema } from './schemas'
 
 // Disable prepared statements to be compatible with Supabase Pooler (transaction mode)

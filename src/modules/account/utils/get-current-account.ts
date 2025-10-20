@@ -1,7 +1,7 @@
 'use server'
 
-import { db } from '@/infra/db'
-import { accounts } from '@/infra/db/schemas/accounts'
+import { db } from '@infra/db'
+import { accounts } from '@infra/db/schemas/accounts'
 
 /**
  * TEMPORARY: Resolve the current account id.

@@ -217,7 +217,7 @@ This module includes tests for both actions and hooks.
 
 Patterns (summary):
 - Actions: Drizzle mocks and validation of happy/empty/error paths.
-- Hooks: use `QueryClientProvider` and mock `@/modules/client/actions` to control responses.
+- Hooks: use `QueryClientProvider` and mock `@modules/client/actions` to control responses.
 - Debounce: `vi.useFakeTimers()` and time advancements.
 - Pagination: validate page transitions and parameters passed to `getClientsAction`.
 

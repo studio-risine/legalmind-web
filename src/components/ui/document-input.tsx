@@ -1,6 +1,6 @@
+import { Input } from '@components/ui/input'
+import { applyDocumentMask, unformatDocument } from '@utils/document-mask'
 import { forwardRef } from 'react'
-import { Input } from '@/components/ui/input'
-import { applyDocumentMask, unformatDocument } from '@/utils/document-mask'
 
 interface DocumentInputProps
 	extends Omit<

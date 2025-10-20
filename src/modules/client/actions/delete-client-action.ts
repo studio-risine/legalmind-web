@@ -1,9 +1,9 @@
 'use server'
 
+import { db } from '@infra/db'
+import { clients } from '@infra/db/schemas/clients'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
-import { db } from '@/infra/db'
-import { clients } from '@/infra/db/schemas/clients'
 
 const deleteClientInput = z.object({ id: z.string().min(1) })
 

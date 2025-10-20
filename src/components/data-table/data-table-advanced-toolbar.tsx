@@ -1,10 +1,9 @@
 'use client'
 
+import { DataTableViewOptions } from '@components/data-table/data-table-view-options'
+import { cn } from '@libs/utils'
 import type { Table } from '@tanstack/react-table'
 import type * as React from 'react'
-
-import { DataTableViewOptions } from '@/components/data-table/data-table-view-options'
-import { cn } from '@/libs/utils'
 
 interface DataTableAdvancedToolbarProps<TData>
 	extends React.ComponentProps<'div'> {

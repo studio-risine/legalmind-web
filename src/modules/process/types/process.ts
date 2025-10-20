@@ -1,7 +1,7 @@
 // Process Types and Interfaces
 // This file defines all TypeScript types related to legal processes
 
-import type { Database } from '@/types/database'
+import type { Database } from '@typings/database'
 
 // Base process type from database
 export type Process = Database['public']['Tables']['processes']['Row']

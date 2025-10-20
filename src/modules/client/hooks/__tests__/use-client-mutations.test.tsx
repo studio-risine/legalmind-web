@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { useClientMutation } from '../use-client-mutations'
 
-vi.mock('@/modules/client/actions', () => {
+vi.mock('@modules/client/actions', () => {
 	return {
 		insertClientAction: vi.fn(),
 		updateClientAction: vi.fn(),
@@ -14,8 +14,8 @@ vi.mock('@/modules/client/actions', () => {
 	}
 })
 
+import { insertClientAction } from '@modules/client/actions'
 import { toast } from 'sonner'
-import { insertClientAction } from '@/modules/client/actions'
 
 function createWrapperAndClient() {
 	const queryClient = new QueryClient({

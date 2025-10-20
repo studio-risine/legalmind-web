@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { PageHeaderWithBreadcrumb } from '@/modules/dashboard/components/page-header-breadcrumb'
+import { Button } from '@components/ui/button'
+import { PageHeaderWithBreadcrumb } from '@modules/dashboard/components/page-header-breadcrumb'
 
 const breadcrumb = [
 	{ label: 'Home', href: '/dashboard' },

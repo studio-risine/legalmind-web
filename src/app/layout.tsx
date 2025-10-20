@@ -1,11 +1,11 @@
-import { ThemeScript } from '@/components/ui/theme-script'
-import { fontFamily } from '@/config/font-family'
+import { ThemeScript } from '@components/ui/theme-script'
+import { fontFamily } from '@config/font-family'
 import './globals.css'
 
+import { Providers } from '@components/providers'
+import { Toaster } from '@components/ui/sonner'
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
-import { Providers } from '@/components/providers'
-import { Toaster } from '@/components/ui/sonner'
 
 export const metadata: Metadata = {
 	title: 'legaltrack',

@@ -1,4 +1,4 @@
-// import { Badge } from '@/components/ui/badge'
+// import { Badge } from '@components/ui/badge'
 
 // type ClientStatusProps = {
 // 	status: CustomerStatus | null

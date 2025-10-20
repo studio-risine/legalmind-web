@@ -1,10 +1,6 @@
 'use client'
 
-import { Check, ChevronsUpDown } from 'lucide-react'
-import type { ReactNode } from 'react'
-import * as React from 'react'
-
-import { Badge } from '@/components/ui/badge'
+import { Badge } from '@components/ui/badge'
 import {
 	Command,
 	CommandEmpty,
@@ -13,13 +9,12 @@ import {
 	CommandItem,
 	CommandList,
 	CommandSeparator,
-} from '@/components/ui/command'
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from '@/components/ui/popover'
-import { cn } from '@/libs/utils'
+} from '@components/ui/command'
+import { Popover, PopoverContent, PopoverTrigger } from '@components/ui/popover'
+import { cn } from '@libs/utils'
+import { Check, ChevronsUpDown } from 'lucide-react'
+import type { ReactNode } from 'react'
+import * as React from 'react'
 
 type FacetedValue<Multiple extends boolean> = Multiple extends true
 	? string[]

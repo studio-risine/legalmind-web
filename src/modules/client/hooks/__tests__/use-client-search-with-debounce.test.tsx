@@ -1,11 +1,11 @@
+import type { SearchClientsOutput } from '@modules/client/actions/search-clients-action'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act, renderHook, waitFor } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { SearchClientsOutput } from '@/modules/client/actions/search-clients-action'
 import { useClientSearchWithDebounce } from '../use-client-queries'
 
-vi.mock('@/modules/client/actions', () => {
+vi.mock('@modules/client/actions', () => {
 	return {
 		searchClientsAction: vi.fn(),
 		getClientsAction: vi.fn(),
@@ -13,7 +13,7 @@ vi.mock('@/modules/client/actions', () => {
 	}
 })
 
-import { searchClientsAction } from '@/modules/client/actions'
+import { searchClientsAction } from '@modules/client/actions'
 
 function createWrapper() {
 	const queryClient = new QueryClient({

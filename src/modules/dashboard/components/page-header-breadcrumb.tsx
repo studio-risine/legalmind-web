@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react'
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -6,7 +5,8 @@ import {
 	BreadcrumbList,
 	BreadcrumbPage,
 	BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
+} from '@components/ui/breadcrumb'
+import type { ReactNode } from 'react'
 
 interface PageHeaderBreadcrumbProps {
 	breadcrumb: {

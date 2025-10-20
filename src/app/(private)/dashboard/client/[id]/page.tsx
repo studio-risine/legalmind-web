@@ -1,4 +1,4 @@
-import { PageHeaderWithBreadcrumb } from '@/modules/dashboard/components/page-header-breadcrumb'
+import { PageHeaderWithBreadcrumb } from '@modules/dashboard/components/page-header-breadcrumb'
 
 const breadcrumb = [
 	{ label: 'Home', href: '/dashboard' },

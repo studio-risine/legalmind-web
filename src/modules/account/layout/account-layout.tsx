@@ -1,5 +1,5 @@
+import AuthGuard from '@modules/auth/components/auth-guard'
 import type { ReactNode } from 'react'
-import AuthGuard from '@/modules/auth/components/auth-guard'
 import { BackgroundImageDisplay } from '../components'
 
 export default function AccountLayout({ children }: { children: ReactNode }) {

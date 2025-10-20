@@ -1,12 +1,7 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { RiErrorWarningFill } from '@remixicon/react'
-import { useCallback, useMemo, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Anchor } from '@/components/ui/anchor'
+import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert'
+import { Anchor } from '@components/ui/anchor'
 import {
 	Form,
 	FormControl,
@@ -14,8 +9,13 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@components/ui/form'
+import { Input } from '@components/ui/input'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { RiErrorWarningFill } from '@remixicon/react'
+import { useCallback, useMemo, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { signInWithPassword } from '../actions'
 import { SubmitButton } from '../components/submit-button'
 

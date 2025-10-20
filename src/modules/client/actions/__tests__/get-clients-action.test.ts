@@ -1,5 +1,5 @@
+import type { Client } from '@infra/db/schemas/clients'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Client } from '@/infra/db/schemas/clients'
 
 let rowsMock: Client[] = []
 let countTotalMock = 0
@@ -28,7 +28,11 @@ vi.mock('@infra/db', () => {
 	return { db }
 })
 
-import { getCurrentAccountId } from '@/modules/account/utils/get-current-account'
+vi.mock('@modules/account/utils/get-current-account', () => ({
+	getCurrentAccountId: vi.fn(),
+}))
+
+import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { getClientsAction } from '../get-clients-action'
 
 describe('getClientsAction', () => {

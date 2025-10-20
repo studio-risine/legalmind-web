@@ -1,5 +1,14 @@
 'use client'
 
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarFooter,
+	SidebarHeader,
+	SidebarTrigger,
+	useSidebar,
+} from '@components/ui/sidebar'
+import { cn } from '@libs/utils'
 import { RiCheckboxBlankCircleFill, RiHome9Fill } from '@remixicon/react'
 import { motion } from 'framer-motion'
 import {
@@ -17,16 +26,6 @@ import {
 	Users,
 } from 'lucide-react'
 import Link from 'next/link'
-
-import {
-	Sidebar,
-	SidebarContent,
-	SidebarFooter,
-	SidebarHeader,
-	SidebarTrigger,
-	useSidebar,
-} from '@/components/ui/sidebar'
-import { cn } from '@/libs/utils'
 import DashboardNavigation, { type Route } from './nav-main'
 import { NotificationsPopover } from './nav-notifications'
 import { TeamSwitcher } from './team-switcher'

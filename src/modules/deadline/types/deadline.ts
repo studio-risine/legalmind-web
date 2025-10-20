@@ -1,7 +1,7 @@
 // Deadline Types and Interfaces
 // This file defines all TypeScript types related to deadlines
 
-//import type { Database, Tables, TablesInsert, TablesUpdate } from '@/types/database'
+//import type { Database, Tables, TablesInsert, TablesUpdate } from '@typings/database'
 
 // Base deadline type from database
 //export type Deadline = Tables('deadlines')
