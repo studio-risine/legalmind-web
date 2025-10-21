@@ -1,4 +1,4 @@
-# LegalTrack Documentation (Centralized)
+# Legal Mind Documentation (Centralized)
 
 This repository consolidates project knowledge from the previous `/docs` and `/plan` directories into a single, organized location. All documentation is now written in English and aligned with the current technology stack: Next.js + Supabase + Drizzle ORM + shadcn/ui.
 
