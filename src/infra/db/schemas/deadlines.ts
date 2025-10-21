@@ -6,14 +6,16 @@ import {
 	uuid,
 	varchar,
 } from 'drizzle-orm/pg-core'
-
+import { uuidv7 } from 'uuidv7'
 import { timestamps } from '../helpers'
 import { accounts } from './accounts'
 import { clients } from './clients'
 import { processes } from './processes'
 
 export const deadlines = pgTable('deadlines', {
-	id: uuid('id').primaryKey(),
+	id: text('id')
+		.primaryKey()
+		.$defaultFn(() => uuidv7()),
 	account_id: integer('account_id')
 		.notNull()
 		.references(() => accounts.id),
