@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { integer, pgTable, primaryKey, text, uuid } from 'drizzle-orm/pg-core'
+import { pgTable, primaryKey, text, uuid } from 'drizzle-orm/pg-core'
 import { timestamps } from '../helpers'
 import { accounts } from './accounts'
 
@@ -19,7 +19,7 @@ export const spacesToAccounts = pgTable(
 		spaceId: uuid('space_id')
 			.notNull()
 			.references(() => spaces.id),
-		accountId: integer('account_id')
+		accountId: text('account_id')
 			.notNull()
 			.references(() => accounts.id),
 	},

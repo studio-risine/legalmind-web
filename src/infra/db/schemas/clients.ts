@@ -1,4 +1,4 @@
-import { integer, pgTable, text, varchar } from 'drizzle-orm/pg-core'
+import { pgTable, text, varchar } from 'drizzle-orm/pg-core'
 import {
 	createInsertSchema,
 	createSelectSchema,
@@ -8,16 +8,17 @@ import { uuidv7 } from 'uuidv7'
 import type { z } from 'zod'
 import { timestamps } from '../helpers'
 import { accounts } from './accounts'
+import { clientStatusEnum, clientTypeEnum } from './enums'
 
 export const clients = pgTable('clients', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => uuidv7()),
-	account_id: integer('account_id')
+	account_id: text('account_id')
 		.notNull()
 		.references(() => accounts.id),
-	type: varchar('type', { length: 16 }).notNull().default('INDIVIDUAL'),
-	status: varchar('status', { length: 16 }).notNull().default('ACTIVE'),
+	type: clientTypeEnum('type').notNull().default('INDIVIDUAL'),
+	status: clientStatusEnum('status').notNull().default('ACTIVE'),
 	name: text('name').notNull(),
 	email: varchar('email', { length: 256 }),
 	phone: varchar('phone', { length: 256 }),

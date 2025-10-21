@@ -1,27 +1,20 @@
-import {
-	integer,
-	jsonb,
-	pgTable,
-	text,
-	timestamp,
-	uuid,
-	varchar,
-} from 'drizzle-orm/pg-core'
+import { jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { accounts } from './accounts'
 import { deadlines } from './deadlines'
+import { notificationChannelEnum, notificationStatusEnum } from './enums'
 
 export const notifications = pgTable('notifications', {
 	id: uuid('id').primaryKey(),
-	account_id: integer('account_id')
+	account_id: text('account_id')
 		.notNull()
 		.references(() => accounts.id),
-	user_id: text('user_id'), // optional until users table is defined
-	deadline_id: uuid('deadline_id').references(() => deadlines.id),
-	channel: varchar('channel', { length: 16 }).notNull(), // EMAIL | SYSTEM | PUSH
+	user_id: text('user_id'),
+	deadline_id: text('deadline_id').references(() => deadlines.id),
+	channel: notificationChannelEnum('channel').notNull(),
 	payload: jsonb('payload'),
 	scheduled_at: timestamp('scheduled_at'),
 	sent_at: timestamp('sent_at'),
-	status: varchar('status', { length: 16 }).notNull().default('PENDING'),
+	status: notificationStatusEnum('status').notNull().default('PENDING'),
 	error_message: text('error_message'),
 	created_at: timestamp('created_at').defaultNow().notNull(),
 })

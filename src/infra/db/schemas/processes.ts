@@ -1,17 +1,11 @@
-import {
-	integer,
-	jsonb,
-	pgTable,
-	text,
-	timestamp,
-	varchar,
-} from 'drizzle-orm/pg-core'
+import { jsonb, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { uuidv7 } from 'uuidv7'
 import type { z } from 'zod'
 import { timestamps } from '../helpers'
 import { accounts } from './accounts'
 import { clients } from './clients'
+import { processStatusEnum } from './enums'
 
 /**
  * The 'id' column uses 'text' type instead of native UUID type to support UUIDv7 generation.
@@ -25,14 +19,14 @@ export const processes = pgTable('processes', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => uuidv7()),
-	account_id: integer('account_id')
+	account_id: text('account_id')
 		.notNull()
 		.references(() => accounts.id),
 	client_id: text('client_id').references(() => clients.id),
 	cnj: varchar('cnj', { length: 32 }),
 	court: varchar('court', { length: 120 }),
 	title: varchar('title', { length: 160 }),
-	status: varchar('status', { length: 32 }).notNull().default('ACTIVE'),
+	status: processStatusEnum('status').notNull().default('ACTIVE'),
 	tags: jsonb('tags'),
 	archived_at: timestamp('archived_at'),
 	...timestamps,
