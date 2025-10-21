@@ -71,7 +71,7 @@ export async function getProcessesAction(
 			.offset((page - 1) * perPage)
 
 		const [{ total }] = await db
-			.select({ total: count(processes.id) })
+			.select({ total: count() })
 			.from(processes)
 			.where(whereClause)
 
