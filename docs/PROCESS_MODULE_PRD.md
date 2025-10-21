@@ -299,7 +299,7 @@ The Process Module encompasses:
 ```typescript
 export const ProcessArea = {
   CIVIL: "civil",
-  LABOR: "labor", 
+  LABOR: "labor",
   CRIMINAL: "criminal",
   FAMILY: "family",
   TAX: "tax",
@@ -313,7 +313,7 @@ export const ProcessArea = {
 ```typescript
 export const ProcessStatus = {
   ONGOING: "ongoing",
-  SUSPENDED: "suspended", 
+  SUSPENDED: "suspended",
   ARCHIVED: "archived",
   CLOSED: "closed"
 } as const;
@@ -428,13 +428,259 @@ interface ProcessParties {
 
 ---
 
-## 8. Appendices
+## 8. Unit Testing Plan
 
-### 8.1 Wireframes
+### 8.1 Testing Strategy
+
+The Process Module follows a comprehensive testing strategy using **Vitest** for unit tests and an **In-Memory Repository** pattern for isolated testing. This approach ensures:
+
+- **Fast execution**: Tests run without database dependencies
+- **Isolation**: Each test is independent and doesn't affect others
+- **Maintainability**: Clear separation between business logic and infrastructure
+- **Reliability**: Predictable results without external dependencies
+
+### 8.2 Test Structure
+
+#### 8.2.1 Test Organization
+```
+src/modules/process/actions/
+├── __tests__/
+│   ├── insert-process-action.test.ts
+│   ├── update-process-action.test.ts
+│   ├── delete-process-action.test.ts
+│   ├── get-process-by-id-action.test.ts
+│   ├── get-processes-action.test.ts
+│   └── search-processes-action.test.ts
+├── insert-process-action.ts
+├── update-process-action.ts
+├── delete-process-action.ts
+├── get-process-by-id-action.ts
+├── get-processes-action.ts
+├── search-processes-action.ts
+└── index.ts
+```
+
+#### 8.2.2 In-Memory Repository
+Located at `tests/repositories/in-memory-process-repository.ts`, provides:
+
+```typescript
+export class InMemoryProcessRepository {
+  public items: Process[] = []
+
+  async create(data: ProcessInsert): Promise<Process>
+  async update(id: string, data: Partial<ProcessInsert>): Promise<Process | null>
+  async delete(id: string): Promise<boolean>
+  async findById(id: string): Promise<Process | null>
+  async findAll(filters?: ProcessFilters): Promise<Process[]>
+  async search(query: string): Promise<Process[]>
+  async count(filters?: ProcessFilters): Promise<number>
+  clear(): void
+}
+```
+
+### 8.3 Test Coverage
+
+#### 8.3.1 Insert Process Action (`insertProcessAction`)
+
+**Positive Scenarios:**
+- ✓ Should create a new process with valid input
+- ✓ Should associate process with current account
+- ✓ Should revalidate dashboard path after creation
+- ✓ Should handle optional fields (tags, client_id)
+
+**Negative Scenarios:**
+- ✓ Should return error if input validation fails
+- ✓ Should return error if no account context
+- ✓ Should return error if database insert fails
+- ✓ Should validate required fields (title, cnj, court)
+
+**Edge Cases:**
+- Empty or null values for optional fields
+- Special characters in text fields
+- Very long strings
+
+#### 8.3.2 Update Process Action (`updateProcessAction`)
+
+**Positive Scenarios:**
+- ✓ Should update process with valid input
+- ✓ Should only update provided fields
+- ✓ Should update timestamp automatically
+- ✓ Should respect account isolation
+
+**Negative Scenarios:**
+- ✓ Should return error if process not found
+- ✓ Should return error if no account context
+- ✓ Should return error if access denied (different account)
+- ✓ Should return error if input validation fails
+
+**Edge Cases:**
+- Updating with same values
+- Partial updates
+- Concurrent update scenarios
+
+#### 8.3.3 Delete Process Action (`deleteProcessAction`)
+
+**Positive Scenarios:**
+- ✓ Should perform soft delete (set deleted_at timestamp)
+- ✓ Should revalidate dashboard path
+- ✓ Should respect account isolation
+
+**Negative Scenarios:**
+- ✓ Should return error if process not found
+- ✓ Should return error if no account context
+- ✓ Should return error if access denied
+- ✓ Should not hard delete from database
+
+**Edge Cases:**
+- Deleting already deleted process
+- Deleting process with related deadlines
+
+#### 8.3.4 Get Process By ID Action (`getProcessByIdAction`)
+
+**Positive Scenarios:**
+- ✓ Should return process by valid ID
+- ✓ Should respect account isolation
+- ✓ Should exclude soft-deleted processes
+
+**Negative Scenarios:**
+- ✓ Should return null if process not found
+- ✓ Should return null if no account context
+- ✓ Should return null for deleted processes
+- ✓ Should return null for processes from other accounts
+
+**Edge Cases:**
+- Invalid ID format
+- Non-existent ID
+
+#### 8.3.5 Get Processes Action (`getProcessesAction`)
+
+**Positive Scenarios:**
+- ✓ Should return paginated list of processes
+- ✓ Should filter by status
+- ✓ Should search by query (title, cnj, court)
+- ✓ Should sort by different fields
+- ✓ Should respect account isolation
+
+**Negative Scenarios:**
+- ✓ Should return error if no account context
+- ✓ Should return empty array if no results
+- ✓ Should handle invalid pagination parameters
+
+**Edge Cases:**
+- Large page numbers
+- Very small page sizes
+- Sorting with null values
+
+#### 8.3.6 Search Processes Action (`searchProcessesAction`)
+
+**Positive Scenarios:**
+- ✓ Should search processes by query string
+- ✓ Should filter by status
+- ✓ Should calculate hasMore correctly
+- ✓ Should return total count
+- ✓ Should paginate results
+
+**Negative Scenarios:**
+- ✓ Should return empty array if no account context
+- ✓ Should handle empty search query
+- ✓ Should handle no results found
+
+**Edge Cases:**
+- Special characters in search query
+- Very long search queries
+- Multiple filters combined
+
+### 8.4 Mocking Strategy
+
+#### 8.4.1 Database Mocking
+```typescript
+vi.mock('@infra/db', () => ({
+  db: {
+    insert: vi.fn(),
+    update: vi.fn(),
+    select: vi.fn(),
+    delete: vi.fn(),
+  },
+}))
+```
+
+#### 8.4.2 Account Context Mocking
+```typescript
+vi.mock('@modules/account/utils/get-current-account', () => ({
+  getCurrentAccountId: vi.fn().mockResolvedValue(1),
+}))
+```
+
+#### 8.4.3 Next.js Cache Mocking
+```typescript
+vi.mock('next/cache', () => ({
+  revalidatePath: vi.fn(),
+}))
+```
+
+### 8.5 Running Tests
+
+```bash
+# Run all tests
+pnpm test
+
+# Run process module tests only
+pnpm test src/modules/process
+
+# Run with coverage
+pnpm test --coverage
+
+# Run in watch mode
+pnpm test --watch
+```
+
+### 8.6 Coverage Goals
+
+- **Line Coverage**: > 80%
+- **Branch Coverage**: > 75%
+- **Function Coverage**: > 90%
+- **Statement Coverage**: > 80%
+
+### 8.7 Integration Tests (Future)
+
+While unit tests use mocked dependencies, integration tests will:
+- Use a test database instance
+- Test actual database operations
+- Validate Drizzle ORM queries
+- Test transaction rollbacks
+- Verify data integrity constraints
+
+**Location**: `src/modules/process/__integration__/`
+
+### 8.8 Best Practices
+
+1. **Arrange-Act-Assert Pattern**: Each test follows clear structure
+2. **Descriptive Test Names**: Use "should..." pattern for clarity
+3. **Independent Tests**: No shared state between tests
+4. **Mock Reset**: Clear all mocks in `beforeEach`
+5. **Type Safety**: Use proper TypeScript types in tests
+6. **Edge Cases**: Test boundary conditions and error paths
+7. **Documentation**: Comment complex test scenarios
+
+### 8.9 Continuous Integration
+
+Tests run automatically on:
+- Every pull request
+- Before merge to main branch
+- Pre-commit hooks (optional)
+- Scheduled nightly builds
+
+**CI Configuration**: `.github/workflows/test.yml`
+
+---
+
+## 9. Appendices
+
+### 9.1 Wireframes
 [To be added]
 
-### 8.2 API Documentation
+### 9.2 API Documentation
 [To be generated from implementation]
 
-### 8.3 Database Schema Diagram
+### 9.3 Database Schema Diagram
 [To be created]
