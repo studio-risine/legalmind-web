@@ -4,15 +4,19 @@ import {
 	pgTable,
 	text,
 	timestamp,
-	uuid,
 	varchar,
 } from 'drizzle-orm/pg-core'
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
+import { uuidv7 } from 'uuidv7'
+import type { z } from 'zod'
 import { timestamps } from '../helpers'
 import { accounts } from './accounts'
 import { clients } from './clients'
 
 export const processes = pgTable('processes', {
-	id: uuid('id').primaryKey(),
+	id: text('id')
+		.primaryKey()
+		.$defaultFn(() => uuidv7()),
 	account_id: integer('account_id')
 		.notNull()
 		.references(() => accounts.id),
@@ -25,3 +29,9 @@ export const processes = pgTable('processes', {
 	archived_at: timestamp('archived_at'),
 	...timestamps,
 })
+
+const processSelectSchema = createSelectSchema(processes)
+export type Process = z.output<typeof processSelectSchema>
+
+export const processInsertSchema = createInsertSchema(processes)
+export type ProcessInsert = z.input<typeof processInsertSchema>
