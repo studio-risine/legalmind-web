@@ -1,6 +1,6 @@
 # Centralized Database Schema (Drizzle + Supabase)
 
-This document defines the canonical schema for LegalTrack using Drizzle ORM on Supabase (Postgres). It replaces any previous, non-domain-specific diagrams and ensures alignment with our terminology: clients, processes, deadlines, notifications, RBAC, and multi-tenancy.
+This document defines the canonical schema for LegalMind using Drizzle ORM on Supabase (Postgres). It replaces any previous, non-domain-specific diagrams and ensures alignment with our terminology: clients, processes, deadlines, notifications, RBAC, and multi-tenancy.
 
 ## Principles
 - Multi-tenancy by `account_id` (and optional `space_id` if needed)

@@ -6,6 +6,6 @@ services:
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=legaltrack
+      - POSTGRES_DB=legalmind
     volumes:
       - './docker:/docker-entrypoint-initdb.d'

@@ -1,6 +1,6 @@
 <div align="center">
 
-# LegalTrack
+# Legal Mind
 
 Modern legal process and deadline management for law firms and solo practitioners.
 
@@ -16,7 +16,7 @@ Modern legal process and deadline management for law firms and solo practitioner
 
 ## Overview
 
-LegalTrack helps you organize clients, processes, and deadlines with multi-tenant RBAC, calendar-friendly metadata, and a clean UX built on shadcn/ui. The core MVP centers on deadline tracking (prazos), with notifications and process linking.
+Legal Mind helps you organize clients, processes, and deadlines with multi-tenant RBAC, calendar-friendly metadata, and a clean UX built on shadcn/ui. The core MVP centers on deadline tracking (prazos), with notifications and process linking.
 
 Key domain entities: Clients, Processes, Deadlines, Notifications, Users/Accounts.
 
@@ -69,8 +69,8 @@ Prerequisites:
 ### 1) Clone and install
 
 ```bash
-git clone https://github.com/studio-risine/legaltrack.git
-cd legaltrack
+git clone https://github.com/studio-risine/legalmind.git
+cd legalmind
 pnpm install
 ```
 
@@ -96,7 +96,7 @@ Use the provided Docker Compose to spin up Postgres:
 docker compose up -d pg
 ```
 
-The default database is `postgresql://docker:docker@localhost:5432/legaltrack`.
+The default database is `postgresql://docker:docker@localhost:5432/legalmind`.
 
 ### 4) Run migrations
 
