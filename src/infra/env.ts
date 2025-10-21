@@ -11,6 +11,9 @@ const envSchema = z.object({
 			(url) => url.startsWith('postgresql://') || url.startsWith('postgres://'),
 			{ message: 'DATABASE_URL must start with postgresql:// or postgres://' },
 		),
+	NEXT_PUBLIC_SUPABASE_URL: z.url(),
+	NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+	SUPABASE_SCRET_KEY: z.string().min(1),
 })
 
 export const env = envSchema.parse(process.env)
