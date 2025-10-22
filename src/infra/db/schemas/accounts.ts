@@ -13,6 +13,7 @@ export const accounts = pgTable('accounts', {
 	id: text('id').primaryKey(),
 	displayName: text('display_name'),
 	name: text('name'),
+	lastName: text('last_name'),
 	email: text('email').unique(),
 
 	...timestamps,
