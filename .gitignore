@@ -43,4 +43,5 @@ next-env.d.ts
 # supabase
 supabase/.temp/*
 
-/src/generated/prisma
+# Docs
+/docs/plans
