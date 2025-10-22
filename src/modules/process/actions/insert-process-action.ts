@@ -2,7 +2,9 @@
 
 import { db } from '@infra/db'
 import { type Process, processes } from '@infra/db/schemas/processes'
+import { spacesToAccounts } from '@infra/db/schemas/spaces'
 import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
+import { and, eq } from 'drizzle-orm'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
@@ -14,6 +16,7 @@ const processInsertSchema = createInsertSchema(processes, {
 	cnj: true,
 	court: true,
 	client_id: true,
+	space_id: true,
 	tags: true,
 })
 
@@ -38,12 +41,39 @@ export async function insertProcessAction(
 		const accountId = await getCurrentAccountId()
 
 		if (!accountId) {
-			return { success: false, error: 'No account found to associate process.' }
+			return {
+				success: false,
+				error: 'No account found to associate process.',
+			}
+		}
+
+		// Verify that space_id is provided
+		if (!parsed.data.space_id) {
+			return { success: false, error: 'space_id is required' }
+		}
+
+		// Verify if the account is a member of the space
+		const [membership] = await db
+			.select()
+			.from(spacesToAccounts)
+			.where(
+				and(
+					eq(spacesToAccounts.spaceId, parsed.data.space_id),
+					eq(spacesToAccounts.accountId, accountId),
+				),
+			)
+			.limit(1)
+
+		if (!membership) {
+			return {
+				success: false,
+				error: 'Access denied: not a member of this space',
+			}
 		}
 
 		const [row] = await db
 			.insert(processes)
-			.values({ ...parsed.data, account_id: accountId })
+			.values(parsed.data)
 			.returning()
 
 		if (!row) {

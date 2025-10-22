@@ -2,6 +2,7 @@
 
 import { db } from '@infra/db'
 import { type Process, processes } from '@infra/db/schemas/processes'
+import { spacesToAccounts } from '@infra/db/schemas/spaces'
 import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { and, eq } from 'drizzle-orm'
 import { createSelectSchema, createUpdateSchema } from 'drizzle-zod'
@@ -48,10 +49,37 @@ export async function updateProcessAction(
 
 		const { id, ...updateData } = parsed.data
 
+		// First, get the process to check its space_id
+		const [existingProcess] = await db
+			.select({ space_id: processes.space_id })
+			.from(processes)
+			.where(eq(processes.id, id))
+			.limit(1)
+
+		if (!existingProcess) {
+			return { success: false, error: 'Process not found' }
+		}
+
+		// Verify if the account is a member of the space
+		const [membership] = await db
+			.select()
+			.from(spacesToAccounts)
+			.where(
+				and(
+					eq(spacesToAccounts.spaceId, existingProcess.space_id),
+					eq(spacesToAccounts.accountId, accountId),
+				),
+			)
+			.limit(1)
+
+		if (!membership) {
+			return { success: false, error: 'Access denied: not a member of this space' }
+		}
+
 		const [row] = await db
 			.update(processes)
 			.set({ ...updateData, updated_at: new Date() })
-			.where(and(eq(processes.id, id), eq(processes.account_id, accountId)))
+			.where(eq(processes.id, id))
 			.returning()
 
 		if (!row) {

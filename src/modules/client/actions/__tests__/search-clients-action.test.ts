@@ -32,12 +32,16 @@ vi.mock('@infra/db', () => {
 import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { searchClientsAction } from '../search-clients-action'
 
+vi.mock('@modules/account/utils/get-current-account', () => ({
+	getCurrentAccountId: vi.fn(),
+}))
+
 describe('searchClientsAction', () => {
 	beforeEach(() => {
 		rowsMock = []
 		countTotalMock = 0
 		// Ensure default account context is present unless overridden per test
-		vi.mocked(getCurrentAccountId).mockResolvedValue(1)
+		vi.mocked(getCurrentAccountId).mockResolvedValue('1')
 	})
 
 	it('returns empty when there is no account context', async () => {
@@ -45,12 +49,12 @@ describe('searchClientsAction', () => {
 
 		const res = await searchClientsAction({ q: 'abc', page: 1, pageSize: 10 })
 		expect(res.error).toBeDefined()
-		expect(res.customers).toEqual([])
+		expect(res.clients).toEqual([])
 		expect(res.total).toBe(0)
 		expect(res.hasMore).toBe(false)
 	})
 
-	it('returns customers, total and hasMore=false when pageSize >= total', async () => {
+	it('returns clients, total and hasMore=false when pageSize >= total', async () => {
 		const now = new Date()
 		rowsMock = [
 			{
@@ -61,7 +65,7 @@ describe('searchClientsAction', () => {
 				tax_id: '',
 				type: 'INDIVIDUAL',
 				status: 'ACTIVE',
-				account_id: 1,
+				account_id: '1',
 				notes: null,
 				updated_at: null,
 				deleted_at: null,
@@ -75,7 +79,7 @@ describe('searchClientsAction', () => {
 				tax_id: '',
 				type: 'INDIVIDUAL',
 				status: 'INACTIVE',
-				account_id: 1,
+				account_id: '1',
 				notes: null,
 				updated_at: null,
 				deleted_at: null,
@@ -86,7 +90,7 @@ describe('searchClientsAction', () => {
 
 		const res = await searchClientsAction({ q: 'a', page: 1, pageSize: 10 })
 		expect(res.error).toBeUndefined()
-		expect(res.customers).toHaveLength(2)
+		expect(res.clients).toHaveLength(2)
 		expect(res.total).toBe(2)
 		expect(res.hasMore).toBe(false)
 	})
@@ -102,7 +106,7 @@ describe('searchClientsAction', () => {
 				tax_id: '',
 				type: 'INDIVIDUAL',
 				status: 'ACTIVE',
-				account_id: 1,
+				account_id: '1',
 				notes: null,
 				updated_at: null,
 				deleted_at: null,

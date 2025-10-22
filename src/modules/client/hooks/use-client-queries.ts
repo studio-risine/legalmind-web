@@ -38,11 +38,13 @@ export function useClientQuery(
 	} = options
 
 	return useQuery<Client, Error, Client, [string, string, { id: string }]>({
-		queryKey: ['customers', 'byId', { id }],
+		queryKey: ['clients', 'byId', { id }],
 		queryFn: async () => {
-			const res = await getClientByIdAction({ id })
-			if (!res) throw new Error('Client not found')
-			return res
+			const result = await getClientByIdAction({ id })
+
+			if (!result) throw new Error('Client not found')
+
+			return result
 		},
 		enabled,
 		staleTime,
@@ -89,15 +91,15 @@ export function useClientsList(options: UseClientsListOptions = {}) {
 	const page = Math.floor(offset / limit) + 1
 	const perPage = limit
 
-	return useQuery<{ customers: Client[]; total: number }>({
-		queryKey: ['customers', 'list', { status, limit, offset, search }],
+	return useQuery<{ client: Client[]; total: number }>({
+		queryKey: ['client', 'list', { status, limit, offset, search }],
 		queryFn: async () => {
 			const result = await getClientsAction({
 				searchQuery: search,
 				page,
 				perPage,
 			})
-			return { customers: result.data ?? [], total: result.total ?? 0 }
+			return { client: result.data ?? [], total: result.total ?? 0 }
 		},
 		enabled,
 		staleTime,
@@ -129,18 +131,16 @@ export function useClientsListResults(options: UseClientsListOptions = {}) {
 	const query = useClientsList(options)
 
 	return {
-		customers: query.data?.customers || [],
+		client: query.data?.client || [],
 		total: query.data?.total || 0,
 		isLoading: query.isLoading,
 		isError: query.isError,
 		error: query.error,
 		isEmpty:
 			!query.isLoading &&
-			(!query.data?.customers || query.data.customers.length === 0),
-		hasCustomers:
-			!query.isLoading &&
-			query.data?.customers &&
-			query.data.customers.length > 0,
+			(!query.data?.client || query.data.client.length === 0),
+		hasclient:
+			!query.isLoading && query.data?.client && query.data.client.length > 0,
 		refetch: query.refetch,
 		isFetching: query.isFetching,
 	}
@@ -167,7 +167,7 @@ export function useClientSearch(options: UseClientSearchOptions = {}) {
 	} = options
 
 	return useQuery({
-		queryKey: ['customers', 'search', { q, status, pageSize }],
+		queryKey: ['client', 'search', { q, status, pageSize }],
 		queryFn: () => searchClientsAction({ q, status, page: 1, pageSize }),
 		enabled: enabled && (!!q || !!status),
 		staleTime,
@@ -186,7 +186,7 @@ export function useInfiniteClientSearch(options: UseClientSearchOptions = {}) {
 	} = options
 
 	return useInfiniteQuery({
-		queryKey: ['customers', 'search', 'infinite', { q, status, pageSize }],
+		queryKey: ['client', 'search', 'infinite', { q, status, pageSize }],
 		initialPageParam: 1,
 		queryFn: ({ pageParam = 1 }: { pageParam?: number }) =>
 			searchClientsAction({ q, status, page: pageParam, pageSize }),
@@ -214,7 +214,7 @@ export function useClientSearchResults(options: UseClientSearchOptions = {}) {
 	const query = useClientSearch(options)
 
 	return {
-		customers: query.data?.customers || [],
+		client: query.data?.clients || [],
 		total: query.data?.total || 0,
 		hasMore: query.data?.hasMore || false,
 		isLoading: query.isLoading,
@@ -222,7 +222,7 @@ export function useClientSearchResults(options: UseClientSearchOptions = {}) {
 		error: query.error,
 		isEmpty:
 			!query.isLoading &&
-			(!query.data?.customers || query.data.customers.length === 0),
+			(!query.data?.clients || query.data.clients.length === 0),
 		refetch: query.refetch,
 	}
 }
@@ -318,7 +318,7 @@ export function useClientPagination(options: UseClientPaginationOptions = {}) {
 	const [currentPage, setCurrentPage] = useState(1)
 	const offset = (currentPage - 1) * pageSize
 
-	const customersQuery = useClientsListResults({
+	const clientQuery = useClientsListResults({
 		status,
 		search,
 		limit: pageSize,
@@ -327,8 +327,8 @@ export function useClientPagination(options: UseClientPaginationOptions = {}) {
 	})
 
 	const totalPages = useMemo(() => {
-		return Math.ceil(customersQuery.total / pageSize)
-	}, [customersQuery.total, pageSize])
+		return Math.ceil(clientQuery.total / pageSize)
+	}, [clientQuery.total, pageSize])
 
 	const hasNextPage = useMemo(() => {
 		return currentPage < totalPages
@@ -372,11 +372,11 @@ export function useClientPagination(options: UseClientPaginationOptions = {}) {
 	}, [])
 
 	return {
-		customers: customersQuery.customers,
-		total: customersQuery.total,
-		isLoading: customersQuery.isLoading,
-		isError: customersQuery.isError,
-		error: customersQuery.error,
+		client: clientQuery.client,
+		total: clientQuery.total,
+		isLoading: clientQuery.isLoading,
+		isError: clientQuery.isError,
+		error: clientQuery.error,
 		currentPage,
 		totalPages,
 		pageSize,
@@ -388,7 +388,7 @@ export function useClientPagination(options: UseClientPaginationOptions = {}) {
 		goToFirstPage,
 		goToLastPage,
 		resetPagination,
-		refetch: customersQuery.refetch,
+		refetch: clientQuery.refetch,
 	}
 }
 
@@ -408,7 +408,7 @@ export function useClientStats(options: UseClientStatsOptions = {}) {
 	})
 
 	const stats = useMemo(() => {
-		if (!allClients.customers.length) {
+		if (!allClients.client.length) {
 			return {
 				total: 0,
 				byStatus: {
@@ -421,7 +421,7 @@ export function useClientStats(options: UseClientStatsOptions = {}) {
 			}
 		}
 
-		const clients = allClients.customers as Client[]
+		const clients = allClients.client as Client[]
 		const now = new Date()
 		const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
 
@@ -451,7 +451,7 @@ export function useClientStats(options: UseClientStatsOptions = {}) {
 			recentCount,
 			activePercentage,
 		}
-	}, [allClients.customers])
+	}, [allClients.client])
 
 	return {
 		stats,

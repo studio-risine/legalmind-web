@@ -14,7 +14,7 @@ describe('Get Processes Action', () => {
 		const mockProcesses: Process[] = [
 			{
 				id: 'process-1',
-				account_id: 1,
+				space_id: 'space-1',
 				title: 'Process 1',
 				cnj: '1234567-89.2023.8.26.0000',
 				court: 'TJSP',
@@ -28,7 +28,7 @@ describe('Get Processes Action', () => {
 			},
 			{
 				id: 'process-2',
-				account_id: 1,
+				space_id: 'space-1',
 				title: 'Process 2',
 				cnj: '7654321-89.2023.8.26.0001',
 				court: 'TJRJ',
@@ -47,7 +47,25 @@ describe('Get Processes Action', () => {
 			'@modules/account/utils/get-current-account'
 		)
 
-		vi.mocked(getCurrentAccountId).mockResolvedValue(1)
+		vi.mocked(getCurrentAccountId).mockResolvedValue('account-1')
+
+		// Mock getting user spaces
+		vi.mocked(db.select).mockReturnValueOnce({
+			from: vi.fn().mockReturnValue({
+				innerJoin: vi.fn().mockReturnValue({
+					where: vi.fn().mockResolvedValue([{ id: 'space-1' }]),
+				}),
+			}),
+		} as never)
+
+		// Mock count query
+		vi.mocked(db.select).mockReturnValueOnce({
+			from: vi.fn().mockReturnValue({
+				where: vi.fn().mockResolvedValue([{ total: 2 }]),
+			}),
+		} as never)
+
+		// Mock main query
 		vi.mocked(db.select).mockReturnValue({
 			from: vi.fn().mockReturnValue({
 				where: vi.fn().mockReturnValue({
@@ -57,25 +75,6 @@ describe('Get Processes Action', () => {
 						}),
 					}),
 				}),
-			}),
-		} as never)
-
-		// Mock count query
-		vi.mocked(db.select).mockReturnValueOnce({
-			from: vi.fn().mockReturnValue({
-				where: vi.fn().mockReturnValue({
-					orderBy: vi.fn().mockReturnValue({
-						limit: vi.fn().mockReturnValue({
-							offset: vi.fn().mockResolvedValue(mockProcesses),
-						}),
-					}),
-				}),
-			}),
-		} as never)
-
-		vi.mocked(db.select).mockReturnValueOnce({
-			from: vi.fn().mockReturnValue({
-				where: vi.fn().mockResolvedValue([{ total: 2 }]),
 			}),
 		} as never)
 
@@ -94,7 +93,7 @@ describe('Get Processes Action', () => {
 			'@modules/account/utils/get-current-account'
 		)
 
-		vi.mocked(getCurrentAccountId).mockResolvedValue(1)
+		vi.mocked(getCurrentAccountId).mockResolvedValue('account-1')
 		vi.mocked(db.select).mockReturnValue({
 			from: vi.fn().mockReturnValue({
 				where: vi.fn().mockReturnValue({

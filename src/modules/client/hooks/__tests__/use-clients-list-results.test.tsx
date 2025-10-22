@@ -34,12 +34,12 @@ afterEach(() => {
 })
 
 describe('useClientsList and useClientsListResults', () => {
-	it('returns customers and total, maps page and perPage correctly', async () => {
+	it('returns clients and total, maps page and perPage correctly', async () => {
 		vi.mocked(getClientsAction).mockResolvedValueOnce({
 			data: [
 				{
 					id: 'c1',
-					account_id: 1,
+					account_id: '1',
 					type: 'INDIVIDUAL',
 					status: 'ACTIVE',
 					name: 'Alice',
@@ -53,7 +53,7 @@ describe('useClientsList and useClientsListResults', () => {
 				},
 				{
 					id: 'c2',
-					account_id: 1,
+					account_id: "1",
 					type: 'INDIVIDUAL',
 					status: 'INACTIVE',
 					name: 'Bob',
@@ -77,9 +77,9 @@ describe('useClientsList and useClientsListResults', () => {
 
 		await waitFor(() => expect(result.current.isLoading).toBe(false))
 
-		expect(result.current.customers.length).toBe(2)
+		expect(result.current.client.length).toBe(2)
 		expect(result.current.total).toBe(2)
-		expect(result.current.hasCustomers).toBe(true)
+		expect(result.current.hasclient).toBe(true)
 		expect(result.current.isEmpty).toBe(false)
 
 		expect(vi.mocked(getClientsAction)).toHaveBeenCalledWith({

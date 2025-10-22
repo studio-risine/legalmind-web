@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { SubmitButton } from '@modules/auth/components/submit-button'
 import { useOperation } from '@modules/dashboard/hooks/use-operation'
 import type { ProcessInsertInput } from '@modules/process/actions/insert-process-action'
+import { useCurrentSpace } from '@modules/space/contexts/space-context'
 import { useCallback, useId, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -25,6 +26,7 @@ export function CreateProcessDialog() {
 	const { onCloseOperation, onConfirmOperation, isOpen } = useOperation()
 	const [isClosing, startCloseOperation] = useTransition()
 	const [isConfirming, startConfirmOperation] = useTransition()
+	const { currentSpace } = useCurrentSpace()
 
 	const { insertProcessAsync } = useProcessMutation()
 
@@ -58,11 +60,18 @@ export function CreateProcessDialog() {
 	const handleFormSubmit = useCallback(
 		async (data: ProcessFormValues) => {
 			try {
+				const spaceId = currentSpace?.id
+
+				if (!spaceId) {
+					throw new Error('Nenhum espaço de trabalho selecionado.')
+				}
+
 				const payload: ProcessInsertInput = {
 					title: data.title,
 					cnj: data.cnj || null,
 					court: data.court || null,
 					client_id: data.clientId || null,
+					space_id: spaceId,
 					tags: [],
 				}
 				await insertProcessAsync(payload)
@@ -80,7 +89,7 @@ export function CreateProcessDialog() {
 				})
 			}
 		},
-		[insertProcessAsync, form, onConfirmOperation],
+		[insertProcessAsync, form, onConfirmOperation, currentSpace],
 	)
 
 	const handleSubmit = useCallback(() => {

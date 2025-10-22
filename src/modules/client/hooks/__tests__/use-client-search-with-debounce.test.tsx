@@ -35,10 +35,10 @@ afterEach(() => {
 describe('useClientSearchWithDebounce', () => {
 	it('debounces query changes and triggers search when length >= 2', async () => {
 		vi.mocked(searchClientsAction).mockResolvedValue({
-			customers: [
+			clients: [
 				{
 					id: 'c1',
-					account_id: 1,
+					account_id: "1",
 					type: 'INDIVIDUAL',
 					status: 'ACTIVE',
 					name: 'Alice',
@@ -80,7 +80,7 @@ describe('useClientSearchWithDebounce', () => {
 
 		await waitFor(() => expect(result.current.isLoading).toBe(false))
 
-		expect(result.current.customers.length).toBe(1)
+		  expect(result.current.client.length).toBe(1)
 		expect(result.current.total).toBe(1)
 		expect(vi.mocked(searchClientsAction)).toHaveBeenCalledWith({
 			q: 'Al',
@@ -102,7 +102,7 @@ describe('useClientSearchWithDebounce', () => {
 
 	it('enables search when status is set even if query is empty', async () => {
 		vi.mocked(searchClientsAction).mockResolvedValue({
-			customers: [],
+			clients: [],
 			total: 0,
 			hasMore: false,
 		})

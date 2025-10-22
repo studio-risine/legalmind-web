@@ -27,7 +27,7 @@ describe('getClientByIdAction', () => {
 		rowsMock = [
 			{
 				id: 'c1',
-				account_id: 1,
+				account_id: '1',
 				type: 'INDIVIDUAL',
 				status: 'ACTIVE',
 				name: 'Alice',

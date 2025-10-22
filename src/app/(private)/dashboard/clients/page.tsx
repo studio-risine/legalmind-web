@@ -1,6 +1,6 @@
+import { PageHeaderWithBreadcrumb } from '@components/ui/page-header-breadcrumb'
 import { getClientsAction } from '@modules/client/actions/get-clients-action'
 import { DataTableClients } from '@modules/client/components'
-import { PageHeaderWithBreadcrumb } from '@modules/dashboard/components/page-header-breadcrumb'
 import type { SearchParams } from 'nuqs'
 import { loadSearchParams } from './search-params'
 

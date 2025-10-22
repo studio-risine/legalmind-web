@@ -31,11 +31,15 @@ vi.mock('@infra/db', () => {
 import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { getClientsAction } from '../get-clients-action'
 
+vi.mock('@modules/account/utils/get-current-account', () => ({
+	getCurrentAccountId: vi.fn(),
+}))
+
 describe('getClientsAction', () => {
 	beforeEach(() => {
 		rowsMock = []
 		countTotalMock = 0
-		vi.mocked(getCurrentAccountId).mockResolvedValue(1)
+		vi.mocked(getCurrentAccountId).mockResolvedValue('1')
 	})
 
 	it('returns error when no account context', async () => {
@@ -55,7 +59,7 @@ describe('getClientsAction', () => {
 		rowsMock = [
 			{
 				id: 'c1',
-				account_id: 1,
+				account_id: '1',
 				type: 'INDIVIDUAL',
 				status: 'ACTIVE',
 				name: 'Alice',
@@ -69,7 +73,7 @@ describe('getClientsAction', () => {
 			},
 			{
 				id: 'c2',
-				account_id: 1,
+				account_id: '1',
 				type: 'INDIVIDUAL',
 				status: 'INACTIVE',
 				name: 'Bob',

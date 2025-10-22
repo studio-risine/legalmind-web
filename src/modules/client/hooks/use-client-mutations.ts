@@ -23,7 +23,6 @@ import type {
 export function useClientMutation() {
 	const queryClient = useQueryClient()
 
-	// CREATE via server action
 	const {
 		mutateAsync: createClientAsync,
 		mutate: createClient,
@@ -31,9 +30,10 @@ export function useClientMutation() {
 	} = useMutation({
 		mutationFn: async (input: ClientInsertInput) => {
 			try {
-				const res = await insertClientAction(input)
-				if (!res.success) {
-					throw new Error(res.error ?? 'Failed to create Client')
+				const result = await insertClientAction(input)
+
+				if (!result.success) {
+					throw new Error(result.error ?? 'Failed to create Client')
 				}
 			} catch (error) {
 				if (error instanceof PostgrestError) {
@@ -47,8 +47,7 @@ export function useClientMutation() {
 		},
 
 		onSuccess: () => {
-			// Invalidate customers queries (consistent key naming)
-			queryClient.invalidateQueries({ queryKey: ['customers'] })
+			queryClient.invalidateQueries({ queryKey: ['clients'] })
 			toast('Client created successfully.')
 		},
 
@@ -58,7 +57,6 @@ export function useClientMutation() {
 		},
 	})
 
-	// UPDATE via server action
 	const {
 		mutateAsync: updateClientAsync,
 		mutate: updateClient,
@@ -76,12 +74,11 @@ export function useClientMutation() {
 				toast.error(result.error ?? 'Failed to update client')
 			} else {
 				toast.success('Client updated successfully')
-				// Optimized cache updates
 				queryClient.setQueryData(
-					['customers', 'byId', { id: variables.id }],
+					['clients', 'byId', { id: variables.id }],
 					result.data,
 				)
-				queryClient.invalidateQueries({ queryKey: ['customers'] })
+				queryClient.invalidateQueries({ queryKey: ['clients'] })
 			}
 		},
 		onError: (error) => {
@@ -90,7 +87,6 @@ export function useClientMutation() {
 		},
 	})
 
-	// DELETE via server action
 	const {
 		mutateAsync: deleteClientAsync,
 		mutate: deleteClient,
@@ -102,8 +98,8 @@ export function useClientMutation() {
 				toast.error(result.error ?? 'Failed to delete client')
 			} else {
 				toast.success('Client deleted successfully')
-				queryClient.removeQueries({ queryKey: ['customers', 'byId', { id }] })
-				queryClient.invalidateQueries({ queryKey: ['customers'] })
+				queryClient.removeQueries({ queryKey: ['clients', 'byId', { id }] })
+				queryClient.invalidateQueries({ queryKey: ['clients'] })
 			}
 		},
 		onError: (error) => {
@@ -125,10 +121,10 @@ export function useClientMutation() {
 			} else {
 				toast.success('Client status updated successfully')
 				queryClient.setQueryData(
-					['customers', 'byId', { id: variables.id }],
+					['clients', 'byId', { id: variables.id }],
 					result.data,
 				)
-				queryClient.invalidateQueries({ queryKey: ['customers'] })
+				queryClient.invalidateQueries({ queryKey: ['clients'] })
 			}
 		},
 		onError: (error) => {

@@ -14,7 +14,7 @@ describe('Update Process Action', () => {
 	it('should update a process successfully', async () => {
 		const mockProcess: Process = {
 			id: 'process-1',
-			account_id: 1,
+			space_id: 'space-1',
 			title: 'Updated Process',
 			cnj: '1234567-89.2023.8.26.0000',
 			court: 'TJSP',
@@ -32,7 +32,26 @@ describe('Update Process Action', () => {
 			'@modules/account/utils/get-current-account'
 		)
 
-		vi.mocked(getCurrentAccountId).mockResolvedValue(1)
+		vi.mocked(getCurrentAccountId).mockResolvedValue('account-1')
+
+		// Mock getting the process
+		vi.mocked(db.select).mockReturnValueOnce({
+			from: vi.fn().mockReturnValue({
+				where: vi.fn().mockReturnValue({
+					limit: vi.fn().mockResolvedValue([{ space_id: 'space-1' }]),
+				}),
+			}),
+		} as never)
+
+		// Mock checking membership
+		vi.mocked(db.select).mockReturnValueOnce({
+			from: vi.fn().mockReturnValue({
+				where: vi.fn().mockReturnValue({
+					limit: vi.fn().mockResolvedValue([{ accountId: 'account-1' }]),
+				}),
+			}),
+		} as never)
+
 		vi.mocked(db.update).mockReturnValue({
 			set: vi.fn().mockReturnValue({
 				where: vi.fn().mockReturnValue({
@@ -59,11 +78,11 @@ describe('Update Process Action', () => {
 			'@modules/account/utils/get-current-account'
 		)
 
-		vi.mocked(getCurrentAccountId).mockResolvedValue(1)
-		vi.mocked(db.update).mockReturnValue({
-			set: vi.fn().mockReturnValue({
+		vi.mocked(getCurrentAccountId).mockResolvedValue('account-1')
+		vi.mocked(db.select).mockReturnValue({
+			from: vi.fn().mockReturnValue({
 				where: vi.fn().mockReturnValue({
-					returning: vi.fn().mockResolvedValue([]),
+					limit: vi.fn().mockResolvedValue([]),
 				}),
 			}),
 		} as never)
@@ -76,7 +95,7 @@ describe('Update Process Action', () => {
 		const result = await updateProcessAction(input)
 
 		expect(result.success).toBe(false)
-		expect(result.error).toBe('Process not found or access denied')
+		expect(result.error).toBe('Process not found')
 	})
 
 	it('should return error if no account context', async () => {

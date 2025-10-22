@@ -153,7 +153,7 @@ export default function NewClientPage() {
 						<div className="flex gap-4">
 							<Button type="submit">Salvar Cliente</Button>
 							<Button variant="outline" asChild>
-								<Link href="/dashboard/customers">Cancelar</Link>
+								<Link href="/dashboard/clients">Cancelar</Link>
 							</Button>
 						</div>
 					</form>

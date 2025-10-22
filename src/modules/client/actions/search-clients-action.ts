@@ -16,7 +16,7 @@ const searchClientsInput = z.object({
 export type SearchClientsInput = z.infer<typeof searchClientsInput>
 
 export interface SearchClientsOutput {
-	customers: Client[]
+	clients: Client[]
 	total: number
 	hasMore: boolean
 	error?: string
@@ -32,7 +32,7 @@ export async function searchClientsAction(
 		const accountId = await getCurrentAccountId()
 		if (!accountId) {
 			return {
-				customers: [],
+				clients: [],
 				total: 0,
 				hasMore: false,
 				error: 'No account context.',
@@ -73,13 +73,13 @@ export async function searchClientsAction(
 		const hasMore = offset + pageSize < (total ?? 0)
 
 		return {
-			customers: rows,
+			clients: rows,
 			total: total ?? 0,
 			hasMore,
 		}
 	} catch (error) {
 		return {
-			customers: [],
+			clients: [],
 			total: 0,
 			hasMore: false,
 			error: error instanceof Error ? error.message : 'Unknown error',

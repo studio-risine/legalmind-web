@@ -28,6 +28,7 @@ export async function updateClientAction(
 	input: ClientUpdateInput,
 ): Promise<UpdateClientOutput> {
 	const parsed = clientUpdateSchema.safeParse(input)
+
 	if (!parsed.success) {
 		return { success: false, error: parsed.error.message }
 	}

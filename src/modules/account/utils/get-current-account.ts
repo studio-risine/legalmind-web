@@ -8,7 +8,7 @@ import { accounts } from '@infra/db/schemas/accounts'
  * Currently returns the first account found.
  * TODO: Replace with real resolution based on authenticated user/session & selected space/team.
  */
-export async function getCurrentAccountId(): Promise<number | null> {
+export async function getCurrentAccountId(): Promise<string | null> {
 	try {
 		const [account] = await db
 			.select({ id: accounts.id })

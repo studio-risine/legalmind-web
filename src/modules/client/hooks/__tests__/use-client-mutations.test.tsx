@@ -37,7 +37,7 @@ describe('use-client-mutations', () => {
 			success: true,
 			data: {
 				id: 'c1',
-				account_id: 1,
+				account_id: '1',
 				type: 'INDIVIDUAL',
 				status: 'ACTIVE',
 				name: 'Alice',
@@ -67,7 +67,7 @@ describe('use-client-mutations', () => {
 
 		await waitFor(() => expect(result.current.isCreating).toBe(false))
 
-		expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['customers'] })
+  expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['clients'] })
 		expect(toast).toHaveBeenCalledWith('Client created successfully.')
 	})
 

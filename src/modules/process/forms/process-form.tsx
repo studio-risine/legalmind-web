@@ -153,12 +153,12 @@ export function ProcessForm({ form, formId }: ProcessFormProps) {
 									</FormControl>
 									<SelectContent>
 										{!isLoadingClients &&
-										clientsData?.customers.length === 0 ? (
+										clientsData?.client.length === 0 ? (
 											<SelectItem value="" disabled>
 												Nenhum cliente encontrado
 											</SelectItem>
 										) : (
-											clientsData?.customers.map((client) => (
+											clientsData?.client.map((client) => (
 												<SelectItem key={client.id} value={client.id}>
 													{client.name}
 												</SelectItem>

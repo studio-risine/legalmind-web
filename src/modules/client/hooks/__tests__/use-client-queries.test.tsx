@@ -33,12 +33,12 @@ function createWrapper() {
 }
 
 describe('use-client-queries', () => {
-	it('useClientSearchResults returns customers and hasMore correctly', async () => {
+	it('useClientSearchResults returns clients and hasMore correctly', async () => {
 		vi.mocked(searchClientsAction).mockResolvedValueOnce({
-			customers: [
+			clients: [
 				{
 					id: 'c1',
-					account_id: 1,
+					account_id: "1",
 					type: 'INDIVIDUAL',
 					status: 'ACTIVE',
 					name: 'Alice',
@@ -63,7 +63,7 @@ describe('use-client-queries', () => {
 
 		await waitFor(() => expect(result.current.isLoading).toBe(false))
 
-		expect(result.current.customers.length).toBe(1)
+  expect(result.current.client.length).toBe(1)
 		expect(result.current.total).toBe(1)
 		expect(result.current.hasMore).toBe(false)
 		expect(vi.mocked(searchClientsAction)).toHaveBeenCalledWith({
@@ -79,16 +79,16 @@ describe('use-client-queries', () => {
 		vi.mocked(searchClientsAction).mockImplementation(
 			async (args?: { page?: number }) => {
 				const page = args?.page ?? 1
-				const base: Omit<SearchClientsOutput, 'customers'> = {
+				const base: Omit<SearchClientsOutput, 'clients'> = {
 					total: 2,
 					hasMore: page === 1,
 				}
-				const customers = [
+				const clients = [
 					{
 						id: `c${page}`,
-						account_id: 1,
-						type: 'INDIVIDUAL',
-						status: 'ACTIVE',
+						account_id: '1',
+						type: 'INDIVIDUAL' as const,
+						status: 'ACTIVE' as const,
 						name: `User ${page}`,
 						email: null,
 						phone: null,
@@ -99,7 +99,7 @@ describe('use-client-queries', () => {
 						deleted_at: null,
 					},
 				]
-				return { ...base, customers }
+				return { ...base, clients }
 			},
 		)
 
@@ -111,7 +111,7 @@ describe('use-client-queries', () => {
 
 		// initial page loads
 		await waitFor(() => expect(result.current.isLoading).toBe(false))
-		expect(result.current.data?.pages[0].customers[0].id).toBe('c1')
+		expect(result.current.data?.pages[0].clients[0].id).toBe('c1')
 		expect(result.current.hasNextPage).toBe(true)
 
 		await result.current.fetchNextPage()
@@ -119,7 +119,7 @@ describe('use-client-queries', () => {
 		await waitFor(() => expect(result.current.isFetchingNextPage).toBe(false))
 
 		expect(result.current.data?.pages.length).toBe(2)
-		expect(result.current.data?.pages[1].customers[0].id).toBe('c2')
+		expect(result.current.data?.pages[1].clients[0].id).toBe('c2')
 		expect(result.current.hasNextPage).toBe(false)
 	})
 })

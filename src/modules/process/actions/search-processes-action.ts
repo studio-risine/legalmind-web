@@ -2,8 +2,9 @@
 
 import { db } from '@infra/db'
 import { type Process, processes } from '@infra/db/schemas/processes'
+import { spacesToAccounts } from '@infra/db/schemas/spaces'
 import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
-import { and, count, desc, eq, ilike, isNull, or } from 'drizzle-orm'
+import { and, count, desc, eq, ilike, inArray, isNull, or } from 'drizzle-orm'
 import { z } from 'zod'
 
 const searchProcessesInput = z.object({
@@ -39,6 +40,18 @@ export async function searchProcessesAction(
 			}
 		}
 
+		// Get all spaces the account is a member of
+		const userSpaces = await db
+			.select({ spaceId: spacesToAccounts.spaceId })
+			.from(spacesToAccounts)
+			.where(eq(spacesToAccounts.accountId, accountId))
+
+		if (userSpaces.length === 0) {
+			return { processes: [], total: 0, hasMore: false }
+		}
+
+		const spaceIds = userSpaces.map((s) => s.spaceId)
+
 		const searchClause = q
 			? or(
 					ilike(processes.title, `%${q}%`),
@@ -47,10 +60,15 @@ export async function searchProcessesAction(
 				)
 			: undefined
 
-		const statusClause = status ? eq(processes.status, status) : undefined
+		const statusClause = status
+			? eq(
+					processes.status,
+					status as 'PENDING' | 'ACTIVE' | 'SUSPENDED' | 'ARCHIVED' | 'CLOSED',
+				)
+			: undefined
 
 		const whereClause = and(
-			eq(processes.account_id, accountId),
+			inArray(processes.space_id, spaceIds),
 			isNull(processes.deleted_at),
 			...(searchClause ? [searchClause] : []),
 			...(statusClause ? [statusClause] : []),

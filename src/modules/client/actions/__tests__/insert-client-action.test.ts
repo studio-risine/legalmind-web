@@ -18,10 +18,17 @@ import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { revalidatePath } from 'next/cache'
 import { insertClientAction } from '../insert-client-action'
 
+vi.mock('@modules/account/utils/get-current-account', () => ({
+	getCurrentAccountId: vi.fn(),
+}))
+vi.mock('next/cache', () => ({
+	revalidatePath: vi.fn(),
+}))
+
 describe('insertClientAction', () => {
 	beforeEach(() => {
 		returningMock = []
-		vi.mocked(getCurrentAccountId).mockResolvedValue(1)
+		vi.mocked(getCurrentAccountId).mockResolvedValue('1')
 		vi.mocked(revalidatePath).mockClear()
 	})
 
@@ -43,7 +50,7 @@ describe('insertClientAction', () => {
 		returningMock = [
 			{
 				id: 'c1',
-				account_id: 1,
+				account_id: '1',
 				type: 'INDIVIDUAL',
 				status: 'ACTIVE',
 				name: 'Alice',

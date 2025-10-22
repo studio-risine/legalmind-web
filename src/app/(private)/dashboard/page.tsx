@@ -1,7 +1,19 @@
-import { PageHeaderWithBreadcrumb } from '@modules/dashboard/components/page-header-breadcrumb'
+import { createClient } from '@libs/supabase/server'
+import { getFirstSpaceAction } from '@modules/space/actions'
+import { redirect } from 'next/navigation'
 
-const breadcrumb = [{ label: 'Home', href: '/dashboard' }]
+export default async function Page() {
+	const supabase = await createClient()
 
-export default function Page() {
-	return <PageHeaderWithBreadcrumb breadcrumb={breadcrumb} />
+	const {
+		data: { user },
+	} = await supabase.auth.getUser()
+
+	if (!user) {
+		redirect('/error?reason=unauthenticated')
+	}
+
+	const space = await getFirstSpaceAction({ id: user.id })
+
+	space ? redirect(`/space/${space.id}`) : redirect('/onboarding')
 }

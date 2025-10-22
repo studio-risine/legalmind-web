@@ -1,11 +1,12 @@
+import { relations } from 'drizzle-orm'
 import { jsonb, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { uuidv7 } from 'uuidv7'
 import type { z } from 'zod'
 import { timestamps } from '../helpers'
-import { accounts } from './accounts'
 import { clients } from './clients'
 import { processStatusEnum } from './enums'
+import { spaces } from './spaces'
 
 /**
  * The 'id' column uses 'text' type instead of native UUID type to support UUIDv7 generation.
@@ -19,9 +20,9 @@ export const processes = pgTable('processes', {
 	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => uuidv7()),
-	account_id: text('account_id')
+	space_id: text('space_id')
 		.notNull()
-		.references(() => accounts.id),
+		.references(() => spaces.id),
 	client_id: text('client_id').references(() => clients.id),
 	cnj: varchar('cnj', { length: 32 }),
 	court: varchar('court', { length: 120 }),
@@ -31,6 +32,17 @@ export const processes = pgTable('processes', {
 	archived_at: timestamp('archived_at'),
 	...timestamps,
 })
+
+export const processesRelations = relations(processes, ({ one }) => ({
+	space: one(spaces, {
+		fields: [processes.space_id],
+		references: [spaces.id],
+	}),
+	client: one(clients, {
+		fields: [processes.client_id],
+		references: [clients.id],
+	}),
+}))
 
 const processSelectSchema = createSelectSchema(processes)
 export type Process = z.output<typeof processSelectSchema>
