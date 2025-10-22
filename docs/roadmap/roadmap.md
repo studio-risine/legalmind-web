@@ -1,4 +1,4 @@
-# Roadmap Visual — MVP LegalTrack
+# Roadmap Visual — MVP Legal Mind
 
 Stack alinhada: Supabase + Next.js + shadcn/ui + Drizzle (modelagem de banco e migrations).
 

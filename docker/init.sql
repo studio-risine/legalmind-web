@@ -1,1 +1,1 @@
-CREATE DATABASE legaltrack_test;
+CREATE DATABASE legalmind_test;

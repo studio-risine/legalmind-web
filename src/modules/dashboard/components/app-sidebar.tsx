@@ -192,7 +192,7 @@ export function DashboardSidebar() {
 				<Link href="/dashboard" className="flex items-center gap-2">
 					<RiCheckboxBlankCircleFill size={36} />
 
-					{!isCollapsed && <b className="font-bold text-xl">legaltrack</b>}
+					{!isCollapsed && <b className="font-bold text-xl">Legal Mind</b>}
 				</Link>
 
 				<motion.div

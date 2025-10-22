@@ -1,6 +1,6 @@
 ---
 description: 'Planner Agent Chat Mode: a specialized agent for task and software architecture planning in the Trae Editor environment.'
-tools: ['runCommands', 'edit', 'search', 'github/github-mcp-server/*', 'extensions', 'usages', 'problems', 'fetch', 'todos']
+tools: ['runCommands', 'edit', 'search', 'linear/*', 'extensions', 'usages', 'problems', 'fetch', 'todos']
 ---
 
 # Planner Agent Chat Mode
