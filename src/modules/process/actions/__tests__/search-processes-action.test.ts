@@ -141,7 +141,7 @@ describe('Search Processes Action', () => {
 	it('should calculate hasMore correctly', async () => {
 		const mockProcesses: Process[] = Array.from({ length: 20 }, (_, i) => ({
 			id: `process-${i + 1}`,
-			account_id: "1",
+			account_id: '1',
 			title: `Process ${i + 1}`,
 			cnj: `${i + 1}234567-89.2023.8.26.0000`,
 			court: 'TJSP',

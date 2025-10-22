@@ -189,10 +189,7 @@ export function SpaceSidebar() {
 						: 'flex-row items-center justify-between',
 				)}
 			>
-				<Link
-					href="/dashboard"
-					className='flex items-center sm:mx-auto'
-				>
+				<Link href="/dashboard" className="flex items-center sm:mx-auto">
 					<RiCheckboxBlankCircleFill size={24} />
 
 					{!isCollapsed && (

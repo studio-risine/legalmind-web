@@ -34,7 +34,9 @@ export function PageHeaderWithBreadcrumb({
 						) : (
 							<div key={item.href} className="flex items-center gap-2">
 								<BreadcrumbItem>
-									<BreadcrumbLink className="font-medium" href={item.href}>{item.label}</BreadcrumbLink>
+									<BreadcrumbLink className="font-medium" href={item.href}>
+										{item.label}
+									</BreadcrumbLink>
 								</BreadcrumbItem>
 								<BreadcrumbSeparator />
 							</div>

@@ -7,7 +7,6 @@ import { createSelectSchema } from 'drizzle-zod'
 
 export async function listAccountsAction(): Promise<Account[]> {
 	try {
-
 		const rows = await db
 			.select()
 			.from(accounts)

@@ -71,7 +71,7 @@ export function Stats() {
 										</dt>
 									</div>
 
-									<RiArrowRightSLine className='size-4 shrink-0 text-muted-foreground/60 transition-transform duration-100 ease-linear group-hover:translate-x-1 group-hover:text-muted-foreground' />
+									<RiArrowRightSLine className="size-4 shrink-0 text-muted-foreground/60 transition-transform duration-100 ease-linear group-hover:translate-x-1 group-hover:text-muted-foreground" />
 								</div>
 							</CardContent>
 

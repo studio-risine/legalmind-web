@@ -7,7 +7,16 @@ import { profiles } from './profiles'
 import { spaces, spacesToAccounts } from './spaces'
 
 export * from './enums'
-export { accounts, clients, deadlines, notifications, processes, profiles, spaces, spacesToAccounts }
+export {
+	accounts,
+	clients,
+	deadlines,
+	notifications,
+	processes,
+	profiles,
+	spaces,
+	spacesToAccounts,
+}
 
 export const schema = {
 	accounts,

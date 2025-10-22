@@ -1,8 +1,8 @@
 'use client'
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { useSpaces } from '../hooks/use-spaces'
 import type { GetSpacesOutput } from '../actions/get-spaces-action'
+import { useSpaces } from '../hooks/use-spaces'
 
 type Space = GetSpacesOutput[number]
 

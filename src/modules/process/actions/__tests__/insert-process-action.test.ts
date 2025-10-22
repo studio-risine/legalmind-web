@@ -1,8 +1,8 @@
 import type { Process } from '@infra/db/schemas/processes'
+import { spacesToAccounts } from '@infra/db/schemas/spaces'
+import { and, eq } from 'drizzle-orm'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { insertProcessAction } from '../insert-process-action'
-import { and, eq } from 'drizzle-orm'
-import { spacesToAccounts } from '@infra/db/schemas/spaces'
 
 // Mock the entire db object inside the factory to avoid hoisting issues
 vi.mock('@infra/db', () => {

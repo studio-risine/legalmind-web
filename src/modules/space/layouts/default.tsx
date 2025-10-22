@@ -5,16 +5,16 @@ import { SpaceSidebar } from '../components/app-sidebar'
 
 export default function SpaceLayout({ children }: { children: ReactNode }) {
 	return (
-			<SidebarProvider>
-				<div className="relative flex h-screen w-full">
-					<SpaceSidebar />
-					<SidebarInset className="flex flex-col">
-						<NuqsAdapter>
-							<div className="flex flex-col gap-4">{children}</div>
-						</NuqsAdapter>
-						{/* <OperationHost /> */}
-					</SidebarInset>
-				</div>
-			</SidebarProvider>
+		<SidebarProvider>
+			<div className="relative flex h-screen w-full">
+				<SpaceSidebar />
+				<SidebarInset className="flex flex-col">
+					<NuqsAdapter>
+						<div className="flex flex-col gap-4">{children}</div>
+					</NuqsAdapter>
+					{/* <OperationHost /> */}
+				</SidebarInset>
+			</div>
+		</SidebarProvider>
 	)
 }

@@ -17,7 +17,7 @@ export default async function Page({
 
 			<MainContent size="2xl">
 				<div>
-					<h1 className='font-bold text-2xl text-foreground'>Processos </h1>
+					<h1 className="font-bold text-2xl text-foreground">Processos </h1>
 					<span>{id}</span>
 				</div>
 				<Stats />

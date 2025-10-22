@@ -1,11 +1,11 @@
-import { and, eq } from 'drizzle-orm'
-import { revalidatePath } from 'next/cache'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { db } from '@infra/db'
 import { processes } from '@infra/db/schemas/processes'
 import { spacesToAccounts } from '@infra/db/schemas/spaces'
 import { getCurrentAccountId } from '@modules/account/utils/get-current-account'
 import { deleteProcessAction } from '@modules/process/actions/delete-process-action'
+import { and, eq } from 'drizzle-orm'
+import { revalidatePath } from 'next/cache'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('next/cache', () => ({
 	revalidatePath: vi.fn(),

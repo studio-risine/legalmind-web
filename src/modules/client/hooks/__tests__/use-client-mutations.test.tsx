@@ -67,7 +67,7 @@ describe('use-client-mutations', () => {
 
 		await waitFor(() => expect(result.current.isCreating).toBe(false))
 
-  expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['clients'] })
+		expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['clients'] })
 		expect(toast).toHaveBeenCalledWith('Client created successfully.')
 	})
 

@@ -1,884 +1,773 @@
 {
-  "id": "28337145-622e-460d-bc81-c47ea097c624",
-  "prevId": "00000000-0000-0000-0000-000000000000",
-  "version": "7",
-  "dialect": "postgresql",
-  "tables": {
-    "public.accounts": {
-      "name": "accounts",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "display_name": {
-          "name": "display_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "accounts_email_unique": {
-          "name": "accounts_email_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.clients": {
-      "name": "clients",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "account_id": {
-          "name": "account_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "type": {
-          "name": "type",
-          "type": "client_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'INDIVIDUAL'"
-        },
-        "status": {
-          "name": "status",
-          "type": "client_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'ACTIVE'"
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "phone": {
-          "name": "phone",
-          "type": "varchar(256)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "tax_id": {
-          "name": "tax_id",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "notes": {
-          "name": "notes",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "clients_account_id_accounts_id_fk": {
-          "name": "clients_account_id_accounts_id_fk",
-          "tableFrom": "clients",
-          "tableTo": "accounts",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.deadlines": {
-      "name": "deadlines",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "account_id": {
-          "name": "account_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "process_id": {
-          "name": "process_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "client_id": {
-          "name": "client_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "title": {
-          "name": "title",
-          "type": "varchar(160)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "due_at": {
-          "name": "due_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "type": {
-          "name": "type",
-          "type": "deadline_type",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'OTHER'"
-        },
-        "status": {
-          "name": "status",
-          "type": "deadline_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'PENDING'"
-        },
-        "priority": {
-          "name": "priority",
-          "type": "deadline_priority",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'MEDIUM'"
-        },
-        "google_event_id": {
-          "name": "google_event_id",
-          "type": "varchar(128)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "completed_at": {
-          "name": "completed_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "deadlines_account_id_accounts_id_fk": {
-          "name": "deadlines_account_id_accounts_id_fk",
-          "tableFrom": "deadlines",
-          "tableTo": "accounts",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "deadlines_process_id_processes_id_fk": {
-          "name": "deadlines_process_id_processes_id_fk",
-          "tableFrom": "deadlines",
-          "tableTo": "processes",
-          "columnsFrom": [
-            "process_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "deadlines_client_id_clients_id_fk": {
-          "name": "deadlines_client_id_clients_id_fk",
-          "tableFrom": "deadlines",
-          "tableTo": "clients",
-          "columnsFrom": [
-            "client_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.notifications": {
-      "name": "notifications",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "account_id": {
-          "name": "account_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "deadline_id": {
-          "name": "deadline_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "channel": {
-          "name": "channel",
-          "type": "notification_channel",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "payload": {
-          "name": "payload",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "scheduled_at": {
-          "name": "scheduled_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sent_at": {
-          "name": "sent_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "notification_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'PENDING'"
-        },
-        "error_message": {
-          "name": "error_message",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "notifications_account_id_accounts_id_fk": {
-          "name": "notifications_account_id_accounts_id_fk",
-          "tableFrom": "notifications",
-          "tableTo": "accounts",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "notifications_deadline_id_deadlines_id_fk": {
-          "name": "notifications_deadline_id_deadlines_id_fk",
-          "tableFrom": "notifications",
-          "tableTo": "deadlines",
-          "columnsFrom": [
-            "deadline_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.processes": {
-      "name": "processes",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "space_id": {
-          "name": "space_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "client_id": {
-          "name": "client_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "cnj": {
-          "name": "cnj",
-          "type": "varchar(32)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "court": {
-          "name": "court",
-          "type": "varchar(120)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "title": {
-          "name": "title",
-          "type": "varchar(160)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "process_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'ACTIVE'"
-        },
-        "tags": {
-          "name": "tags",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "archived_at": {
-          "name": "archived_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "processes_space_id_spaces_id_fk": {
-          "name": "processes_space_id_spaces_id_fk",
-          "tableFrom": "processes",
-          "tableTo": "spaces",
-          "columnsFrom": [
-            "space_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "processes_client_id_clients_id_fk": {
-          "name": "processes_client_id_clients_id_fk",
-          "tableFrom": "processes",
-          "tableTo": "clients",
-          "columnsFrom": [
-            "client_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.profiles": {
-      "name": "profiles",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.spaces": {
-      "name": "spaces",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_by": {
-          "name": "created_by",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "spaces_created_by_accounts_id_fk": {
-          "name": "spaces_created_by_accounts_id_fk",
-          "tableFrom": "spaces",
-          "tableTo": "accounts",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.spaces_to_accounts": {
-      "name": "spaces_to_accounts",
-      "schema": "",
-      "columns": {
-        "space_id": {
-          "name": "space_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "account_id": {
-          "name": "account_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "spaces_to_accounts_space_id_spaces_id_fk": {
-          "name": "spaces_to_accounts_space_id_spaces_id_fk",
-          "tableFrom": "spaces_to_accounts",
-          "tableTo": "spaces",
-          "columnsFrom": [
-            "space_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "spaces_to_accounts_account_id_accounts_id_fk": {
-          "name": "spaces_to_accounts_account_id_accounts_id_fk",
-          "tableFrom": "spaces_to_accounts",
-          "tableTo": "accounts",
-          "columnsFrom": [
-            "account_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "spaces_to_accounts_space_id_account_id_pk": {
-          "name": "spaces_to_accounts_space_id_account_id_pk",
-          "columns": [
-            "space_id",
-            "account_id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    }
-  },
-  "enums": {
-    "public.client_status": {
-      "name": "client_status",
-      "schema": "public",
-      "values": [
-        "LEAD",
-        "PROSPECT",
-        "ACTIVE",
-        "INACTIVE",
-        "ARCHIVED"
-      ]
-    },
-    "public.client_type": {
-      "name": "client_type",
-      "schema": "public",
-      "values": [
-        "INDIVIDUAL",
-        "COMPANY"
-      ]
-    },
-    "public.deadline_priority": {
-      "name": "deadline_priority",
-      "schema": "public",
-      "values": [
-        "LOW",
-        "MEDIUM",
-        "HIGH",
-        "CRITICAL"
-      ]
-    },
-    "public.deadline_status": {
-      "name": "deadline_status",
-      "schema": "public",
-      "values": [
-        "PENDING",
-        "IN_PROGRESS",
-        "COMPLETED",
-        "MISSED",
-        "CANCELLED"
-      ]
-    },
-    "public.deadline_type": {
-      "name": "deadline_type",
-      "schema": "public",
-      "values": [
-        "HEARING",
-        "APPEAL",
-        "RESPONSE",
-        "PETITION",
-        "DOCUMENT",
-        "PAYMENT",
-        "MEETING",
-        "OTHER"
-      ]
-    },
-    "public.notification_channel": {
-      "name": "notification_channel",
-      "schema": "public",
-      "values": [
-        "EMAIL",
-        "SYSTEM",
-        "PUSH",
-        "SMS",
-        "WHATSAPP"
-      ]
-    },
-    "public.notification_status": {
-      "name": "notification_status",
-      "schema": "public",
-      "values": [
-        "PENDING",
-        "SENT",
-        "DELIVERED",
-        "READ",
-        "FAILED",
-        "CANCELLED"
-      ]
-    },
-    "public.process_area": {
-      "name": "process_area",
-      "schema": "public",
-      "values": [
-        "CIVIL",
-        "CRIMINAL",
-        "TRABALHISTA",
-        "TRIBUTARIO",
-        "ADMINISTRATIVO",
-        "COMERCIAL",
-        "FAMILIA",
-        "SUCESSOES",
-        "CONSUMIDOR",
-        "AMBIENTAL"
-      ]
-    },
-    "public.process_priority": {
-      "name": "process_priority",
-      "schema": "public",
-      "values": [
-        "LOW",
-        "MEDIUM",
-        "HIGH",
-        "URGENT"
-      ]
-    },
-    "public.process_status": {
-      "name": "process_status",
-      "schema": "public",
-      "values": [
-        "PENDING",
-        "ACTIVE",
-        "SUSPENDED",
-        "ARCHIVED",
-        "CLOSED"
-      ]
-    },
-    "public.profile_type": {
-      "name": "profile_type",
-      "schema": "public",
-      "values": [
-        "ADMIN",
-        "LAWYER",
-        "ASSISTANT",
-        "CLIENT",
-        "PARALEGAL"
-      ]
-    },
-    "public.space_role": {
-      "name": "space_role",
-      "schema": "public",
-      "values": [
-        "OWNER",
-        "ADMIN",
-        "LAWYER",
-        "ASSISTANT",
-        "CLIENT",
-        "VIEWER"
-      ]
-    },
-    "public.space_type": {
-      "name": "space_type",
-      "schema": "public",
-      "values": [
-        "INDIVIDUAL",
-        "TEAM",
-        "FIRM",
-        "DEPARTMENT"
-      ]
-    }
-  },
-  "schemas": {},
-  "sequences": {},
-  "roles": {},
-  "policies": {},
-  "views": {},
-  "_meta": {
-    "columns": {},
-    "schemas": {},
-    "tables": {}
-  }
+	"id": "28337145-622e-460d-bc81-c47ea097c624",
+	"prevId": "00000000-0000-0000-0000-000000000000",
+	"version": "7",
+	"dialect": "postgresql",
+	"tables": {
+		"public.accounts": {
+			"name": "accounts",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"display_name": {
+					"name": "display_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"email": {
+					"name": "email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {
+				"accounts_email_unique": {
+					"name": "accounts_email_unique",
+					"nullsNotDistinct": false,
+					"columns": ["email"]
+				}
+			},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.clients": {
+			"name": "clients",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"account_id": {
+					"name": "account_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"type": {
+					"name": "type",
+					"type": "client_type",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'INDIVIDUAL'"
+				},
+				"status": {
+					"name": "status",
+					"type": "client_status",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'ACTIVE'"
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"email": {
+					"name": "email",
+					"type": "varchar(256)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"phone": {
+					"name": "phone",
+					"type": "varchar(256)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"tax_id": {
+					"name": "tax_id",
+					"type": "varchar(32)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"notes": {
+					"name": "notes",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"clients_account_id_accounts_id_fk": {
+					"name": "clients_account_id_accounts_id_fk",
+					"tableFrom": "clients",
+					"tableTo": "accounts",
+					"columnsFrom": ["account_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.deadlines": {
+			"name": "deadlines",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"account_id": {
+					"name": "account_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"process_id": {
+					"name": "process_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"client_id": {
+					"name": "client_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"title": {
+					"name": "title",
+					"type": "varchar(160)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"description": {
+					"name": "description",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"due_at": {
+					"name": "due_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"type": {
+					"name": "type",
+					"type": "deadline_type",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'OTHER'"
+				},
+				"status": {
+					"name": "status",
+					"type": "deadline_status",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'PENDING'"
+				},
+				"priority": {
+					"name": "priority",
+					"type": "deadline_priority",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'MEDIUM'"
+				},
+				"google_event_id": {
+					"name": "google_event_id",
+					"type": "varchar(128)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"completed_at": {
+					"name": "completed_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"deadlines_account_id_accounts_id_fk": {
+					"name": "deadlines_account_id_accounts_id_fk",
+					"tableFrom": "deadlines",
+					"tableTo": "accounts",
+					"columnsFrom": ["account_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"deadlines_process_id_processes_id_fk": {
+					"name": "deadlines_process_id_processes_id_fk",
+					"tableFrom": "deadlines",
+					"tableTo": "processes",
+					"columnsFrom": ["process_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"deadlines_client_id_clients_id_fk": {
+					"name": "deadlines_client_id_clients_id_fk",
+					"tableFrom": "deadlines",
+					"tableTo": "clients",
+					"columnsFrom": ["client_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.notifications": {
+			"name": "notifications",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "uuid",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"account_id": {
+					"name": "account_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"user_id": {
+					"name": "user_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"deadline_id": {
+					"name": "deadline_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"channel": {
+					"name": "channel",
+					"type": "notification_channel",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"payload": {
+					"name": "payload",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"scheduled_at": {
+					"name": "scheduled_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"sent_at": {
+					"name": "sent_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"status": {
+					"name": "status",
+					"type": "notification_status",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'PENDING'"
+				},
+				"error_message": {
+					"name": "error_message",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"notifications_account_id_accounts_id_fk": {
+					"name": "notifications_account_id_accounts_id_fk",
+					"tableFrom": "notifications",
+					"tableTo": "accounts",
+					"columnsFrom": ["account_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"notifications_deadline_id_deadlines_id_fk": {
+					"name": "notifications_deadline_id_deadlines_id_fk",
+					"tableFrom": "notifications",
+					"tableTo": "deadlines",
+					"columnsFrom": ["deadline_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.processes": {
+			"name": "processes",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"space_id": {
+					"name": "space_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"client_id": {
+					"name": "client_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"cnj": {
+					"name": "cnj",
+					"type": "varchar(32)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"court": {
+					"name": "court",
+					"type": "varchar(120)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"title": {
+					"name": "title",
+					"type": "varchar(160)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"status": {
+					"name": "status",
+					"type": "process_status",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'ACTIVE'"
+				},
+				"tags": {
+					"name": "tags",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"archived_at": {
+					"name": "archived_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"processes_space_id_spaces_id_fk": {
+					"name": "processes_space_id_spaces_id_fk",
+					"tableFrom": "processes",
+					"tableTo": "spaces",
+					"columnsFrom": ["space_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"processes_client_id_clients_id_fk": {
+					"name": "processes_client_id_clients_id_fk",
+					"tableFrom": "processes",
+					"tableTo": "clients",
+					"columnsFrom": ["client_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.profiles": {
+			"name": "profiles",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"email": {
+					"name": "email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.spaces": {
+			"name": "spaces",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"name": {
+					"name": "name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_by": {
+					"name": "created_by",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"type": "timestamp",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"spaces_created_by_accounts_id_fk": {
+					"name": "spaces_created_by_accounts_id_fk",
+					"tableFrom": "spaces",
+					"tableTo": "accounts",
+					"columnsFrom": ["created_by"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
+		"public.spaces_to_accounts": {
+			"name": "spaces_to_accounts",
+			"schema": "",
+			"columns": {
+				"space_id": {
+					"name": "space_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"account_id": {
+					"name": "account_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {
+				"spaces_to_accounts_space_id_spaces_id_fk": {
+					"name": "spaces_to_accounts_space_id_spaces_id_fk",
+					"tableFrom": "spaces_to_accounts",
+					"tableTo": "spaces",
+					"columnsFrom": ["space_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				},
+				"spaces_to_accounts_account_id_accounts_id_fk": {
+					"name": "spaces_to_accounts_account_id_accounts_id_fk",
+					"tableFrom": "spaces_to_accounts",
+					"tableTo": "accounts",
+					"columnsFrom": ["account_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
+				}
+			},
+			"compositePrimaryKeys": {
+				"spaces_to_accounts_space_id_account_id_pk": {
+					"name": "spaces_to_accounts_space_id_account_id_pk",
+					"columns": ["space_id", "account_id"]
+				}
+			},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		}
+	},
+	"enums": {
+		"public.client_status": {
+			"name": "client_status",
+			"schema": "public",
+			"values": ["LEAD", "PROSPECT", "ACTIVE", "INACTIVE", "ARCHIVED"]
+		},
+		"public.client_type": {
+			"name": "client_type",
+			"schema": "public",
+			"values": ["INDIVIDUAL", "COMPANY"]
+		},
+		"public.deadline_priority": {
+			"name": "deadline_priority",
+			"schema": "public",
+			"values": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+		},
+		"public.deadline_status": {
+			"name": "deadline_status",
+			"schema": "public",
+			"values": ["PENDING", "IN_PROGRESS", "COMPLETED", "MISSED", "CANCELLED"]
+		},
+		"public.deadline_type": {
+			"name": "deadline_type",
+			"schema": "public",
+			"values": [
+				"HEARING",
+				"APPEAL",
+				"RESPONSE",
+				"PETITION",
+				"DOCUMENT",
+				"PAYMENT",
+				"MEETING",
+				"OTHER"
+			]
+		},
+		"public.notification_channel": {
+			"name": "notification_channel",
+			"schema": "public",
+			"values": ["EMAIL", "SYSTEM", "PUSH", "SMS", "WHATSAPP"]
+		},
+		"public.notification_status": {
+			"name": "notification_status",
+			"schema": "public",
+			"values": ["PENDING", "SENT", "DELIVERED", "READ", "FAILED", "CANCELLED"]
+		},
+		"public.process_area": {
+			"name": "process_area",
+			"schema": "public",
+			"values": [
+				"CIVIL",
+				"CRIMINAL",
+				"TRABALHISTA",
+				"TRIBUTARIO",
+				"ADMINISTRATIVO",
+				"COMERCIAL",
+				"FAMILIA",
+				"SUCESSOES",
+				"CONSUMIDOR",
+				"AMBIENTAL"
+			]
+		},
+		"public.process_priority": {
+			"name": "process_priority",
+			"schema": "public",
+			"values": ["LOW", "MEDIUM", "HIGH", "URGENT"]
+		},
+		"public.process_status": {
+			"name": "process_status",
+			"schema": "public",
+			"values": ["PENDING", "ACTIVE", "SUSPENDED", "ARCHIVED", "CLOSED"]
+		},
+		"public.profile_type": {
+			"name": "profile_type",
+			"schema": "public",
+			"values": ["ADMIN", "LAWYER", "ASSISTANT", "CLIENT", "PARALEGAL"]
+		},
+		"public.space_role": {
+			"name": "space_role",
+			"schema": "public",
+			"values": ["OWNER", "ADMIN", "LAWYER", "ASSISTANT", "CLIENT", "VIEWER"]
+		},
+		"public.space_type": {
+			"name": "space_type",
+			"schema": "public",
+			"values": ["INDIVIDUAL", "TEAM", "FIRM", "DEPARTMENT"]
+		}
+	},
+	"schemas": {},
+	"sequences": {},
+	"roles": {},
+	"policies": {},
+	"views": {},
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
+	}
 }

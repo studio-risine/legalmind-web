@@ -38,7 +38,7 @@ describe('use-client-queries', () => {
 			clients: [
 				{
 					id: 'c1',
-					account_id: "1",
+					account_id: '1',
 					type: 'INDIVIDUAL',
 					status: 'ACTIVE',
 					name: 'Alice',
@@ -63,7 +63,7 @@ describe('use-client-queries', () => {
 
 		await waitFor(() => expect(result.current.isLoading).toBe(false))
 
-  expect(result.current.client.length).toBe(1)
+		expect(result.current.client.length).toBe(1)
 		expect(result.current.total).toBe(1)
 		expect(result.current.hasMore).toBe(false)
 		expect(vi.mocked(searchClientsAction)).toHaveBeenCalledWith({

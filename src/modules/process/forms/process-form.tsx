@@ -152,8 +152,7 @@ export function ProcessForm({ form, formId }: ProcessFormProps) {
 										</SelectTrigger>
 									</FormControl>
 									<SelectContent>
-										{!isLoadingClients &&
-										clientsData?.client.length === 0 ? (
+										{!isLoadingClients && clientsData?.client.length === 0 ? (
 											<SelectItem value="" disabled>
 												Nenhum cliente encontrado
 											</SelectItem>

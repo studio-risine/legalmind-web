@@ -46,16 +46,18 @@ export function withZodValidation<T, R>(
 	schema: ZodSchema<T>,
 	handler: (data: T) => Promise<R>,
 ) {
-	return async (input: unknown): Promise<R | { success: false; error: string }> => {
+	return async (
+		input: unknown,
+	): Promise<R | { success: false; error: string }> => {
 		const parsed = schema.safeParse(input)
-		
+
 		if (!parsed.success) {
 			return {
 				success: false,
 				error: formatZodError(parsed.error),
 			}
 		}
-		
+
 		return handler(parsed.data)
 	}
 }

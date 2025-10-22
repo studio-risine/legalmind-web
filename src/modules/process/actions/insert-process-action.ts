@@ -71,10 +71,7 @@ export async function insertProcessAction(
 			}
 		}
 
-		const [row] = await db
-			.insert(processes)
-			.values(parsed.data)
-			.returning()
+		const [row] = await db.insert(processes).values(parsed.data).returning()
 
 		if (!row) {
 			return { success: false, error: 'Failed to create process' }

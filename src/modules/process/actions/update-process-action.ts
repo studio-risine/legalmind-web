@@ -73,7 +73,10 @@ export async function updateProcessAction(
 			.limit(1)
 
 		if (!membership) {
-			return { success: false, error: 'Access denied: not a member of this space' }
+			return {
+				success: false,
+				error: 'Access denied: not a member of this space',
+			}
 		}
 
 		const [row] = await db

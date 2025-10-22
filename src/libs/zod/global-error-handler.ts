@@ -7,8 +7,11 @@ import { formatZodError, formatZodErrorDetailed } from './error-handlers'
 export abstract class ValidationError extends Error {
 	abstract readonly code: string
 	abstract readonly statusCode: number
-	
-	constructor(message: string, public readonly cause?: Error) {
+
+	constructor(
+		message: string,
+		public readonly cause?: Error,
+	) {
 		super(message)
 		this.name = this.constructor.name
 	}
@@ -47,7 +50,7 @@ export class ZodValidationError extends ValidationError {
 	 */
 	getErrorsByField() {
 		const errors: Record<string, string[]> = {}
-		
+
 		this.zodError.issues.forEach((issue: ZodIssue) => {
 			const field = issue.path.join('.') || 'root'
 			if (!errors[field]) {
@@ -55,7 +58,7 @@ export class ZodValidationError extends ValidationError {
 			}
 			errors[field].push(issue.message)
 		})
-		
+
 		return errors
 	}
 }
@@ -108,8 +111,9 @@ export class GlobalErrorHandler {
 	 */
 	handleError(error: Error): unknown {
 		const errorType = error.constructor.name
-		const handler = this.errorHandlers.get(errorType) || this.errorHandlers.get('Error')
-		
+		const handler =
+			this.errorHandlers.get(errorType) || this.errorHandlers.get('Error')
+
 		if (handler) {
 			return handler(error)
 		}
@@ -145,9 +149,9 @@ export const globalErrorHandler = GlobalErrorHandler.getInstance()
 /**
  * Decorator para server actions com error handling automático
  */
-export function withGlobalErrorHandling<T extends (...args: any[]) => Promise<any>>(
-	target: T,
-): T {
+export function withGlobalErrorHandling<
+	T extends (...args: any[]) => Promise<any>,
+>(target: T): T {
 	return globalErrorHandler.wrapAction(target)
 }
 
@@ -156,10 +160,10 @@ export function withGlobalErrorHandling<T extends (...args: any[]) => Promise<an
  */
 export function parseWithGlobalHandler<T>(schema: any, data: unknown): T {
 	const result = schema.safeParse(data)
-	
+
 	if (!result.success) {
 		throw new ZodValidationError(result.error)
 	}
-	
+
 	return result.data
 }

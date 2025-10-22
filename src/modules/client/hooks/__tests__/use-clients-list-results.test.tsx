@@ -53,7 +53,7 @@ describe('useClientsList and useClientsListResults', () => {
 				},
 				{
 					id: 'c2',
-					account_id: "1",
+					account_id: '1',
 					type: 'INDIVIDUAL',
 					status: 'INACTIVE',
 					name: 'Bob',

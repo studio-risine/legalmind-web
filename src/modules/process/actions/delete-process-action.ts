@@ -51,7 +51,10 @@ export async function deleteProcessAction(
 			.limit(1)
 
 		if (!membership) {
-			return { success: false, error: 'Access denied: not a member of this space' }
+			return {
+				success: false,
+				error: 'Access denied: not a member of this space',
+			}
 		}
 
 		const result = await db

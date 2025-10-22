@@ -15,34 +15,34 @@ async function seed() {
 		await db.delete(schema.spaces)
 		await db.delete(schema.accounts)
 
-	console.log('Create accounts...')
-	const accountsData = Array.from({ length: 5 }, () => ({
-		id: uuidv7(),
-		name: faker.person.fullName(),
-		displayName: faker.person.firstName(),
-		email: faker.internet.email().toLowerCase(),
-	}))
+		console.log('Create accounts...')
+		const accountsData = Array.from({ length: 5 }, () => ({
+			id: uuidv7(),
+			name: faker.person.fullName(),
+			displayName: faker.person.firstName(),
+			email: faker.internet.email().toLowerCase(),
+		}))
 
-	const seededAccounts = await db
-		.insert(schema.accounts)
-		.values(accountsData)
-		.returning()
-	console.log(`${seededAccounts.length} accounts created`)
+		const seededAccounts = await db
+			.insert(schema.accounts)
+			.values(accountsData)
+			.returning()
+		console.log(`${seededAccounts.length} accounts created`)
 
-	console.log('Creating spaces...')
-	const spacesData = Array.from({ length: 3 }, (_, index) => ({
-		id: uuidv7(),
-		name: faker.company.name(),
-		created_by: seededAccounts[index % seededAccounts.length].id,
-	}))
+		console.log('Creating spaces...')
+		const spacesData = Array.from({ length: 3 }, (_, index) => ({
+			id: uuidv7(),
+			name: faker.company.name(),
+			created_by: seededAccounts[index % seededAccounts.length].id,
+		}))
 
-	const seededSpaces = await db
-		.insert(schema.spaces)
-		.values(spacesData)
-		.returning()
-	console.log(`${seededSpaces.length} spaces created`)
+		const seededSpaces = await db
+			.insert(schema.spaces)
+			.values(spacesData)
+			.returning()
+		console.log(`${seededSpaces.length} spaces created`)
 
-	console.log('accociating accounts to spaces...')
+		console.log('accociating accounts to spaces...')
 		const spacesToAccountsData = seededAccounts.flatMap((account) =>
 			seededSpaces.map((space) => ({
 				accountId: account.id,
