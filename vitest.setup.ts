@@ -4,7 +4,7 @@ import { vi } from 'vitest'
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
 
 vi.mock('@/modules/account/utils/get-current-account', () => ({
-  getCurrentAccountId: vi.fn().mockResolvedValue(1),
+  getCurrentAccountId: vi.fn().mockResolvedValue('account-test-id'),
 }))
 
 vi.mock('sonner', () => {
