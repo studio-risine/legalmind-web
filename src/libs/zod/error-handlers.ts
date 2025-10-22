@@ -1,7 +1,7 @@
 import type { ZodError, ZodIssue, ZodSchema } from 'zod'
 
 /**
- * Formata um único erro do Zod para mensagem legível
+ * Format a single Zod issue into a string message
  */
 export function formatZodIssue(issue: ZodIssue): string {
 	const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : ''
@@ -9,15 +9,16 @@ export function formatZodIssue(issue: ZodIssue): string {
 }
 
 /**
- * Converte ZodError em string única com todos os erros
+ * Format Zod errors into a single string message
  */
 export function formatZodError(error: ZodError): string {
 	return error.issues.map(formatZodIssue).join(', ')
 }
 
 /**
- * Converte ZodError em array de objetos estruturados
+ * Format Zod errors into a detailed structure
  */
+
 export function formatZodErrorDetailed(error: ZodError) {
 	return error.issues.map((issue) => ({
 		field: issue.path.join('.') || 'root',
@@ -28,7 +29,7 @@ export function formatZodErrorDetailed(error: ZodError) {
 }
 
 /**
- * Cria uma resposta padronizada para erros de validação
+ * Create a response object for Zod validation errors
  */
 export function createValidationErrorResponse(error: ZodError) {
 	return {
