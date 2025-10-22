@@ -136,9 +136,8 @@ See `package.json` for the full list.
 - RBAC roles: SUPER_ADMIN, ADMIN, LAWYER
 
 References:
-- Database schema: `docs/database/schema.md`
+- Migration documentation: `docs/migration/` (setup guide, changelog, history)
 - RBAC architecture: `docs/RBAC_ARCHITECTURE.md`
-- Migration guide (Convex → Supabase + Drizzle): `docs/migration/convex-to-supabase-drizzle.md`
 
 ## Contribution
 
