@@ -10,6 +10,7 @@
 		"db:migrate": "dotenv -e .env.local -- drizzle-kit migrate",
 		"db:studio": "dotenv -e .env.local -- drizzle-kit studio",
 		"db:seed": "dotenv -e .env.local -- tsx src/infra/db/seed.ts",
+		"db:summary": "dotenv -e .env.local -- tsx src/infra/db/tools/summary.ts",
 		"build": "next build",
 		"start": "next start",
 		"prepare": "husky",
