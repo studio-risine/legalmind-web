@@ -1,5 +1,5 @@
-export * from './app-sidebar'
-export * from './nav-main'
+export * from '../../../components/ui/app-sidebar'
+export * from '../../../components/ui/nav-main'
 export * from './nav-notifications'
 export * from './operation-context'
 export * from './operation-host'
