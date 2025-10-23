@@ -1,3 +1,4 @@
+import { nanoid } from '@libs/nanoid'
 import { relations } from 'drizzle-orm'
 import { pgTable, primaryKey, text } from 'drizzle-orm/pg-core'
 import {
@@ -5,7 +6,6 @@ import {
 	createSelectSchema,
 	createUpdateSchema,
 } from 'drizzle-zod'
-import { uuidv7 } from 'uuidv7'
 import type z from 'zod'
 import { timestamps } from '../helpers'
 import { accounts } from './accounts'
@@ -14,7 +14,7 @@ import { processes } from './processes'
 export const spaces = pgTable('spaces', {
 	id: text('id')
 		.primaryKey()
-		.$defaultFn(() => uuidv7()),
+		.$defaultFn(() => nanoid()),
 	name: text('name'),
 	created_by: text('created_by')
 		.notNull()

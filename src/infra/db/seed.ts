@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
-import { createSupabaseAdminClient } from '@libs/supabase/server'
+import { nanoid } from '@libs/nanoid'
+import { createSupabaseAdminClient } from '@libs/supabase/admin'
 import { delay } from '@utils/async'
 import { uuidv7 } from 'uuidv7'
 import { db } from '.'
@@ -15,7 +16,7 @@ async function cleanUsers(): Promise<void> {
 	const supabase = createSupabaseAdminClient()
 
 	await db.delete(schema.accounts)
-	console.log('ℹ️  Deleted all accounts from public.accounts')
+	console.log('Deleted all accounts from public.accounts')
 
 	const { data: existingUsers } = await supabase.auth.admin.listUsers()
 	if (existingUsers?.users && existingUsers.users.length > 0) {
@@ -40,7 +41,7 @@ async function seedUsers(options: {
 	const {
 		count = 4,
 		includeTestUser = true,
-		testUserEmail = 'john-doe@gmail.com',
+		testUserEmail = 'john-doe@acme.com',
 		testUserPassword = 'R0A4kP5Af&uCRYUw&K4H',
 	} = options
 
@@ -103,29 +104,29 @@ async function seedUsers(options: {
 	createdUserIds.push(...randomUsers.map((u) => u!.id))
 
 	console.log(
-		`✅ Created ${createdUserIds.length} users in auth.users (${includeTestUser ? '1 test + ' : ''}${count} random)`,
+		`Created ${createdUserIds.length} users in auth.users (${includeTestUser ? '1 test + ' : ''}${count} random)`,
 	)
 
 	// Wait for trigger to process
-	console.log('ℹ️  Waiting for trigger to synchronize accounts...')
+	console.log('Waiting for trigger to synchronize accounts...')
 	await delay(2000)
 
 	// Fetch synchronized accounts
 	const accounts = await db.select().from(schema.accounts)
 
 	if (accounts.length === 0) {
-		console.error('❌ FATAL: No accounts were synchronized!')
-		console.error('❌ The trigger may not be working correctly')
+		console.error('FATAL: No accounts were synchronized!')
+		console.error('The trigger may not be working correctly')
 		throw new Error('User sync trigger failed')
 	}
 
 	if (accounts.length !== createdUserIds.length) {
 		console.warn(
-			`⚠️  Warning: Expected ${createdUserIds.length} accounts, but got ${accounts.length}`,
+			`Warning: Expected ${createdUserIds.length} accounts, but got ${accounts.length}`,
 		)
 	}
 
-	console.log(`✅ ✓ ${accounts.length} accounts synchronized successfully`)
+	console.log(`${accounts.length} accounts synchronized successfully`)
 }
 
 async function seed() {
@@ -150,7 +151,7 @@ async function seed() {
 
 		console.log('Creating spaces...')
 		const spacesData = Array.from({ length: 3 }, (_, index) => ({
-			id: uuidv7(),
+			id: nanoid(),
 			name: faker.company.name(),
 			created_by: seededAccounts[index % seededAccounts.length].id,
 		}))

@@ -110,7 +110,7 @@ pnpm db:studio
 
 After seeding, log in with:
 
-- **Email:** `john-doe@gmail.com`
+- **Email:** `john-doe@acme.com`
 - **Password:** `R0A4kP5Af&uCRYUw&K4H`
 
 ---
@@ -132,7 +132,7 @@ After seeding, log in with:
    ```bash
    pnpm db:generate
    ```
-   
+
    Drizzle will prompt with a name suggestion. Press Enter or provide a custom name.
 
 3. **Review the generated SQL:**

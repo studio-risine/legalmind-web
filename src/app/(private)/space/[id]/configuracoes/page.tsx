@@ -12,7 +12,7 @@ export default async function ConfiguracoesPage({
 
 	const breadcrumb = [
 		{ label: 'Space', href: `/space/${spaceId}` },
-		{ label: 'Settings', href: `/space/${spaceId}/configuracoes` },
+		{ label: 'Configurações', href: `/space/${spaceId}/configuracoes` },
 	]
 
 	return (
