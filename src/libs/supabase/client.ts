@@ -1,8 +1,9 @@
+import { env } from '@infra/env'
 import { createBrowserClient } from '@supabase/ssr'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY
-
 export const createClient = () => {
-	return createBrowserClient(supabaseUrl!, supabaseKey!)
+	return createBrowserClient(
+		env.NEXT_PUBLIC_SUPABASE_URL!,
+		env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+	)
 }
