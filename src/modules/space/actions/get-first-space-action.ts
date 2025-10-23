@@ -24,7 +24,7 @@ export const getFirstSpaceAction = createValidatedAction<Input, Space>(
 	inputSchema,
 )(async ({ accountId }): Promise<GetFirstSpaceActionOutput> => {
 	try {
-		const [row] = await db
+		const [account] = await db
 			.select({
 				id: spaces.id,
 				name: spaces.name,
@@ -39,15 +39,15 @@ export const getFirstSpaceAction = createValidatedAction<Input, Space>(
 			.where(and(eq(accounts.id, accountId), isNull(spaces.deleted_at)))
 			.limit(1)
 
-		if (!row) {
+		if (!account) {
 			return {
 				success: false,
-				error: 'No space found for the specified account.',
+				error: 'No spaces found for this account.',
 			}
 		}
 
 		const spaceSelectSchema = createSelectSchema(spaces)
-		const space = spaceSelectSchema.parse(row)
+		const space = spaceSelectSchema.parse(account)
 
 		return {
 			success: true,
@@ -55,6 +55,7 @@ export const getFirstSpaceAction = createValidatedAction<Input, Space>(
 		}
 	} catch (error) {
 		console.error('Failed to get first space:', error)
+
 		return {
 			success: false,
 			error: error instanceof Error ? error.message : 'Unknown error occurred.',
