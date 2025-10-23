@@ -10,6 +10,8 @@ import {
 	RiWallet2Line,
 } from '@remixicon/react'
 
+export const PRIVATE_PATH_ROOT = 'space'
+
 /**
  * Generate navigation routes for the main sidebar
  * @param spaceId

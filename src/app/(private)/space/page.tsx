@@ -13,14 +13,13 @@ export default async function Page() {
 		redirect('/error?reason=unauthenticated')
 	}
 
-	const space = await getFirstSpaceAction({
+	const { data: space } = await getFirstSpaceAction({
 		accountId: user.id,
 	})
 
-	if (!space.success) {
+	if (!space) {
 		redirect('/onboarding')
 	}
-	console.log('Redirecting to space:', space)
 
-	// space ? redirect(`/space/${space.id}`) : redirect('/onboarding')
+	redirect(`/space/${space.id}`)
 }

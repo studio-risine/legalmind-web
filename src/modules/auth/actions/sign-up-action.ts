@@ -1,5 +1,6 @@
 'use server'
 
+import { PRIVATE_PATH_ROOT } from '@config/routes'
 import { createClient } from '@libs/supabase/server'
 import type { AuthError, User } from '@supabase/supabase-js'
 
@@ -27,7 +28,7 @@ export async function signUpWithEmail(
 		email: input.email,
 		password: input.password,
 		options: {
-			emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+			emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/${PRIVATE_PATH_ROOT}`,
 			data: {
 				display_name: input.firstName,
 				first_name: input.firstName,

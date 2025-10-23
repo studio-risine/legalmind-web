@@ -1,15 +1,14 @@
 import { MainContent } from '@components/ui/main-content'
 import { PageHeaderWithBreadcrumb } from '@components/ui/page-header-breadcrumb'
-import { Stats } from '@modules/space/components/stats-view'
 
-const breadcrumb = [{ label: 'Space', href: '/Space' }]
-
-export default async function Page({
-	params,
-}: {
+interface SpaceHomePageProps {
 	params: Promise<{ id: string }>
-}) {
-	const { id } = await params
+}
+
+export default async function SpaceHomePage({ params }: SpaceHomePageProps) {
+	const { id: spaceId } = await params
+
+	const breadcrumb = [{ label: 'Space', href: `/space/${spaceId}` }]
 
 	return (
 		<>
@@ -17,10 +16,11 @@ export default async function Page({
 
 			<MainContent size="2xl">
 				<div>
-					<h1 className="font-bold text-2xl text-foreground">Processos </h1>
-					<span>{id}</span>
+					<h1 className="font-bold text-2xl text-foreground">
+						Dashboard do Space
+					</h1>
+					<p className="text-muted-foreground">Space ID: {spaceId}</p>
 				</div>
-				<Stats />
 			</MainContent>
 		</>
 	)
