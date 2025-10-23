@@ -32,11 +32,6 @@ export const clientStatusEnum = pgEnum('client_status', [
 // ===== PROCESS ENUMS =====
 
 /**
- * Status
- * PENDING: Processo pendente de início
- * ACTIVE: Processo ativo/em andamento
- * SUSPENDED: Processo suspenso
- * ARCHIVED: Processo arquivado
  * CLOSED: Processo encerrado/finalizado
  */
 export const processStatusEnum = pgEnum('process_status', [
@@ -48,20 +43,15 @@ export const processStatusEnum = pgEnum('process_status', [
 ])
 
 /**
- * Área jurídica do processo
- * Baseado nas principais áreas do direito brasileiro
+ * Process access level enum
+ * PUBLIC: Visible to everyone in the space
+ * PRIVATE: Visible only to responsible user
+ * PARTICIPANTS: Visible to participants only
  */
-export const processAreaEnum = pgEnum('process_area', [
-	'CIVIL',
-	'CRIMINAL',
-	'TRABALHISTA',
-	'TRIBUTARIO',
-	'ADMINISTRATIVO',
-	'COMERCIAL',
-	'FAMILIA',
-	'SUCESSOES',
-	'CONSUMIDOR',
-	'AMBIENTAL',
+export const processAccessLevelEnum = pgEnum('process_access_level', [
+	'public',
+	'private',
+	'participants',
 ])
 
 /**

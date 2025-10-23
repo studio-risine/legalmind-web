@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, text } from 'drizzle-orm/pg-core'
+import { pgTable, text, uuid, varchar } from 'drizzle-orm/pg-core'
 import {
 	createInsertSchema,
 	createSelectSchema,
@@ -10,11 +10,15 @@ import { timestamps } from '../helpers'
 import { spacesToAccounts } from './spaces'
 
 export const accounts = pgTable('accounts', {
-	id: text('id').primaryKey(),
+	id: uuid('id').primaryKey(),
 	displayName: text('display_name'),
-	name: text('name'),
-	lastName: text('last_name'),
-	email: text('email').unique(),
+	fullName: text('full_name'),
+	email: varchar('email', { length: 255 }).unique(),
+	phoneNumber: varchar('phone_number', { length: 20 }),
+	profilePictureUrl: text('profile_picture_url'),
+
+	oabNumber: varchar('oab_number', { length: 20 }),
+	oabState: varchar('oab_state', { length: 2 }),
 
 	...timestamps,
 })

@@ -1,6 +1,6 @@
 import { nanoid } from '@libs/nanoid'
 import { relations } from 'drizzle-orm'
-import { pgTable, primaryKey, text } from 'drizzle-orm/pg-core'
+import { pgTable, primaryKey, text, uuid } from 'drizzle-orm/pg-core'
 import {
 	createInsertSchema,
 	createSelectSchema,
@@ -9,14 +9,18 @@ import {
 import type z from 'zod'
 import { timestamps } from '../helpers'
 import { accounts } from './accounts'
+import { spaceTypeEnum } from './enums'
 import { processes } from './processes'
 
 export const spaces = pgTable('spaces', {
-	id: text('id')
+	id: uuid('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
 	name: text('name'),
-	created_by: text('created_by')
+
+	type: spaceTypeEnum('type').notNull().default('INDIVIDUAL'),
+
+	createdBy: uuid('created_by')
 		.notNull()
 		.references(() => accounts.id),
 	...timestamps,
@@ -26,7 +30,7 @@ export const spacesRelations = relations(spaces, ({ one, many }) => ({
 	spacesToAccounts: many(spacesToAccounts),
 	processes: many(processes),
 	creator: one(accounts, {
-		fields: [spaces.created_by],
+		fields: [spaces.createdBy],
 		references: [accounts.id],
 	}),
 }))
@@ -34,10 +38,10 @@ export const spacesRelations = relations(spaces, ({ one, many }) => ({
 export const spacesToAccounts = pgTable(
 	'spaces_to_accounts',
 	{
-		spaceId: text('space_id')
+		spaceId: uuid('space_id')
 			.notNull()
 			.references(() => spaces.id),
-		accountId: text('account_id')
+		accountId: uuid('account_id')
 			.notNull()
 			.references(() => accounts.id),
 	},

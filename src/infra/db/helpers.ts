@@ -2,9 +2,8 @@ import { text, timestamp } from 'drizzle-orm/pg-core'
 import { uuidv7 } from 'uuidv7'
 
 export const timestamps = {
-	updated_at: timestamp(),
-	created_at: timestamp().defaultNow().notNull(),
-	deleted_at: timestamp(),
+	updatedAt: timestamp('updated_at'),
+	createdAt: timestamp('created_at').defaultNow().notNull(),
 }
 
 export const id = {

@@ -1,5 +1,5 @@
 {
-	"id": "28337145-622e-460d-bc81-c47ea097c624",
+	"id": "71ad2945-addf-40be-bd21-f7c2386c6d17",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "7",
 	"dialect": "postgresql",
@@ -10,7 +10,7 @@
 			"columns": {
 				"id": {
 					"name": "id",
-					"type": "text",
+					"type": "uuid",
 					"primaryKey": true,
 					"notNull": true
 				},
@@ -20,15 +20,39 @@
 					"primaryKey": false,
 					"notNull": false
 				},
-				"name": {
-					"name": "name",
+				"full_name": {
+					"name": "full_name",
 					"type": "text",
 					"primaryKey": false,
 					"notNull": false
 				},
 				"email": {
 					"name": "email",
+					"type": "varchar(255)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"phone_number": {
+					"name": "phone_number",
+					"type": "varchar(20)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"profile_picture_url": {
+					"name": "profile_picture_url",
 					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"oab_number": {
+					"name": "oab_number",
+					"type": "varchar(20)",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"oab_state": {
+					"name": "oab_state",
+					"type": "varchar(2)",
 					"primaryKey": false,
 					"notNull": false
 				},
@@ -44,12 +68,6 @@
 					"primaryKey": false,
 					"notNull": true,
 					"default": "now()"
-				},
-				"deleted_at": {
-					"name": "deleted_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
 				}
 			},
 			"indexes": {},
@@ -72,31 +90,9 @@
 			"columns": {
 				"id": {
 					"name": "id",
-					"type": "text",
+					"type": "uuid",
 					"primaryKey": true,
 					"notNull": true
-				},
-				"account_id": {
-					"name": "account_id",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"type": {
-					"name": "type",
-					"type": "client_type",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "'INDIVIDUAL'"
-				},
-				"status": {
-					"name": "status",
-					"type": "client_status",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "'ACTIVE'"
 				},
 				"name": {
 					"name": "name",
@@ -116,11 +112,33 @@
 					"primaryKey": false,
 					"notNull": false
 				},
-				"tax_id": {
-					"name": "tax_id",
+				"account_id": {
+					"name": "account_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"type": {
+					"name": "type",
+					"type": "client_type",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'INDIVIDUAL'"
+				},
+				"document_number": {
+					"name": "document_number",
 					"type": "varchar(32)",
 					"primaryKey": false,
 					"notNull": false
+				},
+				"status": {
+					"name": "status",
+					"type": "client_status",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'ACTIVE'"
 				},
 				"notes": {
 					"name": "notes",
@@ -140,12 +158,6 @@
 					"primaryKey": false,
 					"notNull": true,
 					"default": "now()"
-				},
-				"deleted_at": {
-					"name": "deleted_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
 				}
 			},
 			"indexes": {},
@@ -172,27 +184,9 @@
 			"columns": {
 				"id": {
 					"name": "id",
-					"type": "text",
+					"type": "uuid",
 					"primaryKey": true,
 					"notNull": true
-				},
-				"account_id": {
-					"name": "account_id",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"process_id": {
-					"name": "process_id",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"client_id": {
-					"name": "client_id",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
 				},
 				"title": {
 					"name": "title",
@@ -206,11 +200,23 @@
 					"primaryKey": false,
 					"notNull": false
 				},
-				"due_at": {
-					"name": "due_at",
-					"type": "timestamp",
+				"account_id": {
+					"name": "account_id",
+					"type": "uuid",
 					"primaryKey": false,
 					"notNull": true
+				},
+				"process_id": {
+					"name": "process_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"client_id": {
+					"name": "client_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": false
 				},
 				"type": {
 					"name": "type",
@@ -236,18 +242,6 @@
 					"notNull": true,
 					"default": "'MEDIUM'"
 				},
-				"google_event_id": {
-					"name": "google_event_id",
-					"type": "varchar(128)",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"completed_at": {
-					"name": "completed_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
-				},
 				"updated_at": {
 					"name": "updated_at",
 					"type": "timestamp",
@@ -261,8 +255,8 @@
 					"notNull": true,
 					"default": "now()"
 				},
-				"deleted_at": {
-					"name": "deleted_at",
+				"completed_at": {
+					"name": "completed_at",
 					"type": "timestamp",
 					"primaryKey": false,
 					"notNull": false
@@ -304,8 +298,8 @@
 			"checkConstraints": {},
 			"isRLSEnabled": false
 		},
-		"public.notifications": {
-			"name": "notifications",
+		"public.processes": {
+			"name": "processes",
 			"schema": "",
 			"columns": {
 				"id": {
@@ -314,137 +308,29 @@
 					"primaryKey": true,
 					"notNull": true
 				},
-				"account_id": {
-					"name": "account_id",
-					"type": "text",
+				"title": {
+					"name": "title",
+					"type": "varchar(255)",
 					"primaryKey": false,
 					"notNull": true
 				},
-				"user_id": {
-					"name": "user_id",
+				"description": {
+					"name": "description",
 					"type": "text",
 					"primaryKey": false,
 					"notNull": false
 				},
-				"deadline_id": {
-					"name": "deadline_id",
-					"type": "text",
+				"process_number": {
+					"name": "process_number",
+					"type": "varchar(50)",
 					"primaryKey": false,
 					"notNull": false
-				},
-				"channel": {
-					"name": "channel",
-					"type": "notification_channel",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"payload": {
-					"name": "payload",
-					"type": "jsonb",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"scheduled_at": {
-					"name": "scheduled_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"sent_at": {
-					"name": "sent_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"status": {
-					"name": "status",
-					"type": "notification_status",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "'PENDING'"
-				},
-				"error_message": {
-					"name": "error_message",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {
-				"notifications_account_id_accounts_id_fk": {
-					"name": "notifications_account_id_accounts_id_fk",
-					"tableFrom": "notifications",
-					"tableTo": "accounts",
-					"columnsFrom": ["account_id"],
-					"columnsTo": ["id"],
-					"onDelete": "no action",
-					"onUpdate": "no action"
-				},
-				"notifications_deadline_id_deadlines_id_fk": {
-					"name": "notifications_deadline_id_deadlines_id_fk",
-					"tableFrom": "notifications",
-					"tableTo": "deadlines",
-					"columnsFrom": ["deadline_id"],
-					"columnsTo": ["id"],
-					"onDelete": "no action",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"public.processes": {
-			"name": "processes",
-			"schema": "",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "text",
-					"primaryKey": true,
-					"notNull": true
 				},
 				"space_id": {
 					"name": "space_id",
-					"type": "text",
+					"type": "uuid",
 					"primaryKey": false,
 					"notNull": true
-				},
-				"client_id": {
-					"name": "client_id",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"cnj": {
-					"name": "cnj",
-					"type": "varchar(32)",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"court": {
-					"name": "court",
-					"type": "varchar(120)",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"title": {
-					"name": "title",
-					"type": "varchar(160)",
-					"primaryKey": false,
-					"notNull": false
 				},
 				"status": {
 					"name": "status",
@@ -454,15 +340,21 @@
 					"notNull": true,
 					"default": "'ACTIVE'"
 				},
-				"tags": {
-					"name": "tags",
-					"type": "jsonb",
+				"client_id": {
+					"name": "client_id",
+					"type": "uuid",
 					"primaryKey": false,
 					"notNull": false
 				},
-				"archived_at": {
-					"name": "archived_at",
-					"type": "timestamp",
+				"assigned_id": {
+					"name": "assigned_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"tags": {
+					"name": "tags",
+					"type": "jsonb",
 					"primaryKey": false,
 					"notNull": false
 				},
@@ -478,12 +370,6 @@
 					"primaryKey": false,
 					"notNull": true,
 					"default": "now()"
-				},
-				"deleted_at": {
-					"name": "deleted_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
 				}
 			},
 			"indexes": {},
@@ -505,58 +391,17 @@
 					"columnsTo": ["id"],
 					"onDelete": "no action",
 					"onUpdate": "no action"
+				},
+				"processes_assigned_id_accounts_id_fk": {
+					"name": "processes_assigned_id_accounts_id_fk",
+					"tableFrom": "processes",
+					"tableTo": "accounts",
+					"columnsFrom": ["assigned_id"],
+					"columnsTo": ["id"],
+					"onDelete": "no action",
+					"onUpdate": "no action"
 				}
 			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"public.profiles": {
-			"name": "profiles",
-			"schema": "",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "text",
-					"primaryKey": true,
-					"notNull": true
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"deleted_at": {
-					"name": "deleted_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"email": {
-					"name": "email",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"name": {
-					"name": "name",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {},
 			"policies": {},
@@ -569,7 +414,7 @@
 			"columns": {
 				"id": {
 					"name": "id",
-					"type": "text",
+					"type": "uuid",
 					"primaryKey": true,
 					"notNull": true
 				},
@@ -579,9 +424,17 @@
 					"primaryKey": false,
 					"notNull": false
 				},
+				"type": {
+					"name": "type",
+					"type": "space_type",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "'INDIVIDUAL'"
+				},
 				"created_by": {
 					"name": "created_by",
-					"type": "text",
+					"type": "uuid",
 					"primaryKey": false,
 					"notNull": true
 				},
@@ -597,12 +450,6 @@
 					"primaryKey": false,
 					"notNull": true,
 					"default": "now()"
-				},
-				"deleted_at": {
-					"name": "deleted_at",
-					"type": "timestamp",
-					"primaryKey": false,
-					"notNull": false
 				}
 			},
 			"indexes": {},
@@ -629,13 +476,13 @@
 			"columns": {
 				"space_id": {
 					"name": "space_id",
-					"type": "text",
+					"type": "uuid",
 					"primaryKey": false,
 					"notNull": true
 				},
 				"account_id": {
 					"name": "account_id",
-					"type": "text",
+					"type": "uuid",
 					"primaryKey": false,
 					"notNull": true
 				}
@@ -718,21 +565,10 @@
 			"schema": "public",
 			"values": ["PENDING", "SENT", "DELIVERED", "READ", "FAILED", "CANCELLED"]
 		},
-		"public.process_area": {
-			"name": "process_area",
+		"public.process_access_level": {
+			"name": "process_access_level",
 			"schema": "public",
-			"values": [
-				"CIVIL",
-				"CRIMINAL",
-				"TRABALHISTA",
-				"TRIBUTARIO",
-				"ADMINISTRATIVO",
-				"COMERCIAL",
-				"FAMILIA",
-				"SUCESSOES",
-				"CONSUMIDOR",
-				"AMBIENTAL"
-			]
+			"values": ["public", "private", "participants"]
 		},
 		"public.process_priority": {
 			"name": "process_priority",

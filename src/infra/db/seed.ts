@@ -134,6 +134,7 @@ async function seed() {
 
 	try {
 		console.log('Cleaning database...')
+		await db.delete(schema.processParticipants)
 		await db.delete(schema.processes)
 		await db.delete(schema.clients)
 		await db.delete(spacesToAccounts)
@@ -218,6 +219,19 @@ async function seed() {
 					'ARCHIVED',
 					'CLOSED',
 				]
+
+				const accessLevels = ['public', 'private', 'participants']
+
+				const actionTypes = [
+					'Procedimento Do Juizado Especial Civel',
+					'Ação de Cobrança',
+					'Ação de Despejo',
+					'Ação Trabalhista',
+					'Execução Fiscal',
+					'Mandado de Segurança',
+					'Ação de Indenização',
+				]
+
 				const tags = faker.helpers.arrayElements(
 					[
 						'CIVIL',
@@ -232,18 +246,62 @@ async function seed() {
 					{ min: 1, max: 3 },
 				)
 
+				// Generate fake CNJ number format: NNNNNNN-DD.AAAA.J.TR.OOOO
+				const sequencial = faker.string.numeric(7)
+				const dv = faker.string.numeric(2)
+				const year = faker.date
+					.between({ from: '2020-01-01', to: '2025-01-01' })
+					.getFullYear()
+				const segment = faker.helpers.arrayElement([
+					'1',
+					'2',
+					'3',
+					'4',
+					'5',
+					'6',
+					'8',
+				])
+				const tribunal = faker.string.numeric(2)
+				const origin = faker.string.numeric(4)
+				const processNumber = `${sequencial}-${dv}.${year}.${segment}.${tribunal}.${origin}`
+
 				return {
-					space_id: faker.helpers.arrayElement(seededSpaces).id, // Processo pertence a um space
+					space_id: faker.helpers.arrayElement(seededSpaces).id,
 					client_id: client.id,
-					cnj: faker.string.numeric(20),
-					court: faker.helpers.arrayElement(courtTypes),
-					title: faker.lorem.sentence({ min: 3, max: 8 }),
+					responsible_id: faker.helpers.arrayElement(seededAccounts).id,
+					title: `${client.name} x ${faker.company.name()}`,
+					process_number: processNumber,
+					action: faker.helpers.arrayElement(actionTypes),
+					court: `${faker.number.int({ min: 1, max: 50 })}ª ${faker.helpers.arrayElement(courtTypes)} ${faker.location.city()}`,
+					instance: faker.helpers.arrayElement([
+						'1º Grau',
+						'2º Grau',
+						'3º Grau',
+					]),
+					lawsuit_value_cents: faker.number.int({ min: 0, max: 10000000 }), // 0 to 100,000 reais in cents
+					sentence_value_cents: faker.number.int({ min: 0, max: 5000000 }), // 0 to 50,000 reais in cents
+					distribution_date: faker.date
+						.between({ from: '2020-01-01', to: '2025-01-01' })
+						.toISOString()
+						.split('T')[0],
+					tribunal_link: faker.helpers.maybe(() => faker.internet.url(), {
+						probability: 0.7,
+					}),
+					object: faker.lorem.paragraph(),
+					observations: faker.helpers.maybe(() => faker.lorem.sentences(2), {
+						probability: 0.6,
+					}),
 					status: faker.helpers.arrayElement(processStatuses) as
 						| 'PENDING'
 						| 'ACTIVE'
 						| 'SUSPENDED'
 						| 'ARCHIVED'
 						| 'CLOSED',
+					access_level: faker.helpers.arrayElement(accessLevels) as
+						| 'public'
+						| 'private'
+						| 'participants',
+					cnj: processNumber, // Keep legacy field for backward compatibility
 					tags: tags,
 					archived_at: faker.helpers.maybe(() => faker.date.past(), {
 						probability: 0.2,
@@ -258,12 +316,48 @@ async function seed() {
 			.returning()
 		console.log(`${seededProcesses.length} processes created`)
 
+		console.log('Creating process participants...')
+		const participantsData = seededProcesses.flatMap((process) => {
+			const roles = [
+				'author',
+				'author_lawyer',
+				'defendant',
+				'defendant_lawyer',
+				'third_party',
+			]
+			const participantCount = faker.number.int({ min: 2, max: 5 })
+
+			return Array.from({ length: participantCount }, (_, index) => {
+				const role = faker.helpers.arrayElement(roles)
+				const isMainClient = index === 0 && role === 'author' // First participant as main client if author
+
+				return {
+					process_id: process.id,
+					name: faker.person.fullName(),
+					role: role as
+						| 'author'
+						| 'author_lawyer'
+						| 'defendant'
+						| 'defendant_lawyer'
+						| 'third_party',
+					is_main_client: isMainClient,
+				}
+			})
+		})
+
+		const seededParticipants = await db
+			.insert(schema.processParticipants)
+			.values(participantsData)
+			.returning()
+		console.log(`${seededParticipants.length} process participants created`)
+
 		console.log('\n🎉 Seed is done!')
 		console.log('Summary:')
 		console.log(`   - Accounts: ${seededAccounts.length}`)
 		console.log(`   - Spaces: ${seededSpaces.length}`)
 		console.log(`   - Clients: ${seededClients.length}`)
 		console.log(`   - Processes: ${seededProcesses.length}`)
+		console.log(`   - Process Participants: ${seededParticipants.length}`)
 	} catch (error) {
 		console.error('Erro durante o seed:', error)
 		throw error

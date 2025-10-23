@@ -5,22 +5,8 @@
 		{
 			"idx": 0,
 			"version": "7",
-			"when": 1761144894739,
-			"tag": "0000_mighty_jigsaw",
-			"breakpoints": true
-		},
-		{
-			"idx": 1,
-			"version": "7",
-			"when": 1761162399649,
-			"tag": "0001_add_last_name_to_accounts",
-			"breakpoints": true
-		},
-		{
-			"idx": 2,
-			"version": "7",
-			"when": 1761162400000,
-			"tag": "0002_sync_user_trigger",
+			"when": 1761254116977,
+			"tag": "0000_natural_black_crow",
 			"breakpoints": true
 		}
 	]
