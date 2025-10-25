@@ -1,4 +1,5 @@
-import { primaryKey, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { primaryKey, text, uuid } from 'drizzle-orm/pg-core'
+import { createdAtTimestamp } from '../helpers'
 import { accounts } from './accounts'
 import { core } from './schema'
 import { spaces } from './spaces'
@@ -12,9 +13,7 @@ export const spacesToAccounts = core.table(
 		accountId: uuid('account_id')
 			.notNull()
 			.references(() => accounts.userId, { onDelete: 'cascade' }),
-		createdAt: timestamp('created_at', { withTimezone: true })
-			.notNull()
-			.defaultNow(),
+		createdAt: createdAtTimestamp,
 	},
 	(t) => ({
 		pk: primaryKey({ columns: [t.spaceId, t.accountId] }),

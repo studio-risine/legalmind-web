@@ -1,6 +1,7 @@
-import { char, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { char, text, uuid } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { users } from '../auth'
+import { timestamps } from '../helpers'
 import { core } from './schema'
 
 export const accounts = core.table('accounts', {
@@ -14,12 +15,7 @@ export const accounts = core.table('accounts', {
 	profilePictureUrl: text('profile_picture_url'),
 	oabNumber: text('oab_number').notNull(),
 	oabState: char('oab_state', { length: 2 }).notNull(),
-	createdAt: timestamp('created_at', { withTimezone: true })
-		.notNull()
-		.defaultNow(),
-	updatedAt: timestamp('updated_at', { withTimezone: true })
-		.notNull()
-		.defaultNow(),
+	...timestamps,
 })
 
 export const insertAccountSchema = createInsertSchema(accounts)

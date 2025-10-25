@@ -432,7 +432,7 @@ const [
   db.select({ count: count() })
     .from(clients)
     .where(eq(clients.accountId, accountId)),
-  
+
   db.select({ count: count() })
     .from(processes)
     .where(
@@ -441,7 +441,7 @@ const [
         eq(processes.status, 'ACTIVE')
       )
     ),
-  
+
   db.query.spacesToAccounts.findMany({
     where: (sta, { eq }) => eq(sta.accountId, accountId),
     with: {
@@ -510,7 +510,7 @@ await db.insert(notes).values({
 await db.transaction(async (tx) => {
   // Update process status
   await tx.update(processes)
-    .set({ 
+    .set({
       status: 'CLOSED',
       updatedAt: new Date(),
     })
@@ -535,6 +535,140 @@ Todos os enums estão centralizados em `core/enums.ts`:
 - **processStatusEnum**: `PENDING`, `ACTIVE`, `SUSPENDED`, `ARCHIVED`, `CLOSED`
 - **clientTypeEnum**: `INDIVIDUAL`, `COMPANY`
 - **clientStatusEnum**: `LEAD`, `PROSPECT`, `ACTIVE`, `INACTIVE`, `ARCHIVED`
+
+## 🔧 Column Helpers
+
+To reduce duplication and maintain consistency, use the column helpers defined in `helpers.ts`:
+
+### Available Helpers
+
+#### 1. `uuidPrimaryKey`
+UUID primary key with auto-generation using `gen_random_uuid()`.
+
+```typescript
+import { uuidPrimaryKey } from './helpers'
+
+export const myTable = core.table('my_table', {
+  id: uuidPrimaryKey,
+  // ... other columns
+})
+```
+
+#### 2. `timestamps`
+Standard `createdAt` and `updatedAt` columns with timezone.
+
+```typescript
+import { timestamps } from './helpers'
+
+export const myTable = core.table('my_table', {
+  id: uuidPrimaryKey,
+  name: text('name').notNull(),
+  ...timestamps, // Adds createdAt and updatedAt
+})
+```
+
+#### 3. `createdAtTimestamp`
+Single `createdAt` timestamp (for junction tables or immutable records).
+
+```typescript
+import { createdAtTimestamp } from './helpers'
+
+export const junctionTable = core.table('junction', {
+  entityA: uuid('entity_a').notNull(),
+  entityB: uuid('entity_b').notNull(),
+  createdAt: createdAtTimestamp,
+})
+```
+
+#### 4. `createdByField`
+References `auth.users.id` for audit trail (who created the record).
+
+```typescript
+import { createdByField } from './helpers'
+
+export const myTable = core.table('my_table', {
+  id: uuidPrimaryKey,
+  createdBy: createdByField,
+})
+```
+
+#### 5. `auditFields`
+Complete audit trail: `createdAt`, `createdBy`, and `updatedAt`.
+
+```typescript
+import { auditFields } from './helpers'
+
+export const myTable = core.table('my_table', {
+  id: uuidPrimaryKey,
+  title: text('title').notNull(),
+  ...auditFields, // Adds createdAt, createdBy, updatedAt
+})
+```
+
+#### 6. `minimalAuditFields`
+Minimal audit: just `createdAt` and `createdBy` (for immutable records).
+
+```typescript
+import { minimalAuditFields } from './helpers'
+
+export const notes = core.table('notes', {
+  id: uuidPrimaryKey,
+  content: text('content').notNull(),
+  ...minimalAuditFields, // Adds createdAt and createdBy
+})
+```
+
+### Benefits of Using Helpers
+
+✅ **Consistency**: All timestamps use the same configuration
+✅ **DRY Principle**: No repetition of common patterns
+✅ **Maintainability**: Change once, applies everywhere
+✅ **Type Safety**: Helpers are fully typed
+✅ **Readability**: Intent is clear from helper names
+✅ **Flexibility**: Mix helpers with custom fields
+
+### When to Use Helpers
+
+**Use helpers when:**
+- Adding standard audit fields (timestamps, createdBy)
+- Creating UUID primary keys
+- Building junction tables
+- Following established patterns
+
+**Use custom fields when:**
+- Need different column names
+- Require different defaults or constraints
+- Implementing non-standard patterns
+- Need special configuration (e.g., nullable, unique)
+
+### Migration Guide
+
+To refactor existing tables:
+
+```typescript
+// BEFORE
+export const clients = core.table('clients', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+})
+
+// AFTER
+import { uuidPrimaryKey, timestamps } from './helpers'
+
+export const clients = core.table('clients', {
+  id: uuidPrimaryKey,
+  name: text('name').notNull(),
+  ...timestamps,
+})
+```
+
+See more examples in: `src/infra/db/examples/helpers-usage.ts`
 
 ## 🔍 Views
 

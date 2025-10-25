@@ -1,11 +1,12 @@
-import { text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { text, uuid } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
+import { timestamps, uuidPrimaryKey } from '../helpers'
 import { accounts } from './accounts'
 import { clientStatusEnum, clientTypeEnum } from './enums'
 import { core } from './schema'
 
 export const clients = core.table('clients', {
-	id: uuid('id').primaryKey().defaultRandom(),
+	id: uuidPrimaryKey,
 	accountId: uuid('account_id')
 		.notNull()
 		.references(() => accounts.userId, { onDelete: 'cascade' }),
@@ -15,12 +16,7 @@ export const clients = core.table('clients', {
 	type: clientTypeEnum('type').notNull(),
 	documentNumber: text('document_number').notNull(),
 	status: clientStatusEnum('status').notNull(),
-	createdAt: timestamp('created_at', { withTimezone: true })
-		.notNull()
-		.defaultNow(),
-	updatedAt: timestamp('updated_at', { withTimezone: true })
-		.notNull()
-		.defaultNow(),
+	...timestamps,
 })
 
 export const insertClientSchema = createInsertSchema(clients)

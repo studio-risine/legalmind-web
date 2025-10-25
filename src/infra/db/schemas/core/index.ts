@@ -1,3 +1,7 @@
+// Re-export helpers for convenience
+export * from '../helpers'
+
+// Re-export all tables and relations for convenience
 export * from './accounts'
 export * from './accounts.relations'
 export * from './clients'
