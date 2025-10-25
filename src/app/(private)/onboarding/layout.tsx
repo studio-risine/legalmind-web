@@ -1,5 +1,4 @@
 import SpaceLayout from '@modules/space/layouts/default'
-import { redirect } from 'next/navigation'
 import type { ReactNode } from 'react'
 
 interface LayoutProps {
@@ -12,10 +11,6 @@ export default async function Layout({
 	params,
 }: LayoutProps) {
 	const { id: spaceId } = await params
-
-	if (!spaceId) {
-		redirect('/onboarding?reason=new-space')
-	}
 
 	return (
 		<SpaceLayout spaceId={spaceId}>{children}</SpaceLayout>

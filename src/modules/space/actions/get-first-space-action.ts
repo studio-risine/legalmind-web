@@ -4,7 +4,7 @@ import { db } from '@infra/db'
 import { accounts } from '@infra/db/schemas/accounts'
 import { type Space, spaces, spacesToAccounts } from '@infra/db/schemas/spaces'
 import { createValidatedAction } from '@libs/zod/action-factory'
-import { and, eq, isNull } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
@@ -15,9 +15,9 @@ const inputSchema = z.object({
 export type Input = z.input<typeof inputSchema>
 
 export interface GetFirstSpaceActionOutput {
+	data?: Space
 	success: boolean
 	error?: string
-	data?: Space
 }
 
 export const getFirstSpaceAction = createValidatedAction<Input, Space>(
@@ -28,15 +28,14 @@ export const getFirstSpaceAction = createValidatedAction<Input, Space>(
 			.select({
 				id: spaces.id,
 				name: spaces.name,
-				created_by: spaces.created_by,
-				created_at: spaces.created_at,
-				updated_at: spaces.updated_at,
-				deleted_at: spaces.deleted_at,
+				created_by: spaces.createdBy,
+				created_at: spaces.createdAt,
+				updated_at: spaces.updatedAt,
 			})
 			.from(spaces)
 			.innerJoin(spacesToAccounts, eq(spaces.id, spacesToAccounts.spaceId))
 			.innerJoin(accounts, eq(spacesToAccounts.accountId, accounts.id))
-			.where(and(eq(accounts.id, accountId), isNull(spaces.deleted_at)))
+			.where(and(eq(accounts.id, accountId)))
 			.limit(1)
 
 		if (!account) {

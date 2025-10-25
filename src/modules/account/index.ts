@@ -1,11 +1,6 @@
 // Actions
+export * from './actions/get-account-by-id-action'
+export * from './actions/update-account-action'
 
-// Types
-export type {
-	Account,
-	AccountInsert,
-	AccountUpdate,
-} from '@infra/db/schemas/accounts'
-export * from './actions'
 // Hooks
 export * from './hooks'

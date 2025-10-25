@@ -2,8 +2,7 @@
 export {
 	useAccountMutations,
 	useDeleteAccount,
-	useInsertAccount,
-	useUpdateAccount,
+	useInsertAccount
 } from './use-account-mutations'
 // Types
 export type {

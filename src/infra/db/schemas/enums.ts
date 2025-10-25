@@ -115,7 +115,6 @@ export const notificationStatusEnum = pgEnum('notification_status', [
 
 export const spaceTypeEnum = pgEnum('space_type', [
 	'INDIVIDUAL', // Espaço individual
-	'TEAM', // Equipe/time
 	'FIRM', // Escritório
 	'DEPARTMENT', // Departamento
 ])

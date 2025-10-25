@@ -3,7 +3,8 @@
 import type { Account } from '@infra/db/schemas/accounts'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { useQuery } from '@tanstack/react-query'
-import { getAccountByIdAction, listAccountsAction } from '../actions'
+import { getAccountByIdAction } from '../actions/get-account-by-id-action'
+import { listAccountsAction } from '../actions/list-accounts-action'
 
 // =====================
 // Query: by ID

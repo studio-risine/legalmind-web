@@ -36,7 +36,7 @@ describe('Get Account By ID Action', () => {
 			} as never)
 
 			// Act
-			const result = await getAccountByIdAction(input)
+			const result = await getAccountByIdAction({ accountId: input.id })
 
 			// Assert
 			expect(result.success).toBe(true)
@@ -67,7 +67,7 @@ describe('Get Account By ID Action', () => {
 			} as never)
 
 			// Act
-			const result = await getAccountByIdAction(input)
+			const result = await getAccountByIdAction({ accountId: input.id })
 
 			// Assert
 			expect(result.success).toBe(true)
@@ -87,7 +87,7 @@ describe('Get Account By ID Action', () => {
 			const input = { id: '' }
 
 			// Act
-			const result = await getAccountByIdAction(input)
+			const result = await getAccountByIdAction({ accountId: input.id })
 
 			// Assert
 			expect(result.success).toBe(false)
@@ -109,7 +109,7 @@ describe('Get Account By ID Action', () => {
 			} as never)
 
 			// Act
-			const result = await getAccountByIdAction(input)
+			const result = await getAccountByIdAction({ accountId: input.id })
 
 			// Assert
 			expect(result.success).toBe(false)
@@ -133,7 +133,7 @@ describe('Get Account By ID Action', () => {
 			} as never)
 
 			// Act
-			const result = await getAccountByIdAction(input)
+			const result = await getAccountByIdAction({ accountId: input.id })
 
 			// Assert
 			expect(result.success).toBe(false)
@@ -158,7 +158,7 @@ describe('Get Account By ID Action', () => {
 			} as never)
 
 			// Act
-			const result = await getAccountByIdAction(input)
+			const result = await getAccountByIdAction({ accountId: input.id })
 
 			// Assert
 			expect(result.success).toBe(false)
@@ -188,7 +188,7 @@ describe('Get Account By ID Action', () => {
 			} as never)
 
 			// Act
-			const result = await getAccountByIdAction(input)
+			const result = await getAccountByIdAction({ accountId: input.id })
 
 			// Assert
 			expect(result.success).toBe(true)
@@ -218,7 +218,7 @@ describe('Get Account By ID Action', () => {
 			} as never)
 
 			// Act
-			const result = await getAccountByIdAction(input)
+			const result = await getAccountByIdAction({ accountId: input.id })
 
 			// Assert
 			expect(result.success).toBe(true)

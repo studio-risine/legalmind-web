@@ -13,7 +13,7 @@ import { spaceTypeEnum } from './enums'
 import { processes } from './processes'
 
 export const spaces = pgTable('spaces', {
-	id: uuid('id')
+	id: text('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
 	name: text('name'),
@@ -38,7 +38,7 @@ export const spacesRelations = relations(spaces, ({ one, many }) => ({
 export const spacesToAccounts = pgTable(
 	'spaces_to_accounts',
 	{
-		spaceId: uuid('space_id')
+		spaceId: text('space_id')
 			.notNull()
 			.references(() => spaces.id),
 		accountId: uuid('account_id')

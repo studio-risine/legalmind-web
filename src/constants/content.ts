@@ -1,3 +1,10 @@
+// OAB States in Brazil
+export const OAB_STATES = [
+	'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+	'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
+	'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+]
+
 export const JUDICIAL_SEGMENTS = {
 	'1': 'Supremo Tribunal Federal (STF)',
 	'2': 'Conselho Nacional de Justiça (CNJ)',
@@ -118,6 +125,7 @@ export const CNJ_VALIDATION_RULES = {
 	ORIGIN_LENGTH: 4,
 } as const
 
+export type OABStateType = keyof typeof OAB_STATES
 export type JudicialSegmentType = keyof typeof JUDICIAL_SEGMENTS
 export type StateCourtCodeType = keyof typeof STATE_COURT_CODES
 export type FederalCourtCodeType = keyof typeof FEDERAL_COURT_CODES

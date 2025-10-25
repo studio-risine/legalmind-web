@@ -10,7 +10,7 @@ CREATE TYPE "public"."process_priority" AS ENUM('LOW', 'MEDIUM', 'HIGH', 'URGENT
 CREATE TYPE "public"."process_status" AS ENUM('PENDING', 'ACTIVE', 'SUSPENDED', 'ARCHIVED', 'CLOSED');--> statement-breakpoint
 CREATE TYPE "public"."profile_type" AS ENUM('ADMIN', 'LAWYER', 'ASSISTANT', 'CLIENT', 'PARALEGAL');--> statement-breakpoint
 CREATE TYPE "public"."space_role" AS ENUM('OWNER', 'ADMIN', 'LAWYER', 'ASSISTANT', 'CLIENT', 'VIEWER');--> statement-breakpoint
-CREATE TYPE "public"."space_type" AS ENUM('INDIVIDUAL', 'TEAM', 'FIRM', 'DEPARTMENT');--> statement-breakpoint
+CREATE TYPE "public"."space_type" AS ENUM('INDIVIDUAL', 'FIRM', 'DEPARTMENT');--> statement-breakpoint
 CREATE TABLE "accounts" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"display_name" text,
@@ -59,7 +59,7 @@ CREATE TABLE "processes" (
 	"title" varchar(255) NOT NULL,
 	"description" text,
 	"process_number" varchar(50),
-	"space_id" uuid NOT NULL,
+	"space_id" text NOT NULL,
 	"status" "process_status" DEFAULT 'ACTIVE' NOT NULL,
 	"client_id" uuid,
 	"assigned_id" uuid NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE "processes" (
 );
 --> statement-breakpoint
 CREATE TABLE "spaces" (
-	"id" uuid PRIMARY KEY NOT NULL,
+	"id" text PRIMARY KEY NOT NULL,
 	"name" text,
 	"type" "space_type" DEFAULT 'INDIVIDUAL' NOT NULL,
 	"created_by" uuid NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE "spaces" (
 );
 --> statement-breakpoint
 CREATE TABLE "spaces_to_accounts" (
-	"space_id" uuid NOT NULL,
+	"space_id" text NOT NULL,
 	"account_id" uuid NOT NULL,
 	CONSTRAINT "spaces_to_accounts_space_id_account_id_pk" PRIMARY KEY("space_id","account_id")
 );

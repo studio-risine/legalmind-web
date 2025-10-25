@@ -5,8 +5,7 @@ import { createClient } from '@libs/supabase/server'
 import type { AuthError, User } from '@supabase/supabase-js'
 
 export interface AuthSignUpInput {
-	firstName: string
-	lastName?: string
+	displayName: string
 	email: string
 	password: string
 }
@@ -30,9 +29,7 @@ export async function signUpWithEmail(
 		options: {
 			emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/${PRIVATE_PATH_ROOT}`,
 			data: {
-				display_name: input.firstName,
-				first_name: input.firstName,
-				last_name: input.lastName,
+				display_name: input.displayName,
 			},
 		},
 	})

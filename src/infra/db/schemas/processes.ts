@@ -19,7 +19,7 @@ export const processes = pgTable('processes', {
 
 	processNumber: varchar('process_number', { length: 50 }),
 
-	space_id: uuid('space_id')
+	space_id: text('space_id')
 		.notNull()
 		.references(() => spaces.id),
 

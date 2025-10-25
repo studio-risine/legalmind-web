@@ -28,7 +28,7 @@ const schema = z.object({
 	}),
 })
 
-export type SignInFormData = z.infer<typeof schema>
+export type SignInFormData = z.input<typeof schema>
 
 export function SignInPasswordForm() {
 	const [isPending, startTransition] = useTransition()

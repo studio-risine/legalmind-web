@@ -14,7 +14,7 @@ export function createValidatedAction<TInput, TOutput>(
 	return <TReturn extends ActionResponse<TOutput>>(
 		action: (input: TInput) => Promise<TReturn>,
 	) => {
-		return async (rawInput: unknown): Promise<TReturn> => {
+		return async (rawInput: TInput): Promise<TReturn> => {
 			const parseResult = inputSchema.safeParse(rawInput)
 
 			if (!parseResult.success) {
@@ -43,7 +43,8 @@ export function createValidatedActionWithOutput<TInput, TOutput>(
 	outputSchema: ZodSchema<TOutput>,
 ) {
 	return (action: (input: TInput) => Promise<TOutput>) => {
-		return async (rawInput: unknown): Promise<ActionResponse<TOutput>> => {
+
+		return async (rawInput: TInput): Promise<ActionResponse<TOutput>> => {
 			const inputParseResult = inputSchema.safeParse(rawInput)
 
 			if (!inputParseResult.success) {
