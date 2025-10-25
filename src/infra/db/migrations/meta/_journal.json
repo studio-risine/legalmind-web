@@ -15,6 +15,13 @@
 			"when": 1761359157750,
 			"tag": "0001_petite_living_lightning",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1761362647355,
+			"tag": "0002_plain_diamondback",
+			"breakpoints": true
 		}
 	]
 }

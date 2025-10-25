@@ -1,0 +1,1 @@
+ALTER TABLE "core"."spaces" ALTER COLUMN "id" SET DEFAULT 'xmg5ydd6kah4';

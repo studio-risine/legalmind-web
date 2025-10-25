@@ -1,3 +1,4 @@
+import { nanoid } from '@libs/nanoid'
 import { text, timestamp, uuid } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { users } from '../auth'
@@ -5,7 +6,7 @@ import { spaceTypeEnum } from './enums'
 import { core } from './schema'
 
 export const spaces = core.table('spaces', {
-	id: text('id').primaryKey(),
+	id: text('id').primaryKey().default(nanoid()),
 	name: text('name').notNull(),
 	createdAt: timestamp('created_at', { withTimezone: true })
 		.notNull()
