@@ -17,7 +17,7 @@ export const processes = core.table('processes', {
 	status: processStatusEnum('status').notNull().default('ACTIVE'),
 	assignedId: uuid('assigned_id')
 		.notNull()
-		.references(() => accounts.userId, { onDelete: 'set default' }),
+		.references(() => accounts.id, { onDelete: 'set default' }),
 	...auditFields,
 })
 

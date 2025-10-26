@@ -1,12 +1,18 @@
 services:
-  pg:
-    image: bitnami/postgresql:latest
-    container_name: legalmind_pg
-    ports:
-      - '5432:5432'
+  db:
+    image: supabase/postgres:latest
     environment:
-      - POSTGRES_USER=docker
-      - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=legalmind_pg
-    volumes:
-      - './docker:/docker-entrypoint-initdb.d'
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+
+  api:
+    image: supabase/gotrue:latest
+    environment:
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_URL: postgres://postgres:postgres@db:5432/postgres
+    ports:
+      - "9999:9999"
+

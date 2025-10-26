@@ -12,7 +12,7 @@ export const spacesToAccounts = core.table(
 			.references(() => spaces.id, { onDelete: 'cascade' }),
 		accountId: uuid('account_id')
 			.notNull()
-			.references(() => accounts.userId, { onDelete: 'cascade' }),
+			.references(() => accounts.id, { onDelete: 'cascade' }),
 		createdAt: createdAtTimestamp,
 	},
 	(t) => ({

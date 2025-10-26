@@ -5,50 +5,15 @@
 		{
 			"idx": 0,
 			"version": "7",
-			"when": 1761358123864,
-			"tag": "0000_many_rocket_raccoon",
+			"when": 1761515166891,
+			"tag": "0000_flat_mariko_yashida",
 			"breakpoints": true
 		},
 		{
 			"idx": 1,
 			"version": "7",
-			"when": 1761359157750,
-			"tag": "0001_petite_living_lightning",
-			"breakpoints": true
-		},
-		{
-			"idx": 2,
-			"version": "7",
-			"when": 1761362647355,
-			"tag": "0002_plain_diamondback",
-			"breakpoints": true
-		},
-		{
-			"idx": 3,
-			"version": "7",
-			"when": 1761363179953,
-			"tag": "0003_workable_mandrill",
-			"breakpoints": true
-		},
-		{
-			"idx": 4,
-			"version": "7",
-			"when": 1761363301112,
-			"tag": "0004_left_katie_power",
-			"breakpoints": true
-		},
-		{
-			"idx": 5,
-			"version": "7",
-			"when": 1761363618565,
-			"tag": "0005_absent_puff_adder",
-			"breakpoints": true
-		},
-		{
-			"idx": 6,
-			"version": "7",
-			"when": 1761363796717,
-			"tag": "0006_dusty_ultimates",
+			"when": 1761515380320,
+			"tag": "0001_youthful_medusa",
 			"breakpoints": true
 		}
 	]

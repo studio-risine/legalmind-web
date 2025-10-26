@@ -1,13 +1,12 @@
 import { char, text, uuid } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { users } from '../auth'
-import { timestamps } from '../helpers'
+import { timestamps, uuidPrimaryKey } from '../helpers'
 import { core } from './schema'
 
 export const accounts = core.table('accounts', {
-	userId: uuid('user_id')
-		.primaryKey()
-		.references(() => users.id, { onDelete: 'cascade' }),
+	id: uuidPrimaryKey,
+	userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
 	fullName: text('full_name').notNull(),
 	displayName: text('display_name').notNull(),
 	email: text('email').notNull().unique(),

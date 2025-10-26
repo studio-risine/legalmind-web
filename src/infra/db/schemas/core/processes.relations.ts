@@ -1,5 +1,4 @@
 import { relations } from 'drizzle-orm'
-import { users } from '../auth/users'
 import { accounts } from './accounts'
 import { processes } from './processes'
 import { spaces } from './spaces'
@@ -14,11 +13,11 @@ export const processesRelations = relations(processes, ({ one }) => ({
 	assignedTo: one(accounts, {
 		relationName: 'accountAssignedProcesses',
 		fields: [processes.assignedId],
-		references: [accounts.userId],
+		references: [accounts.id],
 	}),
 	// Many-to-one: process to a user (creator)
-	creator: one(users, {
+	creator: one(accounts, {
 		fields: [processes.createdBy],
-		references: [users.id],
+		references: [accounts.id],
 	}),
 }))
