@@ -1,7 +1,7 @@
 import { env } from '@infra/env'
 import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
-import { schema } from './schemas'
+import * as schema from './schemas'
 
 // Disable prepared statements to be compatible with Supabase Pooler (transaction mode)
 const globalForPg = globalThis as unknown as {

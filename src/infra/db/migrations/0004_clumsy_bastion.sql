@@ -1,1 +1,0 @@
-ALTER TABLE "clients" ALTER COLUMN "id" SET DATA TYPE text;
