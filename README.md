@@ -64,7 +64,13 @@ docs/
 Prerequisites:
 - Node.js 20+
 - pnpm 9+ (recommended) or npm
-- Optional: Docker (for local Postgres) and Supabase CLI (for types generation)
+- Docker (for local PostgreSQL)
+
+### Quick Setup
+
+For detailed setup instructions for different environments (Docker local, Supabase, or tests), see **[Development Setup Guide](docs/DEVELOPMENT_SETUP.md)**.
+
+#### Basic Steps
 
 ### 1) Clone and install
 
@@ -76,35 +82,29 @@ pnpm install
 
 ### 2) Configure environment
 
-Create your local env file from the example:
+Copy the example environment file:
 
 ```bash
-cp .env.example .env.local
+cp .env.development.example .env.development
 ```
 
-Required variables (see `.env.example`):
-- DATABASE_URL (Postgres connection string)
-- NEXT_PUBLIC_SUPABASE_URL
-- NEXT_PUBLIC_SUPABASE_PUBLISHABLE_OR_ANON_KEY
-- NODE_ENV, PORT
+For Supabase setup, see the [Development Setup Guide](docs/DEVELOPMENT_SETUP.md).
 
-### 3) Start a local Postgres (optional)
-
-Use the provided Docker Compose to spin up Postgres:
+### 3) Start PostgreSQL with Docker
 
 ```bash
-docker compose up -d pg
+docker compose up -d
 ```
 
-The default database is `postgresql://docker:docker@localhost:5432/legalmind`.
+This creates both `legalmind` (development) and `legalmind_test` (test) databases.
 
 ### 4) Run migrations
 
 ```bash
-pnpm db:generate && pnpm db:migrate
+pnpm db:migrate
 ```
 
-### 5) Develop
+### 5) Start development
 
 ```bash
 pnpm dev
@@ -112,30 +112,58 @@ pnpm dev
 
 App runs at http://localhost:3000
 
+## Development Environments
+
+The project supports multiple development environments:
+
+- **Local Docker** - PostgreSQL in Docker (recommended for most development)
+- **Supabase** - Remote Supabase database (for testing Supabase features)
+- **Test** - Isolated test database for automated tests
+
+Each environment has its own configuration file and npm scripts. See the **[Development Setup Guide](docs/DEVELOPMENT_SETUP.md)** for complete details.
+
 ## Scripts
 
-- dev: Start Next.js in dev mode
-- build: Build for production
-- start: Run production server
-- check: Biome check
-- fix: Biome check with write
-- format: Biome format write
-- type-check: TypeScript noEmit
-- test, test:watch, test:coverage: Vitest
-- db:drift, db:generate, db:migrate, db:studio: Drizzle Kit
-- supabase:types: Generate TS types from local Supabase
+### Development
+- `pnpm dev` - Start Next.js with Docker PostgreSQL
+- `pnpm dev:supabase` - Start Next.js with Supabase
+- `pnpm build` - Build for production
+- `pnpm start` - Run production server
 
-See `package.json` for the full list.
+### Database (Docker)
+- `pnpm db:generate` - Generate new Drizzle migrations
+- `pnpm db:migrate` - Apply migrations to Docker PostgreSQL
+- `pnpm db:studio` - Open Drizzle Studio for Docker database
+
+### Database (Supabase)
+- `pnpm db:generate:supabase` - Generate migrations for Supabase
+- `pnpm db:migrate:supabase` - Apply migrations to Supabase
+- `pnpm db:studio:supabase` - Open Drizzle Studio for Supabase
+
+### Testing
+- `pnpm test` - Run tests once
+- `pnpm test:watch` - Run tests in watch mode
+- `pnpm test:coverage` - Generate coverage report
+
+### Code Quality
+- `pnpm check` - Biome check
+- `pnpm fix` - Biome check with auto-fix
+- `pnpm format` - Format code with Biome
+- `pnpm type-check` - TypeScript type checking
+- `pnpm ci` - CI check (fails on warnings)
+
+See the **[Development Setup Guide](docs/DEVELOPMENT_SETUP.md)** for environment-specific details.
 
 ## Database & Auth
 
-- Postgres via Supabase
+- Postgres via Supabase or Docker (configurable per environment)
 - Drizzle ORM with typed schema under `src/infra/db/schemas`
 - Supabase SSR helpers for cookie/session handling in `src/libs/supabase`
 - Multi-tenancy: every domain table includes `account_id`
 - RBAC roles: SUPER_ADMIN, ADMIN, LAWYER
 
 References:
+- **[Development Setup Guide](docs/DEVELOPMENT_SETUP.md)** - Environment configuration
 - Database schema: `docs/database/schema.md`
 - RBAC architecture: `docs/RBAC_ARCHITECTURE.md`
 - Migration guide (Convex → Supabase + Drizzle): `docs/migration/convex-to-supabase-drizzle.md`
