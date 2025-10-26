@@ -1,15 +1,13 @@
 import { eq, sql } from 'drizzle-orm'
-import { users } from '../auth'
 import { accounts } from './accounts'
 import { core } from './schema'
 
 export const viewAccounts = core.view('view_accounts').as((qb) =>
 	qb
 		.select({
-			userId: users.id,
-			email: users.email,
-			phone: users.phone,
-			userCreatedAt: sql`${users.created_at}`.as('user_created_at'),
+			userId: accounts.userId,
+			email: accounts.email,
+			phone: accounts.phoneNumber,
 			fullName: accounts.fullName,
 			displayName: accounts.displayName,
 			profilePictureUrl: accounts.profilePictureUrl,
@@ -18,8 +16,7 @@ export const viewAccounts = core.view('view_accounts').as((qb) =>
 			accountCreatedAt: sql`${accounts.createdAt}`.as('account_created_at'),
 			accountUpdatedAt: accounts.updatedAt,
 		})
-		.from(accounts)
-		.leftJoin(users, eq(users.id, accounts.userId)),
+		.from(accounts),
 )
 
 export const viewAccountsPublic = core.view('view_accounts_public').as((qb) =>

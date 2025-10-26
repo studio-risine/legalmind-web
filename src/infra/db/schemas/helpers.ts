@@ -6,7 +6,7 @@
  */
 
 import { timestamp, uuid } from 'drizzle-orm/pg-core'
-import { users } from './auth'
+import { accounts } from './core'
 
 /**
  * Standard timestamp columns for audit trail
@@ -41,14 +41,7 @@ export const uuidPrimaryKey = uuid('id').primaryKey().defaultRandom()
  */
 export const createdByField = uuid('created_by')
 	.notNull()
-	.references(() => users.id)
-
-/**
- * createdBy field with optional reference (nullable)
- */
-export const createdByFieldOptional = uuid('created_by').references(
-	() => users.id,
-)
+	.references(() => accounts.id)
 
 /**
  * Common audit fields: createdAt, createdBy, updatedAt
@@ -60,21 +53,8 @@ export const auditFields = {
 		.defaultNow(),
 	createdBy: uuid('created_by')
 		.notNull()
-		.references(() => users.id),
+		.references(() => accounts.id),
 	updatedAt: timestamp('updated_at', { withTimezone: true })
 		.notNull()
 		.defaultNow(),
-}
-
-/**
- * Minimal audit fields: just createdAt and createdBy
- * Use for immutable records (like notes, logs)
- */
-export const minimalAuditFields = {
-	createdAt: timestamp('created_at', { withTimezone: true })
-		.notNull()
-		.defaultNow(),
-	createdBy: uuid('created_by')
-		.notNull()
-		.references(() => users.id),
 }

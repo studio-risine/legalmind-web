@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { users } from '../auth/users'
+import { accounts } from './accounts'
 import { clients } from './clients'
 import { notes } from './notes'
 
@@ -10,8 +10,8 @@ export const notesRelations = relations(notes, ({ one }) => ({
 		references: [clients.id],
 	}),
 	// Many-to-one: note created by a user
-	creator: one(users, {
+	creator: one(accounts, {
 		fields: [notes.createdBy],
-		references: [users.id],
+		references: [accounts.id],
 	}),
 }))

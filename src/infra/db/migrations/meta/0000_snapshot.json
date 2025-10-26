@@ -1,12 +1,12 @@
 {
-	"id": "bba364ce-32bf-446c-b9c1-81bf7f428428",
+	"id": "e5d0043b-699f-4f1d-bf06-bf4d88009688",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "7",
 	"dialect": "postgresql",
 	"tables": {
-		"auth.users": {
-			"name": "users",
-			"schema": "auth",
+		"core.accounts": {
+			"name": "accounts",
+			"schema": "core",
 			"columns": {
 				"id": {
 					"name": "id",
@@ -15,124 +15,11 @@
 					"notNull": true,
 					"default": "gen_random_uuid()"
 				},
-				"email": {
-					"name": "email",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"phone": {
-					"name": "phone",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"email_confirmed_at": {
-					"name": "email_confirmed_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"phone_confirmed_at": {
-					"name": "phone_confirmed_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"last_sign_in_at": {
-					"name": "last_sign_in_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"banned_until": {
-					"name": "banned_until",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"is_super_admin": {
-					"name": "is_super_admin",
-					"type": "boolean",
-					"primaryKey": false,
-					"notNull": false,
-					"default": false
-				},
-				"is_anonymous": {
-					"name": "is_anonymous",
-					"type": "boolean",
-					"primaryKey": false,
-					"notNull": false,
-					"default": false
-				},
-				"raw_user_meta_data": {
-					"name": "raw_user_meta_data",
-					"type": "jsonb",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"raw_app_meta_data": {
-					"name": "raw_app_meta_data",
-					"type": "jsonb",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"aud": {
-					"name": "aud",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"role": {
-					"name": "role",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"invited_at": {
-					"name": "invited_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": false
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {
-				"users_email_unique": {
-					"name": "users_email_unique",
-					"nullsNotDistinct": false,
-					"columns": ["email"]
-				}
-			},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"core.accounts": {
-			"name": "accounts",
-			"schema": "core",
-			"columns": {
 				"user_id": {
 					"name": "user_id",
 					"type": "uuid",
-					"primaryKey": true,
-					"notNull": true
+					"primaryKey": false,
+					"notNull": false
 				},
 				"full_name": {
 					"name": "full_name",
@@ -192,18 +79,7 @@
 				}
 			},
 			"indexes": {},
-			"foreignKeys": {
-				"accounts_user_id_users_id_fk": {
-					"name": "accounts_user_id_users_id_fk",
-					"tableFrom": "accounts",
-					"tableTo": "users",
-					"schemaTo": "auth",
-					"columnsFrom": ["user_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				}
-			},
+			"foreignKeys": {},
 			"compositePrimaryKeys": {},
 			"uniqueConstraints": {
 				"accounts_email_unique": {
@@ -293,13 +169,13 @@
 			},
 			"indexes": {},
 			"foreignKeys": {
-				"clients_account_id_accounts_user_id_fk": {
-					"name": "clients_account_id_accounts_user_id_fk",
+				"clients_account_id_accounts_id_fk": {
+					"name": "clients_account_id_accounts_id_fk",
 					"tableFrom": "clients",
 					"tableTo": "accounts",
 					"schemaTo": "core",
 					"columnsFrom": ["account_id"],
-					"columnsTo": ["user_id"],
+					"columnsTo": ["id"],
 					"onDelete": "cascade",
 					"onUpdate": "no action"
 				}
@@ -327,6 +203,12 @@
 					"primaryKey": false,
 					"notNull": true
 				},
+				"content": {
+					"name": "content",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
 				"created_at": {
 					"name": "created_at",
 					"type": "timestamp with time zone",
@@ -340,11 +222,12 @@
 					"primaryKey": false,
 					"notNull": true
 				},
-				"content": {
-					"name": "content",
-					"type": "text",
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
 					"primaryKey": false,
-					"notNull": true
+					"notNull": true,
+					"default": "now()"
 				}
 			},
 			"indexes": {},
@@ -359,11 +242,11 @@
 					"onDelete": "cascade",
 					"onUpdate": "no action"
 				},
-				"notes_created_by_users_id_fk": {
-					"name": "notes_created_by_users_id_fk",
+				"notes_created_by_accounts_id_fk": {
+					"name": "notes_created_by_accounts_id_fk",
 					"tableFrom": "notes",
-					"tableTo": "users",
-					"schemaTo": "auth",
+					"tableTo": "accounts",
+					"schemaTo": "core",
 					"columnsFrom": ["created_by"],
 					"columnsTo": ["id"],
 					"onDelete": "no action",
@@ -458,21 +341,21 @@
 					"onDelete": "cascade",
 					"onUpdate": "no action"
 				},
-				"processes_assigned_id_accounts_user_id_fk": {
-					"name": "processes_assigned_id_accounts_user_id_fk",
+				"processes_assigned_id_accounts_id_fk": {
+					"name": "processes_assigned_id_accounts_id_fk",
 					"tableFrom": "processes",
 					"tableTo": "accounts",
 					"schemaTo": "core",
 					"columnsFrom": ["assigned_id"],
-					"columnsTo": ["user_id"],
+					"columnsTo": ["id"],
 					"onDelete": "set default",
 					"onUpdate": "no action"
 				},
-				"processes_created_by_users_id_fk": {
-					"name": "processes_created_by_users_id_fk",
+				"processes_created_by_accounts_id_fk": {
+					"name": "processes_created_by_accounts_id_fk",
 					"tableFrom": "processes",
-					"tableTo": "users",
-					"schemaTo": "auth",
+					"tableTo": "accounts",
+					"schemaTo": "core",
 					"columnsFrom": ["created_by"],
 					"columnsTo": ["id"],
 					"onDelete": "no action",
@@ -501,6 +384,13 @@
 					"primaryKey": false,
 					"notNull": true
 				},
+				"type": {
+					"name": "type",
+					"type": "space_type",
+					"typeSchema": "public",
+					"primaryKey": false,
+					"notNull": true
+				},
 				"created_at": {
 					"name": "created_at",
 					"type": "timestamp with time zone",
@@ -520,22 +410,15 @@
 					"primaryKey": false,
 					"notNull": true,
 					"default": "now()"
-				},
-				"type": {
-					"name": "type",
-					"type": "space_type",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true
 				}
 			},
 			"indexes": {},
 			"foreignKeys": {
-				"spaces_created_by_users_id_fk": {
-					"name": "spaces_created_by_users_id_fk",
+				"spaces_created_by_accounts_id_fk": {
+					"name": "spaces_created_by_accounts_id_fk",
 					"tableFrom": "spaces",
-					"tableTo": "users",
-					"schemaTo": "auth",
+					"tableTo": "accounts",
+					"schemaTo": "core",
 					"columnsFrom": ["created_by"],
 					"columnsTo": ["id"],
 					"onDelete": "no action",
@@ -584,13 +467,13 @@
 					"onDelete": "cascade",
 					"onUpdate": "no action"
 				},
-				"spaces_to_accounts_account_id_accounts_user_id_fk": {
-					"name": "spaces_to_accounts_account_id_accounts_user_id_fk",
+				"spaces_to_accounts_account_id_accounts_id_fk": {
+					"name": "spaces_to_accounts_account_id_accounts_id_fk",
 					"tableFrom": "spaces_to_accounts",
 					"tableTo": "accounts",
 					"schemaTo": "core",
 					"columnsFrom": ["account_id"],
-					"columnsTo": ["user_id"],
+					"columnsTo": ["id"],
 					"onDelete": "cascade",
 					"onUpdate": "no action"
 				}
@@ -630,13 +513,104 @@
 		}
 	},
 	"schemas": {
-		"auth": "auth",
 		"core": "core"
 	},
 	"sequences": {},
 	"roles": {},
 	"policies": {},
-	"views": {},
+	"views": {
+		"core.view_accounts": {
+			"columns": {
+				"user_id": {
+					"name": "user_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"email": {
+					"name": "email",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"phone_number": {
+					"name": "phone_number",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"full_name": {
+					"name": "full_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"display_name": {
+					"name": "display_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"profile_picture_url": {
+					"name": "profile_picture_url",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"oab_number": {
+					"name": "oab_number",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"oab_state": {
+					"name": "oab_state",
+					"type": "char(2)",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"updated_at": {
+					"name": "updated_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"definition": "select \"user_id\", \"email\", \"phone_number\", \"full_name\", \"display_name\", \"profile_picture_url\", \"oab_number\", \"oab_state\", \"created_at\" as \"account_created_at\", \"updated_at\" from \"core\".\"accounts\"",
+			"name": "view_accounts",
+			"schema": "core",
+			"isExisting": false,
+			"materialized": false
+		},
+		"core.view_accounts_public": {
+			"columns": {
+				"user_id": {
+					"name": "user_id",
+					"type": "uuid",
+					"primaryKey": false,
+					"notNull": false
+				},
+				"display_name": {
+					"name": "display_name",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"profile_picture_url": {
+					"name": "profile_picture_url",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": false
+				}
+			},
+			"definition": "select \"user_id\", \"display_name\", \"profile_picture_url\" from \"core\".\"accounts\"",
+			"name": "view_accounts_public",
+			"schema": "core",
+			"isExisting": false,
+			"materialized": false
+		}
+	},
 	"_meta": {
 		"columns": {},
 		"schemas": {},

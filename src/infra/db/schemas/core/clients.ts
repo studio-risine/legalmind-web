@@ -9,7 +9,7 @@ export const clients = core.table('clients', {
 	id: uuidPrimaryKey,
 	accountId: uuid('account_id')
 		.notNull()
-		.references(() => accounts.userId, { onDelete: 'cascade' }),
+		.references(() => accounts.id, { onDelete: 'cascade' }),
 	name: text('name').notNull(),
 	email: text('email'),
 	phoneNumber: text('phone_number'),

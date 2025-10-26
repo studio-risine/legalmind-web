@@ -605,19 +605,6 @@ export const myTable = core.table('my_table', {
 })
 ```
 
-#### 6. `minimalAuditFields`
-Minimal audit: just `createdAt` and `createdBy` (for immutable records).
-
-```typescript
-import { minimalAuditFields } from './helpers'
-
-export const notes = core.table('notes', {
-  id: uuidPrimaryKey,
-  content: text('content').notNull(),
-  ...minimalAuditFields, // Adds createdAt and createdBy
-})
-```
-
 ### Benefits of Using Helpers
 
 ✅ **Consistency**: All timestamps use the same configuration

@@ -1,1 +1,0 @@
-ALTER TABLE "core"."spaces" ALTER COLUMN "id" DROP DEFAULT;
