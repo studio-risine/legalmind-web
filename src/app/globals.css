@@ -101,8 +101,8 @@
 }
 .dark {
     /* Base (Dark Stone) */
-    --background: oklch(0.2 0.015 45); /* Dark Charcoal Brown */
-    --foreground: oklch(0.95 0.01 90); /* Off-white */
+    --background: var(--color-stone-900);
+    --foreground: var(--color-stone-50);
 
     /* Cards & Popovers */
     --card: oklch(0.25 0.02 45);
@@ -121,8 +121,8 @@
     /* Muted & Accent */
     --muted: oklch(0.3 0.02 45);
     --muted-foreground: oklch(0.75 0.01 95);
-    --accent: oklch(0.35 0.02 45);
-    --accent-foreground: oklch(0.95 0.01 90);
+    --accent: var(--color-stone-600);
+    --accent-foreground: var(--color-stone-100);
 
     /* Status Colors */
     --destructive: oklch(0.704 0.191 22.216);
@@ -131,8 +131,8 @@
     --success-foreground: oklch(0.2 0.015 45);
 
     /* Other UI Elements */
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
+    --border: var(--color-stone-800);
+    --input: var(--color-stone-600);
     --ring: oklch(0.75 0.1 75);
     --chart-1: oklch(0.488 0.243 264.376);
     --chart-2: oklch(0.696 0.17 162.48);
@@ -141,12 +141,12 @@
     --chart-5: oklch(0.645 0.246 16.439);
     --table: oklch(0.216 0.006 56.043);
     --table-foreground: oklch(0.985 0.001 106.423);
-    --sidebar: oklch(0.25 0.01 85);
-    --sidebar-foreground: oklch(0.8 0.01 95);
-    --sidebar-primary: oklch(0.85 0.04 90);
-    --sidebar-primary-foreground: oklch(0.25 0.01 85);
-    --sidebar-accent: oklch(0.35 0.02 85);
-    --sidebar-accent-foreground: oklch(0.99 0.005 95);
+    --sidebar: var(--color-stone-800);
+    --sidebar-foreground: var(--color-stone-300);
+    --sidebar-primary: var(--color-stone-900);
+    --sidebar-primary-foreground: var(--color-stone-200);
+    --sidebar-accent: var(--color-stone-600);
+    --sidebar-accent-foreground: var(--color-stone-100);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.85 0.04 90);
 }

@@ -115,9 +115,9 @@ export function AppSidebar({ spaceId }: AppSidebarProps) {
 			<SidebarContent className="px-0">
 				<MainNavigationSidebar routes={routes} />
 			</SidebarContent>
-			<SidebarFooter className="px-2">
+			{/* <SidebarFooter className="px-2">
 				<TeamSwitcher teams={teams} />
-			</SidebarFooter>
+			</SidebarFooter> */}
 		</Sidebar>
 	)
 }
