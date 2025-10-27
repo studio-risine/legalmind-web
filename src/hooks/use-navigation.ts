@@ -36,22 +36,22 @@ function generateMainNavigationRoutes(spaceId: string) {
 			link: `/space/${spaceId}/atendimentos`,
 		},
 		{
-			id: 'clients',
-			title: 'Clientes',
-			icon: RiUser6Line,
-			link: `/space/${spaceId}/clientes`,
-		},
-		{
 			id: 'analytics',
 			title: 'Indicadores',
 			icon: RiPieChart2Line,
 			link: '#',
 		},
 		{
+			id: 'clients',
+			title: 'Clientes',
+			icon: RiUser6Line,
+			link: `/space/${spaceId}/clientes`,
+		},
+		{
 			id: 'finance',
-			title: 'Finanças',
+			title: 'Financeiro',
 			icon: RiWallet2Line,
-			link: `/space/${spaceId}/financas`,
+			link: `/space/${spaceId}/financeiro`,
 		},
 		{
 			id: 'settings',

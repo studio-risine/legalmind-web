@@ -102,7 +102,7 @@
 .dark {
     /* Base (Dark Stone) */
     --background: var(--color-stone-900);
-    --foreground: var(--color-stone-50);
+    --foreground: var(--color-stone-100);
 
     /* Cards & Popovers */
     --card: oklch(0.25 0.02 45);
