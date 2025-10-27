@@ -59,27 +59,27 @@
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.25 0.02 45);
 
-		/* Primary (Reddish Brown) */
-    --primary: oklch(0.45 0.1 30);
+    /* Primary (Dark Wood) - 10:1 Contrast */
+    --primary: oklch(0.35 0.07 70); /* Deep, warm wood tone */
     --primary-foreground: oklch(0.98 0.006 90);
 
-		/* Secondary (Wood Tone) */
-    --secondary: oklch(0.9 0.02 85);
-    --secondary-foreground: oklch(0.35 0.03 45);
+    /* Secondary (Darker Wood) - 10:1 Contrast */
+    --secondary: oklch(0.35 0.05 60); /* Slightly cooler dark wood */
+    --secondary-foreground: oklch(0.98 0.006 90);
 
-		/* Muted & Accent */
+    /* Muted & Accent */
     --muted: oklch(0.95 0.01 90);
     --muted-foreground: oklch(0.5 0.02 85);
     --accent: oklch(0.9 0.02 85);
     --accent-foreground: oklch(0.35 0.03 45);
 
-		/* Status Colors */
-    --destructive: oklch(0.55 0.18 20);
+    /* Status Colors */
+    --destructive: oklch(0.577 0.245 27.325);
     --destructive-foreground: oklch(1 0 0);
     --success: oklch(0.5 0.1 145);
     --success-foreground: oklch(1 0 0);
 
-		/* Other UI Elements */
+    /* Other UI Elements */
     --border: oklch(0.9 0.01 90);
     --input: oklch(0.95 0.01 90);
     --ring: oklch(0.45 0.1 30);
@@ -104,28 +104,28 @@
     --background: oklch(0.2 0.015 45); /* Dark Charcoal Brown */
     --foreground: oklch(0.95 0.01 90); /* Off-white */
 
-		/* Cards & Popovers */
-		--card: oklch(0.25 0.02 45);
+    /* Cards & Popovers */
+    --card: oklch(0.25 0.02 45);
     --card-foreground: oklch(0.95 0.01 90);
     --popover: oklch(0.25 0.02 45);
     --popover-foreground: oklch(0.95 0.01 90);
 
-		/* Primary (Lighter Brown) */
-    --primary: oklch(0.75 0.1 75); /* Warm Tan */
+    /* Primary (Light Wood) - 10:1 Contrast */
+    --primary: oklch(0.88 0.07 70); /* Bright, warm wood tone */
     --primary-foreground: oklch(0.2 0.015 45);
 
-		/* Secondary (Darker Wood Tone) */
-    --secondary: oklch(0.3 0.02 45);
-    --secondary-foreground: oklch(0.95 0.01 90);
+    /* Secondary (Lighter Wood) - 10:1 Contrast */
+    --secondary: oklch(0.88 0.05 60); /* Slightly cooler light wood */
+    --secondary-foreground: oklch(0.2 0.015 45);
 
-		/* Muted & Accent */
+    /* Muted & Accent */
     --muted: oklch(0.3 0.02 45);
     --muted-foreground: oklch(0.75 0.01 95);
     --accent: oklch(0.35 0.02 45);
     --accent-foreground: oklch(0.95 0.01 90);
 
-		/* Status Colors */
-    --destructive: oklch(0.7 0.15 25);
+    /* Status Colors */
+    --destructive: oklch(0.704 0.191 22.216);
     --destructive-foreground: oklch(0.2 0.015 45);
     --success: oklch(0.7 0.1 145);
     --success-foreground: oklch(0.2 0.015 45);
