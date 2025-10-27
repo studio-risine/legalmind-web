@@ -8,7 +8,10 @@ export default async function Page({
 }) {
 	const { id } = await params
 
-	const breadcrumb = [{ label: 'Meu Space', href: `/space/${id}` }]
+	const breadcrumb = [
+		{ label: 'Meu Space', href: `/space/${id}` },
+		{ label: 'Prazos', href: `/space/${id}` },
+	]
 
 	return (
 		<>
@@ -16,8 +19,9 @@ export default async function Page({
 
 			<MainContent size="2xl">
 				<div>
-					<h1 className="font-bold text-2xl text-foreground">Meu Space</h1>
-					<p className="text-muted-foreground">Meu Space: {id}</p>
+					<h1 className="font-bold text-2xl text-foreground">Prazos</h1>
+
+					<p className="text-muted-foreground">Prazos: {id}</p>
 				</div>
 			</MainContent>
 		</>
