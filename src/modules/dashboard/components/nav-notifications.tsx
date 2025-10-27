@@ -10,7 +10,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu'
-import { BellIcon } from 'lucide-react'
+import { RiNotification2Line } from '@remixicon/react'
 
 type Notification = {
 	id: string
@@ -28,13 +28,8 @@ export function NotificationsPopover({
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button
-					variant="ghost"
-					size="icon"
-					className="rounded-full"
-					aria-label="Open notifications"
-				>
-					<BellIcon className="size-5" />
+				<Button variant="ghost" size="icon" aria-label="Open notifications">
+					<RiNotification2Line size={32} />
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent side="right" className="my-6 w-80">
