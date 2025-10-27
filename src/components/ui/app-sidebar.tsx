@@ -3,53 +3,20 @@
 import {
 	Sidebar,
 	SidebarContent,
-	SidebarFooter,
 	SidebarHeader,
 	SidebarTrigger,
 	useSidebar,
 } from '@components/ui/sidebar'
-import { cn } from '@libs/utils'
-
-import { motion } from 'framer-motion'
-
-import Link from 'next/link'
-
-// import { NotificationsPopover } from '../../modules/space/components/nav-notifications'
-// import { TeamSwitcher } from '../../modules/space/components/team-switcher'
-
-const sampleNotifications = [
-	{
-		id: '1',
-		avatar: '/avatars/01.png',
-		fallback: 'OM',
-		text: 'New order received.',
-		time: '10m ago',
-	},
-	{
-		id: '2',
-		avatar: '/avatars/02.png',
-		fallback: 'JL',
-		text: 'Server upgrade completed.',
-		time: '1h ago',
-	},
-	{
-		id: '3',
-		avatar: '/avatars/03.png',
-		fallback: 'HH',
-		text: 'New user signed up.',
-		time: '2h ago',
-	},
-]
-
 import { useNavigation } from '@hooks/use-navigation'
-import { NotificationsPopover } from '@modules/dashboard/components/nav-notifications'
-import { TeamSwitcher } from '@modules/dashboard/components/team-switcher'
+import { cn } from '@libs/utils'
 import {
 	RiBeerFill,
 	RiCake2Fill,
 	RiCheckboxBlankCircleFill,
 	RiCupFill,
 } from '@remixicon/react'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
 import MainNavigationSidebar from './app-nav-main'
 
 export const teams = [
@@ -107,7 +74,6 @@ export function AppSidebar({ spaceId }: AppSidebarProps) {
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.1 }}
 					>
-						<NotificationsPopover notifications={sampleNotifications} />
 						<SidebarTrigger />
 					</motion.div>
 				</div>

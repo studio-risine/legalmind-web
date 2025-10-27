@@ -50,7 +50,9 @@ export default function MainNavigationSidebar({
 										/>
 									)}
 
-									<span className="text-base">{item.title}</span>
+									<span className="font-semibold text-base text-sidebar-accent-foreground">
+										{item.title}
+									</span>
 								</SidebarMenuButton>
 							</Link>
 						</SidebarMenuItem>
