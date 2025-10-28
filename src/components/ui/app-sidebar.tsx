@@ -40,9 +40,9 @@ export function AppSidebar({ spaceId }: AppSidebarProps) {
 		<Sidebar variant="inset" collapsible="icon">
 			<SidebarHeader
 				className={cn(
-					'flex md:pt-3.5',
+					'flex md:pt-1 md:pb-6',
 					isCollapsed
-						? 'flex-row items-center justify-between gap-y-2 md:flex-col md:items-start md:justify-start'
+						? 'flex-row items-center justify-between gap-y-2 md:flex-col md:items-start md:justify-start md:pt-3'
 						: 'flex-row items-center justify-between px-1',
 				)}
 			>
