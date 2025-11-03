@@ -1,11 +1,13 @@
 'use server'
-
 import { createClient } from '@libs/supabase/server'
+import {
+	createAccountAction,
+	type InsertAccountInput,
+} from '@modules/account/actions/mutations/create-account.action'
 import type { AuthError, User } from '@supabase/supabase-js'
 
 export interface AuthSignUpInput {
-	firstName: string
-	lastName?: string
+	displayName: string
 	email: string
 	password: string
 }
@@ -27,11 +29,9 @@ export async function signUpWithEmail(
 		email: input.email,
 		password: input.password,
 		options: {
-			emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
+			emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/space`,
 			data: {
-				display_name: input.firstName,
-				first_name: input.firstName,
-				last_name: input.lastName,
+				display_name: input.displayName,
 			},
 		},
 	})
@@ -49,6 +49,14 @@ export async function signUpWithEmail(
 			error,
 		}
 	}
+
+	const insertAccount: InsertAccountInput = {
+		userId: user.id,
+		displayName: user.user_metadata.display_name,
+		email: user.email ?? '',
+	}
+
+	await createAccountAction(insertAccount)
 
 	return {
 		user,

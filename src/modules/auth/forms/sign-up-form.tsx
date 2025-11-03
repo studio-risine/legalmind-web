@@ -19,11 +19,8 @@ import { signUpWithEmail } from '../actions'
 import { SubmitButton } from '../components/submit-button'
 
 const formSchema = z.object({
-	firstName: z.string().min(1, {
+	displayName: z.string().min(1, {
 		message: 'Por favor, insira seu nome.',
-	}),
-	lastName: z.string().min(1, {
-		message: 'Por favor, insira seu sobrenome.',
 	}),
 	email: z.email({
 		message: 'Por favor, insira um endereço de email válido.',
@@ -41,8 +38,7 @@ export function SignUpForm() {
 	const form = useForm<SignUpFormData>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			firstName: '',
-			lastName: '',
+			displayName: '',
 			email: '',
 			password: '',
 		},
@@ -64,8 +60,7 @@ export function SignUpForm() {
 		(data: SignUpFormData) => {
 			startTransition(async () => {
 				const { user, error } = await signUpWithEmail({
-					firstName: data.firstName,
-					lastName: data.lastName,
+					displayName: data.displayName,
 					email: data.email,
 					password: data.password,
 				})
@@ -103,44 +98,24 @@ export function SignUpForm() {
 							</AlertDescription>
 						</Alert>
 					)}
-					<div className="flex gap-4 lg:gap-6">
-						<FormField
-							control={form.control}
-							name="firstName"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Nome</FormLabel>
-									<FormControl>
-										<Input
-											type="text"
-											placeholder=""
-											autoComplete="given-name"
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="lastName"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Sobrenome</FormLabel>
-									<FormControl>
-										<Input
-											type="text"
-											placeholder=""
-											autoComplete="family-name"
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					</div>
+					<FormField
+						control={form.control}
+						name="displayName"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>Nome</FormLabel>
+								<FormControl>
+									<Input
+										type="text"
+										placeholder=""
+										autoComplete="given-name"
+										{...field}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 					<FormField
 						control={form.control}
 						name="email"
