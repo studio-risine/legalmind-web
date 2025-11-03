@@ -56,6 +56,7 @@
 		/* Cards & Popovers */
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.25 0.02 45);
+
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.25 0.02 45);
 
@@ -105,22 +106,21 @@
     --foreground: var(--color-stone-100);
 
     /* Cards & Popovers */
-    --card: oklch(0.25 0.02 45);
-    --card-foreground: oklch(0.95 0.01 90);
-    --popover: oklch(0.25 0.02 45);
-    --popover-foreground: oklch(0.95 0.01 90);
+    --card: var(--color-stone-800);
+    --card-foreground: var(--color-stone-100);
+    --popover: var(--color-stone-900);
+    --popover-foreground: var(--color-stone-100);
 
     /* Primary (Light Wood) - 10:1 Contrast */
     --primary: oklch(0.88 0.07 70); /* Bright, warm wood tone */
     --primary-foreground: oklch(0.2 0.015 45);
 
-    /* Secondary (Lighter Wood) - 10:1 Contrast */
-    --secondary: oklch(0.88 0.05 60); /* Slightly cooler light wood */
-    --secondary-foreground: oklch(0.2 0.015 45);
+		--secondary: var(--color-stone-800);
+		--secondary-foreground: var(--color-stone-200);
 
     /* Muted & Accent */
-    --muted: oklch(0.3 0.02 45);
-    --muted-foreground: oklch(0.75 0.01 95);
+    --muted: var(--color-stone-600);
+    --muted-foreground: var(--color-stone-300);
     --accent: var(--color-stone-600);
     --accent-foreground: var(--color-stone-100);
 
