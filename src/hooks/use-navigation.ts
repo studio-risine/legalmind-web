@@ -1,3 +1,5 @@
+'use client'
+
 import {
 	RiArticleLine,
 	RiChat3Line,
@@ -64,8 +66,7 @@ function generateMainNavigationRoutes(spaceId: string) {
 
 export function useNavigation() {
 	const mainNavigationRoutes = (spaceId: string) => {
-		if (!spaceId)
-			throw new Error('spaceId is required to generate navigation routes')
+		if (!spaceId) return []
 
 		const routes = generateMainNavigationRoutes(spaceId)
 
