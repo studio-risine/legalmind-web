@@ -10,7 +10,7 @@ export default async function Page({
 
 	const breadcrumb = [
 		{ label: 'Meu Space', href: `/space/${id}` },
-		{ label: 'Clientes', href: `/space/${id}/Clientes` },
+		{ label: 'Atendimentos', href: `/space/${id}/atendimentos` },
 	]
 
 	return (
