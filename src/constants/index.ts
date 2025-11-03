@@ -1,4 +1,5 @@
 export * from './cnj-mappings'
 export * from './deadline-types'
+export * from './oab-states'
 export * from './priority-levels'
 export * from './process'
