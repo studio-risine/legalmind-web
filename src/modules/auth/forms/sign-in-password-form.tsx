@@ -12,29 +12,25 @@ import {
 } from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { RiErrorWarningFill } from '@remixicon/react'
-import { useCallback, useMemo, useTransition } from 'react'
+import { emailSchema, passwordSchema } from '@libs/zod/schemas/defaults'
+import { useMemo, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import z from 'zod'
 import { signInWithPassword } from '../actions'
 import { SubmitButton } from '../components/submit-button'
 
-const schema = z.object({
-	email: z.email({
-		message: 'Por favor, insira um endereço de e-mail válido.',
-	}),
-	password: z.string().min(6, {
-		message: 'A senha deve ter pelo menos 6 caracteres.',
-	}),
+const formSchema = z.object({
+	email: emailSchema,
+	password: passwordSchema,
 })
 
-export type SignInFormData = z.infer<typeof schema>
+export type SignInFormData = z.input<typeof formSchema>
 
 export function SignInPasswordForm() {
 	const [isPending, startTransition] = useTransition()
 
 	const form = useForm<SignInFormData>({
-		resolver: zodResolver(schema),
+		resolver: zodResolver(formSchema),
 		defaultValues: {
 			email: '',
 			password: '',
@@ -49,28 +45,17 @@ export function SignInPasswordForm() {
 		[form.formState.isValid, form.formState.errors],
 	)
 
-	const isButtonDisabled = useMemo(() => {
-		return !formState.isValid || isPending
-	}, [formState.isValid, isPending])
+	const onSubmit = (formData: SignInFormData) => {
+		startTransition(async () => {
+			const result = await signInWithPassword(formData)
 
-	const onSubmit = useCallback(
-		(data: SignInFormData) => {
-			if (!formState.isValid || isPending) {
-				return
+			if (result.errors) {
+				form.setError('root', {
+					message: result.message || 'Verifique suas credenciais.',
+				})
 			}
-
-			startTransition(async () => {
-				const { error } = await signInWithPassword(data)
-
-				if (error) {
-					form.setError('root', {
-						message: error?.message ?? 'Verifique suas credenciais.',
-					})
-				}
-			})
-		},
-		[form, formState, isPending],
-	)
+		})
+	}
 
 	return (
 		<Form {...form}>
@@ -81,8 +66,7 @@ export function SignInPasswordForm() {
 				<div className="grid gap-6">
 					{formState.errors.root && (
 						<Alert variant="destructive">
-							<RiErrorWarningFill />
-							<AlertTitle>Erro ao Entrar</AlertTitle>
+							<AlertTitle>Error</AlertTitle>
 							<AlertDescription>
 								{formState.errors.root.message}
 							</AlertDescription>
@@ -99,6 +83,7 @@ export function SignInPasswordForm() {
 										type="email"
 										placeholder=""
 										autoComplete="email"
+										disabled={isPending}
 										{...field}
 									/>
 								</FormControl>
@@ -122,6 +107,7 @@ export function SignInPasswordForm() {
 										type="password"
 										placeholder=""
 										autoComplete="current-password"
+										disabled={isPending}
 										{...field}
 									/>
 								</FormControl>
@@ -130,7 +116,7 @@ export function SignInPasswordForm() {
 						)}
 					/>
 					<SubmitButton
-						disabled={isButtonDisabled}
+						disabled={isPending}
 						isLoading={isPending}
 						text="Entrar"
 						textLoading="Entrando..."
