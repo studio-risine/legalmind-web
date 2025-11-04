@@ -37,12 +37,12 @@ function generateMainNavigationRoutes(spaceId: string) {
 			icon: RiChat3Line,
 			link: `/space/${spaceId}/atendimentos`,
 		},
-		{
-			id: 'analytics',
-			title: 'Indicadores',
-			icon: RiPieChart2Line,
-			link: '#',
-		},
+		// {
+		// 	id: 'analytics',
+		// 	title: 'Indicadores',
+		// 	icon: RiPieChart2Line,
+		// 	link: '#',
+		// },
 		{
 			id: 'clients',
 			title: 'Clientes',
