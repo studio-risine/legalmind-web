@@ -5,7 +5,7 @@ import { AuthBox, AuthBoxContent, AuthBoxFooter, AuthBoxHeader } from '.'
 export function LoginView() {
 	return (
 		<AuthBox>
-			<AuthBoxHeader title="Entre na sua conta" />
+			<AuthBoxHeader title="Entrar" />
 
 			<AuthBoxContent>
 				<SignInPasswordForm />
