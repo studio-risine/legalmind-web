@@ -1,5 +1,5 @@
 import { MainContent } from '@components/ui/main-content'
-import { PageHeaderWithBreadcrumb } from '@modules/dashboard/components'
+import { HeaderBreadcrumb } from '@modules/space/components'
 
 export default async function Page({
 	params,
@@ -15,12 +15,11 @@ export default async function Page({
 
 	return (
 		<>
-			<PageHeaderWithBreadcrumb breadcrumb={breadcrumb} />
+			<HeaderBreadcrumb items={breadcrumb} />
 
 			<MainContent size="2xl">
 				<div>
 					<h1 className="font-bold text-2xl text-foreground">Processos</h1>
-
 					<p className="text-muted-foreground">Processos: {id}</p>
 				</div>
 			</MainContent>

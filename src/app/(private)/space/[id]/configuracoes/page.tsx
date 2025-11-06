@@ -4,19 +4,10 @@ import { Input } from '@components/ui/input'
 import { ItemRow } from '@components/ui/list-row'
 import { MainContent } from '@components/ui/main-content'
 import { getSpaceIdFromHeaders } from '@libs/http/space'
-import { PageHeaderWithBreadcrumb } from '@modules/dashboard/components'
+import { HeaderBreadcrumb } from '@modules/space/components'
 
 export default async function Page() {
 	const spaceId = await getSpaceIdFromHeaders()
-
-	console.log(spaceId)
-
-	// if (!space) {
-	// 	notFound()
-	// }
-
-	// console.log('Space ID (from header):', spaceId)
-	// console.log('Space name:', space.name)
 
 	const breadcrumb = [
 		{ label: 'Home', href: `/space/${spaceId}` },
@@ -25,7 +16,7 @@ export default async function Page() {
 
 	return (
 		<>
-			<PageHeaderWithBreadcrumb breadcrumb={breadcrumb} />
+			<HeaderBreadcrumb items={breadcrumb} />
 
 			<MainContent size="sm">
 				<header className="mb-4">

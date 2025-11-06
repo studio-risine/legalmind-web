@@ -1,16 +1,15 @@
-import { currentAccountAction } from '@modules/account/actions'
+import { accountByUserIdAction } from '@modules/account'
 import { getSpaceByAccountIdAction } from '@modules/space/actions'
-import { ResourceNotFoundError } from '@shared/errors'
 import { redirect } from 'next/navigation'
 
 export default async function Page() {
-	const { account } = await currentAccountAction()
+	const { data: account } = await accountByUserIdAction()
 
 	if (!account) {
-		throw new ResourceNotFoundError()
+		redirect('/account/onboarding')
 	}
 
-	const { space } = await getSpaceByAccountIdAction({
+	const { data: space } = await getSpaceByAccountIdAction({
 		accountId: account.id,
 	})
 
