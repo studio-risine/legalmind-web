@@ -1,11 +1,12 @@
 import { formatZodError } from '@libs/zod/error-handlers'
-import type { ZodSchema } from 'zod'
+import type { AuthError } from '@supabase/supabase-js'
+import type { ZodError, ZodSchema } from 'zod'
 
 export interface ActionResponse<T = unknown> {
 	success: boolean
 	data?: T
-	error?: string
-	details?: unknown
+	error?: AuthError | ZodError | string | null
+	message?: unknown
 }
 
 export function createValidatedAction<TInput, TOutput>(
@@ -28,6 +29,7 @@ export function createValidatedAction<TInput, TOutput>(
 				return await action(parseResult.data)
 			} catch (error) {
 				console.error('Action execution failed:', error)
+
 				return {
 					success: false,
 					error:
@@ -60,6 +62,7 @@ export function createValidatedActionWithOutput<TInput, TOutput>(
 
 				if (!outputParseResult.success) {
 					console.error('Output validation failed:', outputParseResult.error)
+
 					return {
 						success: false,
 						error: 'Internal validation error',
@@ -72,6 +75,7 @@ export function createValidatedActionWithOutput<TInput, TOutput>(
 				}
 			} catch (error) {
 				console.error('Action execution failed:', error)
+
 				return {
 					success: false,
 					error:

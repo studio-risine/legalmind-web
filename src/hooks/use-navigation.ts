@@ -5,7 +5,6 @@ import {
 	RiChat3Line,
 	RiFolderLine,
 	RiHome9Line,
-	RiPieChart2Line,
 	RiSettings2Line,
 	RiUser6Line,
 	RiWallet2Line,
@@ -37,12 +36,6 @@ function generateMainNavigationRoutes(spaceId: string) {
 			icon: RiChat3Line,
 			link: `/space/${spaceId}/atendimentos`,
 		},
-		// {
-		// 	id: 'analytics',
-		// 	title: 'Indicadores',
-		// 	icon: RiPieChart2Line,
-		// 	link: '#',
-		// },
 		{
 			id: 'clients',
 			title: 'Clientes',

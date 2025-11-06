@@ -5,7 +5,7 @@ import type { ZodError, ZodIssue, ZodSchema } from 'zod'
  */
 export function formatZodIssue(issue: ZodIssue): string {
 	const path = issue.path.length > 0 ? `${issue.path.join('.')}: ` : ''
-	return `${path}${issue.message}`
+	return `${issue.message}`
 }
 
 /**
