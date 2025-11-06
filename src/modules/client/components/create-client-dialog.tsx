@@ -12,18 +12,13 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod'
 import { email, phone } from '@libs/zod/inputs'
 import { SubmitButton } from '@modules/auth/components/submit-button'
-// Use server action input type to avoid requiring account_id on client
-import type { ClientInsertInput } from '@modules/client/actions/insert-client-action'
-import { useOperation } from '@modules/dashboard/hooks/use-operation'
 import { useCallback, useId, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 import { ClientForm, type ClientFormValues } from '../forms/client-form'
-import { useClientMutation } from '../hooks/use-client-mutations'
 
 export function CreateClientDialog() {
 	const formId = useId()
-	const { onCloseOperation, onConfirmOperation, isOpen } = useOperation()
 	const [isClosing, startCloseOperation] = useTransition()
 	const [isConfirming, startConfirmOperation] = useTransition()
 
@@ -57,13 +52,7 @@ export function CreateClientDialog() {
 	const handleFormSubmit = useCallback(
 		async (data: ClientFormValues) => {
 			try {
-				const payload: ClientInsertInput = {
-					name: data.name ?? '',
-					email: data.email ?? null,
-					phone: data.phone ?? null,
-					// Map UI "document" field to DB "tax_id"
-					tax_id: data.document ?? null,
-				}
+				const payload: ClientInsertInput = {}
 				await createClientAsync(payload)
 				form.reset()
 				onConfirmOperation()

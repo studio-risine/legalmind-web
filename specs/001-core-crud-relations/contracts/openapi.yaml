@@ -1,0 +1,53 @@
+openapi: 3.1.0
+info:
+  title: Core CRUD & Relations API (Space-Based)
+  version: 0.2.0
+  description: |
+    CRUD endpoints for Clients, Processes, and Deadlines with Space-based multi-tenant scoping.
+    All operations require spaceId context (derived from authenticated user session via /space/[id] route).
+
+    **Architecture**: Space-scoped entities following repository pattern.
+    **Pattern**: Server Actions (not REST), this contract is for documentation purposes.
+
+components:
+  schemas:
+    Client:
+      type: object
+      required: [id, spaceId, name, type, documentNumber, status]
+      properties:
+        id: { type: string, format: uuid }
+        spaceId: { type: string, format: uuid }
+        name: { type: string }
+        email: { type: string, format: email, nullable: true }
+        phoneNumber: { type: string, nullable: true }
+        type: { type: string, enum: [INDIVIDUAL, BUSINESS] }
+        documentNumber: { type: string, description: "CPF or CNPJ" }
+        status: { type: string, enum: [ACTIVE, INACTIVE] }
+        deletedAt: { type: string, format: date-time, nullable: true }
+
+    Process:
+      type: object
+      required: [id, spaceId, clientId, processNumber, title, status, priority]
+      properties:
+        id: { type: string, format: uuid }
+        spaceId: { type: string, format: uuid }
+        clientId: { type: string, format: uuid }
+        processNumber: { type: string }
+        title: { type: string }
+        court: { type: string, nullable: true }
+        status: { type: string, enum: [ACTIVE, ARCHIVED, CONCLUDED] }
+        priority: { type: string, enum: [LOW, MEDIUM, HIGH] }
+        deletedAt: { type: string, format: date-time, nullable: true }
+
+    Deadline:
+      type: object
+      required: [id, spaceId, processId, dueDate, status, priority]
+      properties:
+        id: { type: string, format: uuid }
+        spaceId: { type: string, format: uuid }
+        processId: { type: string, format: uuid }
+        dueDate: { type: string, format: date }
+        status: { type: string, enum: [OPEN, DONE, CANCELED] }
+        priority: { type: string, enum: [LOW, MEDIUM, HIGH] }
+        notes: { type: string, maxLength: 2000, nullable: true }
+        deletedAt: { type: string, format: date-time, nullable: true }

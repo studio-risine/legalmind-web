@@ -11,7 +11,7 @@ import {
 } from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { emailSchema, passwordSchema } from '@libs/zod/schemas/defaults'
+import { emailSchemaDefault, passwordSchema } from '@libs/zod/schemas/defaults'
 import { useMemo, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -20,7 +20,7 @@ import { signUpWithEmail } from '../actions'
 import { SubmitButton } from '../components/submit-button'
 
 const formSchema = z.object({
-	email: emailSchema,
+	email: emailSchemaDefault,
 	password: passwordSchema,
 })
 

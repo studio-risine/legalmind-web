@@ -17,37 +17,10 @@ interface DataTableActionsProps<TData> {
 	getId?: (row: TData, fallbackId?: string) => string
 }
 
-function toCSV(rows: Record<string, unknown>[]): string {
-	if (!rows.length) return ''
-	const headers = Array.from(
-		rows.reduce<Set<string>>((set, row) => {
-			Object.keys(row).forEach((k) => set.add(k))
-			return set
-		}, new Set<string>()),
-	)
-
-	const escapeCsv = (val: unknown) => {
-		if (val === null || val === undefined) return ''
-
-		const str = typeof val === 'object' ? JSON.stringify(val) : String(val)
-		const needsQuotes = /[",\n]/.test(str)
-		const escaped = str.replace(/"/g, '""')
-		return needsQuotes ? `"${escaped}"` : escaped
-	}
-
-	const headerRow = headers.join(',')
-	const dataRows = rows.map((row) =>
-		headers.map((header) => escapeCsv(row[header])).join(','),
-	)
-	return [headerRow, ...dataRows].join('\n')
-}
-
 export function DataTableActions<TData>({
 	table,
 	onEdit,
 	onDelete,
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	onDownload: _onDownload,
 	getId,
 }: DataTableActionsProps<TData>) {
 	const [isDeleting, setIsDeleting] = useState(false)
@@ -60,11 +33,9 @@ export function DataTableActions<TData>({
 
 	const canEdit = selectedIds.length === 1 && !!onEdit
 	const canDelete = selectedIds.length > 0 && !!onDelete
-	const canDownload = selectedRows.length > 0
 
 	const handleEdit = useCallback(() => {
 		if (!canEdit || !onEdit) return
-		// onEdit expects a single id and row
 		onEdit(selectedIds[0], selectedRows[0])
 	}, [canEdit, onEdit, selectedIds, selectedRows])
 
@@ -72,7 +43,6 @@ export function DataTableActions<TData>({
 		if (!canDelete || !onDelete) return
 		try {
 			setIsDeleting(true)
-			// Call onDelete for each selected row sequentially to respect the single-item API
 			for (let i = 0; i < selectedIds.length; i++) {
 				await onDelete(selectedIds[i], selectedRows[i])
 			}
@@ -97,7 +67,7 @@ export function DataTableActions<TData>({
 						disabled={!canEdit}
 						tooltip={canEdit ? 'Edit selected' : 'Select exactly 1 row to edit'}
 					>
-						Edit
+						Editar
 					</DataTableActionBarAction>
 				</TooltipTrigger>
 				<TooltipContent sideOffset={6}>
@@ -115,7 +85,7 @@ export function DataTableActions<TData>({
 							className="text-red-600 hover:text-red-700"
 							tooltip={canDelete ? 'Delete selected' : 'Select rows to delete'}
 						>
-							Delete
+							Deletar
 						</DataTableActionBarAction>
 					</span>
 				</TooltipTrigger>

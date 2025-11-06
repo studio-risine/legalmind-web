@@ -1,13 +1,5 @@
-// Process Actions Barrel Export
-// Export all process-related server actions
-
-// CRUD actions (to be implemented)
-// export { createProcessAction } from './create-process-action'
-// export { updateProcessAction } from './update-process-action'
-// export { deleteProcessAction } from './delete-process-action'
-// export { getProcessAction } from './get-process-action'
-// export { listProcessesAction } from './list-processes-action'
-
-// Placeholder for future actions
-// Remove this comment when actions are implemented
-export {}
+export { createProcessAction } from './mutations/create-process.action'
+export { deleteProcessAction } from './mutations/delete-process.action'
+export { updateProcessAction } from './mutations/update-process.action'
+export { getProcessByIdAction } from './queries/get-process-by-id.action'
+export { listProcessesAction } from './queries/list-processes.action'

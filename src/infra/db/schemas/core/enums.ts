@@ -23,3 +23,15 @@ export const clientStatusEnum = pgEnum('client_status', [
 	'INACTIVE',
 	'ARCHIVED',
 ])
+
+export const deadlineStatusEnum = pgEnum('deadline_status', [
+	'OPEN',
+	'DONE',
+	'CANCELED',
+])
+
+export const deadlinePriorityEnum = pgEnum('deadline_priority', [
+	'LOW',
+	'MEDIUM',
+	'HIGH',
+])
