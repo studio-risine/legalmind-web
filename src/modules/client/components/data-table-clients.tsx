@@ -1,16 +1,20 @@
 'use client'
 
+import { DataTableActions } from '@components/data-table'
 import { DataTable } from '@components/data-table/data-table'
-import { DataTableActionBar } from '@components/data-table/data-table-action-bar'
-import { DataTableActions } from '@components/data-table/data-table-actions'
+import {
+	DataTableActionBar,
+	DataTableActionBarSelection,
+} from '@components/data-table/data-table-action-bar'
 import { DataTableColumnHeader } from '@components/data-table/data-table-column-header'
 import { DataTableToolbar } from '@components/data-table/data-table-toolbar'
-import { TableCellEmail } from '@components/table/table-cell-email'
-import { TableCellPhone } from '@components/table/table-cell-phone'
 import {
+	TableCellEmail,
+	TableCellName,
+	TableCellPhone,
 	TableCellText,
 	TableCellTextEmpty,
-} from '@components/table/table-cell-text'
+} from '@components/table'
 import { Button } from '@components/ui/button'
 import { Checkbox } from '@components/ui/checkbox'
 import {
@@ -20,13 +24,16 @@ import {
 	DropdownMenuTrigger,
 } from '@components/ui/dropdown-menu'
 import { useDataTable } from '@hooks/use-data-table'
-import type { Client } from '@infra/db/schemas/clients'
-import { useOperation } from '@modules/dashboard/hooks/use-operation'
+import type { Client } from '@infra/db/schemas'
+import { getSpaceIdFromHeaders } from '@libs/http/space'
 import { RiExpandDiagonalLine, RiMoreFill } from '@remixicon/react'
 import type { Column, ColumnDef } from '@tanstack/react-table'
 import { formatDocumentWithMask } from '@utils/document-mask'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { parseAsInteger, useQueryState } from 'nuqs'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
+import { ClientStatusBadge } from './status-badge'
 
 interface DataTableClientsProps {
 	data: Client[]
@@ -34,8 +41,7 @@ interface DataTableClientsProps {
 }
 
 export function DataTableClients({ data, total }: DataTableClientsProps) {
-	const { onOpenOperation } = useOperation()
-	// Keep pageCount in sync with current perPage from URL state
+	const router = useRouter()
 	const [perPage] = useQueryState('perPage', parseAsInteger.withDefault(10))
 	const pageCount = Math.max(1, Math.ceil(total / perPage))
 
@@ -73,13 +79,19 @@ export function DataTableClients({ data, total }: DataTableClientsProps) {
 				id: 'name',
 				accessorFn: (row) => row.name ?? '',
 				header: ({ column }: { column: Column<Client, unknown> }) => (
-					<DataTableColumnHeader column={column} title="Name" />
+					<DataTableColumnHeader column={column} title="Nome" />
 				),
 				cell: ({ row }) => (
 					<div className="group relative">
-						<TableCellText>{row.original.name}</TableCellText>
+						<Link href={`cliente/${row.original.id}`}>
+							<TableCellName>{row.original.name}</TableCellName>
+						</Link>
 						<div className="-top-1 invisible absolute right-0 z-10 rounded duration-100 ease-in-out group-hover:visible">
-							<Button size="sm" variant="secondary">
+							<Button
+								size="sm"
+								variant="secondary"
+								onClick={() => handleRowClick(row.original.id)}
+							>
 								<RiExpandDiagonalLine />
 								Open
 							</Button>
@@ -113,13 +125,13 @@ export function DataTableClients({ data, total }: DataTableClientsProps) {
 			},
 			{
 				id: 'phone',
-				accessorFn: (row) => row.phone ?? '',
+				accessorFn: (row) => row.phoneNumber ?? '',
 				header: ({ column }: { column: Column<Client, unknown> }) => (
-					<DataTableColumnHeader column={column} title="Phone" />
+					<DataTableColumnHeader column={column} title="Telefone" />
 				),
 				cell: ({ row }) =>
-					row.original.phone ? (
-						<TableCellPhone phone={row.original.phone} />
+					row.original.phoneNumber ? (
+						<TableCellPhone phone={row.original.phoneNumber} />
 					) : (
 						<TableCellTextEmpty />
 					),
@@ -129,15 +141,15 @@ export function DataTableClients({ data, total }: DataTableClientsProps) {
 				},
 			},
 			{
-				id: 'tax_id',
-				accessorFn: (row) => row.tax_id ?? '',
+				id: 'document-number',
+				accessorFn: (row) => row.documentNumber ?? '',
 				header: ({ column }: { column: Column<Client, unknown> }) => (
 					<DataTableColumnHeader column={column} title="Documento" />
 				),
 				cell: ({ row }) =>
-					row.original.tax_id ? (
+					row.original.documentNumber ? (
 						<TableCellText>
-							{formatDocumentWithMask(row.original.tax_id)}
+							{formatDocumentWithMask(row.original.documentNumber)}
 						</TableCellText>
 					) : (
 						<TableCellTextEmpty />
@@ -148,25 +160,21 @@ export function DataTableClients({ data, total }: DataTableClientsProps) {
 				},
 			},
 			{
-				id: 'action',
-				cell: () => {
-					return (
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button variant="ghost" size="icon">
-									<RiMoreFill />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent>
-								<DropdownMenuItem>Open</DropdownMenuItem>
-								<DropdownMenuItem>Edit</DropdownMenuItem>
-								<DropdownMenuItem>Delete</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					)
+				id: 'status',
+				accessorFn: (row) => row.status ?? '',
+				header: ({ column }: { column: Column<Client, unknown> }) => (
+					<DataTableColumnHeader column={column} title="Status" />
+				),
+				cell: ({ row }) =>
+					row.original.status ? (
+						<ClientStatusBadge status={row.original.status} />
+					) : (
+						<TableCellTextEmpty />
+					),
+				meta: {
+					label: 'Documento',
+					variant: 'text',
 				},
-				right: true,
-				maxSize: 36,
 			},
 		],
 		[],
@@ -181,6 +189,10 @@ export function DataTableClients({ data, total }: DataTableClientsProps) {
 		clearOnDefault: true,
 	})
 
+	const handleRowClick = useCallback((id: string) => {
+		router.push(`cliente/${id}`)
+	}, [])
+
 	return (
 		<div className="data-table-container">
 			<DataTable
@@ -189,34 +201,14 @@ export function DataTableClients({ data, total }: DataTableClientsProps) {
 					<DataTableActionBar table={table}>
 						<DataTableActions
 							table={table}
-							// onEdit={(ids) =>
-							// 	// openOperation({
-							// 	//  entity: 'client',
-							// 	//  operation: 'edit',
-							// 	//  id: ids[0],
-							// 	// })
-							// }
-							// onDelete={(id: string) =>
-							// 	// openOperation({
-							// 	//  entity: 'client',
-							// 	//  operation: 'delete',
-							// 	//  onConfirm: async () => console.log('delete', id),
-							// 	// })
-							// }
+							onEdit={(id) => console.log(id)}
+							onDelete={(id) => console.log(id)}
 						/>
 					</DataTableActionBar>
 				}
 			>
 				<DataTableToolbar table={table}>
-					<Button
-						onClick={() =>
-							onOpenOperation({
-								entity: 'client',
-								operation: 'create',
-							})
-						}
-						size="sm"
-					>
+					<Button onClick={() => console.log('novo')} size="sm">
 						Criar novo
 					</Button>
 				</DataTableToolbar>
