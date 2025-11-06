@@ -131,11 +131,17 @@ function DataTableActionBarSelection<TData>({
 		table.toggleAllRowsSelected(false)
 	}, [table])
 
+	const filteredSelectedRowCount =
+		table.getFilteredSelectedRowModel().rows.length
+
 	return (
-		<div className="flex h-7 items-center rounded-md border border-zinc-400 border-dotted pr-1 pl-2.5">
-			<span className="whitespace-nowrap text-xs">
-				{table.getFilteredSelectedRowModel().rows.length} selected
-			</span>
+		<div className="flex h-7 items-center rounded-md border-2 border-dotted pr-1 pl-2.5">
+			<div className="space-x-1 whitespace-nowrap text-xs">
+				<span>{filteredSelectedRowCount}</span>
+				<span>
+					{filteredSelectedRowCount > 1 ? 'selecionadas' : 'selecionada'}
+				</span>
+			</div>
 			<Separator
 				orientation="vertical"
 				className="mr-1 ml-2 data-[orientation=vertical]:h-4"
@@ -155,7 +161,7 @@ function DataTableActionBarSelection<TData>({
 					sideOffset={10}
 					className="flex items-center gap-2 border bg-accent px-2 py-1 font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
 				>
-					<p>Clear selection</p>
+					<p>Limpar seleção</p>
 					<kbd className="select-none rounded border bg-background px-1.5 py-px font-mono font-normal text-[0.7rem] text-foreground shadow-xs">
 						<abbr title="Escape" className="no-underline">
 							Esc
