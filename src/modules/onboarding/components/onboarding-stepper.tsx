@@ -1,5 +1,7 @@
+'use server'
+
 import { Stepper } from '@components/ui/stepper'
-import { accountByIdAction } from '@modules/account/actions/queries/account-by-id.action'
+import { accountByUserIdAction } from '@modules/account'
 import {
 	AccountStepForm,
 	type AccountStepFormProps,
@@ -7,24 +9,16 @@ import {
 import { SpaceStepForm } from '../forms/space-step-form'
 import { CompleteOnboarding } from './complete-step'
 
-export default async function OnboardingStepper({
-	accountId,
-}: {
-	accountId: string
-}) {
-	const { account } = await accountByIdAction({ id: accountId })
-
-	if (!account) {
-		throw new Error('Account not found')
-	}
+export default async function OnboardingStepper() {
+	const { data: account } = await accountByUserIdAction()
 
 	const registeredAccountDetails: Pick<AccountStepFormProps, 'initialValues'> =
 		{
 			initialValues: {
-				displayName: account.displayName ?? '',
-				phoneNumber: account.phoneNumber ?? '',
-				oabNumber: account.oabNumber ?? '',
-				oabState: account.oabState ?? '',
+				displayName: account?.displayName ?? '',
+				phoneNumber: account?.phoneNumber ?? '',
+				oabNumber: account?.oabNumber ?? '',
+				oabState: account?.oabState ?? '',
 			},
 		}
 
@@ -35,7 +29,7 @@ export default async function OnboardingStepper({
 			description: '',
 			content: (
 				<AccountStepForm
-					accountId={accountId}
+					accountId={account?.id}
 					initialValues={registeredAccountDetails.initialValues}
 				/>
 			),
@@ -44,7 +38,7 @@ export default async function OnboardingStepper({
 			id: 'space',
 			title: 'Space',
 			description: '',
-			content: <SpaceStepForm accountId={accountId} />,
+			content: <SpaceStepForm accountId={account?.id} />,
 		},
 		{
 			id: 'complete',
@@ -54,5 +48,9 @@ export default async function OnboardingStepper({
 		},
 	]
 
-	return <Stepper steps={STEPS} initialStep={0} />
+	return (
+		<div className="flex w-full max-w-lg justify-center">
+			<Stepper steps={STEPS} initialStep={0} />
+		</div>
+	)
 }

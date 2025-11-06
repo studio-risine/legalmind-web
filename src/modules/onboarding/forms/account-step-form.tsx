@@ -1,5 +1,6 @@
 'use client'
 
+import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert'
 import { Card, CardContent, CardHeader } from '@components/ui/card'
 import { Field, FieldError, FieldGroup } from '@components/ui/field'
 import { Form, FormControl, FormLabel } from '@components/ui/form'
@@ -21,9 +22,9 @@ import {
 import { OAB_STATES } from '@constants/oab-states'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useStepper } from '@hooks/use-stepper'
-import type { UpdateAccount } from '@infra/db/schemas'
+import { insertAccountAction } from '@modules/account/actions/mutations/insert-account.action'
 import { updateAccountAction } from '@modules/account/actions/mutations/update-account.action'
-import { useId } from 'react'
+import { useId, useMemo, useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import z from 'zod'
 
@@ -37,7 +38,7 @@ const schema = z.object({
 type FormData = z.input<typeof schema>
 
 export interface AccountStepFormProps {
-	accountId: string
+	accountId?: string
 	initialValues: FormData
 }
 
@@ -46,32 +47,63 @@ export function AccountStepForm({
 	initialValues,
 }: AccountStepFormProps) {
 	const formId = useId()
+	const [isPending, startTransition] = useTransition()
+
 	const { nextStep } = useStepper()
+
+	const defaultValues = useMemo(() => {
+		return {
+			displayName: initialValues?.displayName,
+			phoneNumber: initialValues?.phoneNumber,
+			oabNumber: initialValues?.oabNumber,
+			oabState: initialValues?.oabState,
+		}
+	}, [initialValues])
 
 	const form = useForm<FormData>({
 		resolver: zodResolver(schema),
-		defaultValues: {
-			displayName: initialValues.displayName,
-			phoneNumber: initialValues.phoneNumber,
-			oabNumber: initialValues.oabNumber,
-			oabState: initialValues.oabState,
-		},
+		defaultValues,
 	})
 
-	const onSubmit = async (formData: FormData) => {
-		const insertAccount: UpdateAccount = {
-			displayName: formData.displayName,
-			phoneNumber: formData.phoneNumber ?? null,
-			oabNumber: formData.oabNumber,
-			oabState: formData.oabState,
-		}
+	const onSubmit = (formData: FormData) => {
+		startTransition(async () => {
+			const insertAccount = {
+				displayName: formData.displayName,
+				phoneNumber: formData.oabNumber ?? null,
+				oabNumber: formData.oabNumber,
+				oabState: formData.oabState,
+			}
 
-		await updateAccountAction({
-			accountId,
-			data: insertAccount,
+			if (accountId) {
+				const { error, success, message } = await updateAccountAction({
+					accountId,
+					data: insertAccount,
+				})
+
+				if (error || !success) {
+					form.setError('root', {
+						message: message || 'Ocorreu um erro, tente novamente mais tarde.',
+					})
+				}
+
+				if (success) {
+					nextStep()
+				}
+			}
+
+			const { error, success, message } =
+				await insertAccountAction(insertAccount)
+
+			if (error || !success) {
+				form.setError('root', {
+					message: message || 'Ocorreu um erro, tente novamente mais tarde.',
+				})
+			}
+
+			if (success) {
+				nextStep()
+			}
 		})
-
-		nextStep()
 	}
 
 	return (
@@ -87,6 +119,15 @@ export function AccountStepForm({
 							className="grid gap-4"
 							onSubmit={form.handleSubmit(onSubmit)}
 						>
+							{form.formState.errors.root && (
+								<Alert variant="destructive">
+									<AlertTitle>Error</AlertTitle>
+									<AlertDescription>
+										{form.formState.errors.root.message}
+									</AlertDescription>
+								</Alert>
+							)}
+
 							<FieldGroup>
 								<Controller
 									control={form.control}
@@ -100,7 +141,7 @@ export function AccountStepForm({
 												<Input
 													{...field}
 													id={field.name}
-													placeholder="Seu nome completo"
+													placeholder=""
 													data-invalid={fieldState.invalid}
 													value={field.value}
 												/>
@@ -195,8 +236,8 @@ export function AccountStepForm({
 				<StepperNextButton
 					type="submit"
 					form={formId}
-					disabled={form.formState.isSubmitting}
-					preventDefault
+					disabled={isPending}
+					preventDefault={true}
 				/>
 			</StepperFooter>
 		</>

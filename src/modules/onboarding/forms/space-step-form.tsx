@@ -1,5 +1,6 @@
 'use client'
 
+import { Alert, AlertDescription, AlertTitle } from '@components/ui/alert'
 import { Card, CardContent, CardHeader } from '@components/ui/card'
 import { Field, FieldError, FieldGroup } from '@components/ui/field'
 import { Form, FormControl, FormLabel } from '@components/ui/form'
@@ -20,12 +21,11 @@ import {
 import { Textarea } from '@components/ui/textarea'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { spaceTypeEnum } from '@infra/db/schemas'
-import { createSpaceAction } from '@modules/space/actions'
+import { createSpaceAction } from '@modules/space/actions/mutations/insert-space.action'
 import { createSelectSchema } from 'drizzle-zod'
 import { useRouter } from 'next/navigation'
 import { useId, useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import z from 'zod'
 
 const schema = z.object({
@@ -52,8 +52,8 @@ const SPACE_TYPES = spaceTypeEnum.enumValues.map((value) => ({
 
 type FormData = z.infer<typeof schema>
 
-export interface SpaceStepFormProps {
-	accountId: string
+interface SpaceStepFormProps {
+	accountId?: string
 }
 
 export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
@@ -71,28 +71,37 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 		},
 	})
 
-	const onSubmit = async (formData: FormData) => {
-		try {
-			const result = await createSpaceAction({
+	const onSubmit = (formData: FormData) => {
+		if (!accountId) {
+			form.setError('root', {
+				message: 'Conta não encontrada. Por favor, volte e crie sua conta.',
+			})
+			return
+		}
+
+		startTransition(async () => {
+			const {
+				error,
+				success,
+				message,
+				data: spaceId,
+			} = await createSpaceAction({
 				accountId,
 				name: formData.spaceName,
 				type: formData.spaceType ?? 'INDIVIDUAL',
 				description: formData.spaceDescription,
 			})
 
-			toast.success(
-				'Seu Space foi criado com sucesso. Você será redirecionado!',
-			)
+			if (error || !success) {
+				form.setError('root', {
+					message: message || 'Ocorreu um erro, tente novamente mais tarde.',
+				})
+			}
 
-			new Promise((resolve) => setTimeout(resolve, 500))
-
-			startTransition(() => {
-				router.push(`/space/${result.spaceId}`)
-			})
-		} catch (error) {
-			toast.error('Falha ao criar o Space. Por favor, tente novamente.')
-			console.error('Failed to create space:', error)
-		}
+			if (success && spaceId) {
+				router.push(`/space/${spaceId}`)
+			}
+		})
 	}
 
 	return (
@@ -106,7 +115,20 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 				</CardHeader>
 				<CardContent>
 					<Form {...form}>
-						<form id={formId} onSubmit={form.handleSubmit(onSubmit)}>
+						<form
+							id={formId}
+							className="grid gap-4"
+							onSubmit={form.handleSubmit(onSubmit)}
+						>
+							{form.formState.errors.root && (
+								<Alert variant="destructive">
+									<AlertTitle>Error</AlertTitle>
+									<AlertDescription>
+										{form.formState.errors.root.message}
+									</AlertDescription>
+								</Alert>
+							)}
+
 							<FieldGroup>
 								<Controller
 									control={form.control}
@@ -144,7 +166,7 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 													onValueChange={field.onChange}
 												>
 													<SelectTrigger id={field.name}>
-														<SelectValue placeholder="Selecione o tipo" />
+														<SelectValue placeholder="" />
 													</SelectTrigger>
 													<SelectContent>
 														{SPACE_TYPES.map((type) => (
@@ -195,7 +217,7 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 					<StepperNextButton
 						type="submit"
 						form={formId}
-						disabled={form.formState.isSubmitting || isPending}
+						disabled={isPending}
 						preventDefault
 					/>
 				</div>
