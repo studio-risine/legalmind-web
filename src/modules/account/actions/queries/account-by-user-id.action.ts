@@ -8,10 +8,6 @@ import type { AuthError } from '@supabase/supabase-js'
 import { cache } from 'react'
 import z, { type ZodError } from 'zod'
 
-export interface Input {
-	id: string
-}
-
 export interface Output {
 	data: Account | null
 	success: boolean
@@ -19,37 +15,11 @@ export interface Output {
 	error?: ZodError | AuthError | null
 }
 
-const inputSchema = z.object({
-	id: z.uuid('Invalid account id'),
-})
-
 const outputSchema = z.object({
 	data: z.custom<Account>().nullable(),
 })
 
-async function handler(input: Input): Promise<Output> {
-	const inputParsed = inputSchema.safeParse(input)
-
-	if (!inputParsed.success) {
-		return {
-			data: null,
-			success: false,
-			error: inputParsed.error,
-			message: formatZodError(inputParsed.error),
-		}
-	}
-
-	const accountRepository = makeAccountRepository()
-	const account = await accountRepository.findById(inputParsed.data.id)
-
-	if (!account) {
-		return {
-			data: null,
-			success: false,
-			message: 'Conta não encontrada.',
-		}
-	}
-
+async function handler(): Promise<Output> {
 	const { data: user, error } = await userAuthAction()
 
 	if (!user?.id) {
@@ -61,11 +31,14 @@ async function handler(input: Input): Promise<Output> {
 		}
 	}
 
-	if (account.userId !== user.id) {
+	const accountRepository = makeAccountRepository()
+	const account = await accountRepository.findByUserId(user.id)
+
+	if (!account) {
 		return {
 			data: null,
 			success: false,
-			message: 'Você não tem permissão para acessar esta conta.',
+			message: 'Conta não encontrada.',
 		}
 	}
 
@@ -86,4 +59,4 @@ async function handler(input: Input): Promise<Output> {
 	}
 }
 
-export const accountByIdAction = cache(handler)
+export const accountByUserIdAction = cache(handler)
