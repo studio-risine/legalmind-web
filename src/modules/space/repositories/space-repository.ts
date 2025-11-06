@@ -1,8 +1,7 @@
-import type { Space } from '@infra/db/schemas'
-import type { CreateSpaceInput } from './drizzle-space-repository'
+import type { InsertSpace, Space } from '@infra/db/schemas'
 
 export interface SpaceRepository {
-	create({ data }: CreateSpaceInput): Promise<{ id: string }>
+	insert(data: InsertSpace): Promise<{ spaceId: string }>
 	findById({ id }: { id: string }): Promise<Space | undefined>
 	findByAccountId({
 		accountId,

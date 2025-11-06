@@ -8,7 +8,7 @@ export interface UpdateAccountInput {
 export interface AccountRepository {
 	findByUserId(userId: string): Promise<Account | undefined>
 	findById(id: string): Promise<Account | undefined>
-	create(data: InsertAccount): Promise<{ id: string }>
+	insert(data: InsertAccount): Promise<{ accountId: string }>
 	update({
 		accountId,
 		data,

@@ -1,31 +1,41 @@
 'use server'
 
-import type { Space } from '@infra/db/schemas'
+import type { InsertSpace } from '@infra/db/schemas'
 import { formatZodError } from '@libs/zod/error-handlers'
 import { makeAccountRepository } from '@modules/account/factories'
 import { userAuthAction } from '@modules/auth/actions/user-auth.action'
 import { makeSpaceRepository } from '@modules/space/factories'
 import type { AuthError } from '@supabase/supabase-js'
+import { revalidatePath } from 'next/cache'
 import { cache } from 'react'
 import z, { type ZodError } from 'zod'
 
 export interface Input {
 	accountId: string
+	name: string
+	type: InsertSpace['type']
+	description?: string
 }
 
 export interface Output {
-	data: Space | null
+	data: string | null
 	success: boolean
 	message?: string | null
 	error?: ZodError | AuthError | null
 }
 
 const inputSchema = z.object({
-	accountId: z.string().uuid('Invalid account id'),
+	accountId: z.uuid(),
+	name: z
+		.string()
+		.min(2, 'O nome do space é obrigatório e deve ter ao menos 2 caracteres')
+		.max(100),
+	type: z.enum(['INDIVIDUAL', 'FIRM', 'DEPARTMENT']),
+	description: z.string().optional(),
 })
 
 const outputSchema = z.object({
-	data: z.custom<Space>().nullable(),
+	data: z.string(),
 })
 
 async function handler(input: Input): Promise<Output> {
@@ -42,7 +52,7 @@ async function handler(input: Input): Promise<Output> {
 
 	const { data: user, error } = await userAuthAction()
 
-	if (!user?.id) {
+	if (!user?.id || !user?.email) {
 		return {
 			data: null,
 			success: false,
@@ -52,7 +62,7 @@ async function handler(input: Input): Promise<Output> {
 	}
 
 	const accountRepository = makeAccountRepository()
-	const account = await accountRepository.findById(inputParsed.data.accountId)
+	const account = await accountRepository.findById(input.accountId)
 
 	if (!account) {
 		return {
@@ -66,24 +76,27 @@ async function handler(input: Input): Promise<Output> {
 		return {
 			data: null,
 			success: false,
-			message: 'Você não tem permissão para acessar este space.',
+			message: 'Você não tem permissão para criar um space com esta conta.',
 		}
 	}
 
 	const spaceRepository = makeSpaceRepository()
-	const space = await spaceRepository.findByAccountId({
-		accountId: inputParsed.data.accountId,
+
+	const result = await spaceRepository.insert({
+		name: input.name,
+		type: input.type,
+		createdBy: input.accountId,
 	})
 
-	if (!space) {
+	if (!result.spaceId) {
 		return {
 			data: null,
 			success: false,
-			message: 'Space não encontrado.',
+			message: 'Ocorreu um erro ao criar o space, tente novamente mais tarde.',
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: space })
+	const outputParsed = outputSchema.safeParse({ data: result.spaceId })
 
 	if (!outputParsed.success) {
 		return {
@@ -94,10 +107,12 @@ async function handler(input: Input): Promise<Output> {
 		}
 	}
 
+	revalidatePath('/space')
+
 	return {
-		data: space,
+		data: result.spaceId,
 		success: true,
 	}
 }
 
-export const getSpaceByAccountIdAction = cache(handler)
+export const createSpaceAction = cache(handler)

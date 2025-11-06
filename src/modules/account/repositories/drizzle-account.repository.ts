@@ -39,14 +39,14 @@ export class DrizzleAccountRepository implements AccountRepository {
 		return account
 	}
 
-	async create(account: InsertAccount): Promise<{ id: string }> {
+	async insert(data: InsertAccount): Promise<{ accountId: string }> {
 		const [result] = await db
 			.insert(accounts)
-			.values(account)
+			.values(data)
 			.returning({ id: accounts.id })
 
 		return {
-			id: result.id,
+			accountId: result.id,
 		}
 	}
 }

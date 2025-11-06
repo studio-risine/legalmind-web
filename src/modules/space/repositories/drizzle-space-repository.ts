@@ -8,10 +8,8 @@ import {
 import { eq } from 'drizzle-orm'
 import type { SpaceRepository } from './space-repository'
 
-export type CreateSpaceInput = InsertSpace
-
 export class DrizzleSpaceRepository implements SpaceRepository {
-	async create(input: CreateSpaceInput): Promise<{ id: string }> {
+	async insert(input: InsertSpace): Promise<{ spaceId: string }> {
 		const result = await db.transaction(async (tx) => {
 			const [space] = await tx
 				.insert(spaces)
@@ -31,7 +29,7 @@ export class DrizzleSpaceRepository implements SpaceRepository {
 		})
 
 		return {
-			id: result.id,
+			spaceId: result.id,
 		}
 	}
 
