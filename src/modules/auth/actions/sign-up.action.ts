@@ -2,12 +2,12 @@
 
 import { env } from '@infra/env'
 import { createClient } from '@libs/supabase/server'
-import { emailSchema, passwordSchema } from '@libs/zod/schemas/defaults'
+import { emailSchemaDefault, passwordSchema } from '@libs/zod/schemas/defaults'
 import { AuthError } from '@supabase/supabase-js'
 import z, { type ZodError } from 'zod'
 
 const signUpSchema = z.object({
-	email: emailSchema,
+	email: emailSchemaDefault,
 	password: passwordSchema,
 })
 
