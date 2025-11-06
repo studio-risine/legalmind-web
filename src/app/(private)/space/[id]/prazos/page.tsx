@@ -1,27 +1,66 @@
 import { MainContent } from '@components/ui/main-content'
-import { PageHeaderWithBreadcrumb } from '@modules/dashboard/components'
+import { listDeadlinesAction } from '@modules/deadline/actions'
+import { DataTableDeadlines } from '@modules/deadline/components/data-table-deadlines'
+import { HeaderBreadcrumb } from '@modules/space/components'
 
 export default async function Page({
 	params,
+	searchParams,
 }: {
 	params: Promise<{ id: string }>
+	searchParams: Promise<{
+		page?: string
+		perPage?: string
+		search?: string
+		status?: string
+		priority?: string
+		processId?: string
+	}>
 }) {
-	const { id } = await params
+	const { id: spaceId } = await params
+	const {
+		page = '1',
+		perPage = '25',
+		search,
+		status,
+		priority,
+		processId,
+	} = await searchParams
+
+	const limit = Number.parseInt(perPage, 10)
+	const offset = (Number.parseInt(page, 10) - 1) * limit
+
+	const { data } = await listDeadlinesAction({
+		spaceId,
+		limit,
+		offset,
+		search,
+		status: status as 'OPEN' | 'DONE' | 'CANCELED',
+		priority: priority as 'LOW' | 'MEDIUM' | 'HIGH',
+		processId,
+	})
 
 	const breadcrumb = [
-		{ label: 'Meu Space', href: `/space/${id}` },
-		{ label: 'Prazos', href: `/space/${id}` },
+		{ label: 'Meu Space', href: `/space/${spaceId}` },
+		{ label: 'Prazos', href: `/space/${spaceId}/prazos` },
 	]
 
 	return (
 		<>
-			<PageHeaderWithBreadcrumb breadcrumb={breadcrumb} />
+			<HeaderBreadcrumb items={breadcrumb} />
 
 			<MainContent size="2xl">
-				<div>
-					<h1 className="font-bold text-2xl text-foreground">Prazos</h1>
+				<div className="space-y-6">
+					<div>
+						<h1 className="font-bold text-2xl text-foreground">Prazos</h1>
+						<p className="text-muted-foreground">
+							Gerencie seus prazos processuais
+						</p>
+					</div>
 
-					<p className="text-muted-foreground">Prazos: {id}</p>
+					{data && (
+						<DataTableDeadlines data={data.deadlines} total={data.total} />
+					)}
 				</div>
 			</MainContent>
 		</>

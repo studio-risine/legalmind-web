@@ -1,14 +1,5 @@
-// Deadline Actions Barrel Export
-// Export all deadline-related server actions
-
-// CRUD actions (to be implemented)
-// export { createDeadlineAction } from './create-deadline-action'
-// export { updateDeadlineAction } from './update-deadline-action'
-// export { deleteDeadlineAction } from './delete-deadline-action'
-// export { getDeadlineAction } from './get-deadline-action'
-// export { listDeadlinesAction } from './list-deadlines-action'
-// export { completeDeadlineAction } from './complete-deadline-action'
-// export { extendDeadlineAction } from './extend-deadline-action'
-
-// Placeholder for future actions
-// Remove this comment when actions are implemented
+export { createDeadlineAction } from './mutations/create-deadline.action'
+export { deleteDeadlineAction } from './mutations/delete-deadline.action'
+export { updateDeadlineAction } from './mutations/update-deadline.action'
+export { getDeadlineByIdAction } from './queries/get-deadline-by-id.action'
+export { listDeadlinesAction } from './queries/list-deadlines.action'
