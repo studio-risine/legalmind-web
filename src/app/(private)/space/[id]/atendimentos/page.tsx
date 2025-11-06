@@ -1,5 +1,5 @@
 import { MainContent } from '@components/ui/main-content'
-import { PageHeaderWithBreadcrumb } from '@modules/dashboard/components'
+import { HeaderBreadcrumb } from '@modules/space/components'
 
 export default async function Page({
 	params,
@@ -10,12 +10,12 @@ export default async function Page({
 
 	const breadcrumb = [
 		{ label: 'Meu Space', href: `/space/${id}` },
-		{ label: 'Clientes', href: `/space/${id}/Clientes` },
+		{ label: 'Atendimentos', href: `/space/${id}/atendimentos` },
 	]
 
 	return (
 		<>
-			<PageHeaderWithBreadcrumb breadcrumb={breadcrumb} />
+			<HeaderBreadcrumb items={breadcrumb} />
 
 			<MainContent size="2xl">
 				<div>

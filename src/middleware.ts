@@ -1,8 +1,34 @@
 import { updateSession } from '@libs/supabase/middleware'
-import type { NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-	return await updateSession(request)
+	const supabaseResponse = await updateSession(request)
+
+	const pathname = request.nextUrl.pathname
+	const spaceMatch = pathname.match(/^\/space\/([^/]+)(?:\/|$)/)
+
+	if (!spaceMatch) {
+		return supabaseResponse
+	}
+
+	const spaceId = spaceMatch[1]
+
+	const requestHeaders = new Headers(request.headers)
+	requestHeaders.set('x-space-id', spaceId)
+
+	const response = NextResponse.next({
+		request: {
+			headers: requestHeaders,
+		},
+	})
+
+	// IMPORTANT: Copy all cookies from Supabase response to maintain session
+	// This is critical to prevent users from being randomly logged out
+	supabaseResponse.cookies.getAll().forEach((cookie) => {
+		response.cookies.set(cookie.name, cookie.value, cookie)
+	})
+
+	return response
 }
 
 export const config = {

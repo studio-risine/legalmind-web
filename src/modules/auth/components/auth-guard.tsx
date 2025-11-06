@@ -8,7 +8,7 @@ export default async function AuthGuard({ children }: { children: ReactNode }) {
 	const { data } = await supabase.auth.getClaims()
 
 	if (data?.claims) {
-		redirect('/dashboard')
+		redirect('/space')
 	}
 
 	return <>{children}</>

@@ -10,10 +10,7 @@ import {
 export function RegisterView() {
 	return (
 		<AuthBox>
-			<AuthBoxHeader
-				title="Crie sua nova conta"
-				description="Escolha o método para criação de sua conta"
-			/>
+			<AuthBoxHeader title="Cadastrar" />
 
 			<AuthBoxContent>
 				<SignUpForm />

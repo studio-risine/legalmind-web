@@ -1,23 +1,25 @@
 import { AppSidebar } from '@components/ui/app-sidebar'
 import { SidebarInset, SidebarProvider } from '@components/ui/sidebar'
-import { notFound } from 'next/navigation'
+import { getSpaceIdFromHeaders } from '@libs/http/space'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import type { ReactNode } from 'react'
 
 interface LayoutProps {
 	children: ReactNode
-	params: Promise<{ id: string }>
 }
 
-export default async function Layout({ children, params }: LayoutProps) {
-	const { id: spaceId } = await params
+export default async function Layout({ children }: LayoutProps) {
+	const spaceId = await getSpaceIdFromHeaders()
 
-	if (!spaceId) notFound()
+	if (!spaceId) {
+		throw new Error('Space ID is required in layout')
+	}
 
 	return (
 		<SidebarProvider>
 			<div className="relative flex h-screen w-full">
 				<AppSidebar spaceId={spaceId} />
+
 				<SidebarInset className="flex flex-col">
 					<NuqsAdapter>{children}</NuqsAdapter>
 				</SidebarInset>

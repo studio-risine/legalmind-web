@@ -1,9 +1,10 @@
+'use client'
+
 import {
 	RiArticleLine,
 	RiChat3Line,
 	RiFolderLine,
 	RiHome9Line,
-	RiPieChart2Line,
 	RiSettings2Line,
 	RiUser6Line,
 	RiWallet2Line,
@@ -36,12 +37,6 @@ function generateMainNavigationRoutes(spaceId: string) {
 			link: `/space/${spaceId}/atendimentos`,
 		},
 		{
-			id: 'analytics',
-			title: 'Indicadores',
-			icon: RiPieChart2Line,
-			link: '#',
-		},
-		{
 			id: 'clients',
 			title: 'Clientes',
 			icon: RiUser6Line,
@@ -64,8 +59,7 @@ function generateMainNavigationRoutes(spaceId: string) {
 
 export function useNavigation() {
 	const mainNavigationRoutes = (spaceId: string) => {
-		if (!spaceId)
-			throw new Error('spaceId is required to generate navigation routes')
+		if (!spaceId) return []
 
 		const routes = generateMainNavigationRoutes(spaceId)
 
