@@ -60,9 +60,9 @@ export function useResetPasswordCooldown(): UseResetPasswordCooldownReturn {
 	const canSubmit = !isOnCooldown
 
 	return {
+		canSubmit,
 		isOnCooldown,
 		remainingTime,
-		canSubmit,
 		startCooldown,
 	}
 }
