@@ -1,49 +1,19 @@
 import { MainContent } from '@components/ui/main-content'
-import { listProcessesAction } from '@modules/process/actions'
-import { DataTableProcesses } from '@modules/process/components/data-table-processes'
+import { ProcessDisplay } from '@modules/process'
 import { HeaderBreadcrumb } from '@modules/space/components'
+import type { SearchParams } from 'nuqs/server'
+import { Suspense } from 'react'
+import { loadSearchParams } from '../searchParams'
 
-export default async function Page({
-	params,
-	searchParams,
-}: {
+type PageProps = {
 	params: Promise<{ id: string }>
-	searchParams: Promise<{
-		page?: string
-		perPage?: string
-		search?: string
-		status?: string
-		clientId?: string
-		assignedId?: string
-	}>
-}) {
+	searchParams: Promise<SearchParams>
+}
+
+export default async function Page({ params, searchParams }: PageProps) {
 	const { id: spaceId } = await params
-	const {
-		page = '1',
-		perPage = '25',
-		search,
-		status,
-		clientId,
-		assignedId,
-	} = await searchParams
 
-	const limit = Number.parseInt(perPage, 10)
-	const offset = (Number.parseInt(page, 10) - 1) * limit
-
-	const { data } = await listProcessesAction({
-		spaceId,
-		limit,
-		offset,
-		search,
-		status: status as
-			| 'PENDING'
-			| 'ACTIVE'
-			| 'SUSPENDED'
-			| 'ARCHIVED'
-			| 'CLOSED',
-		clientId,
-		assignedId,
-	})
+	const { search, page, pageSize } = await loadSearchParams(searchParams)
 
 	const breadcrumb = [
 		{ label: 'Meu Space', href: `/space/${spaceId}` },
@@ -63,9 +33,14 @@ export default async function Page({
 						</p>
 					</div>
 
-					{data && (
-						<DataTableProcesses data={data.processes} total={data.total} />
-					)}
+					<Suspense fallback={'loading'}>
+						<ProcessDisplay
+							spaceId={spaceId}
+							search={search}
+							page={page}
+							pageSize={pageSize}
+						/>
+					</Suspense>
 				</div>
 			</MainContent>
 		</>

@@ -7,19 +7,16 @@ import { DataTableColumnHeader } from '@components/data-table/data-table-column-
 import { DataTableToolbar } from '@components/data-table/data-table-toolbar'
 import {
 	TableCellEmail,
-	TableCellName,
 	TableCellPhone,
+	TableCellPrimary,
 	TableCellText,
 	TableCellTextEmpty,
 } from '@components/table'
-import { Button } from '@components/ui/button'
 import { Checkbox } from '@components/ui/checkbox'
 import { useDataTable } from '@hooks/use-data-table'
 import type { Client } from '@infra/db/schemas'
-import { RiExpandDiagonalLine } from '@remixicon/react'
 import type { Column, ColumnDef } from '@tanstack/react-table'
 import { formatDocumentWithMask } from '@utils/document-mask'
-import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { parseAsInteger, useQueryState } from 'nuqs'
 import { useCallback, useMemo } from 'react'
@@ -75,21 +72,10 @@ export function DataTableClients({ data, total }: DataTableClientsProps) {
 					<DataTableColumnHeader column={column} title="Nome" />
 				),
 				cell: ({ row }) => (
-					<div className="group relative">
-						<Link href={`cliente/${row.original.id}`}>
-							<TableCellName>{row.original.name}</TableCellName>
-						</Link>
-						<div className="-top-1 invisible absolute right-0 z-10 rounded duration-100 ease-in-out group-hover:visible">
-							<Button
-								size="sm"
-								variant="secondary"
-								onClick={() => handleRowClick(row.original.id)}
-							>
-								<RiExpandDiagonalLine />
-								Open
-							</Button>
-						</div>
-					</div>
+					<TableCellPrimary
+						link={`cliente/${row.original.id}`}
+						title={row.original.name}
+					/>
 				),
 				meta: {
 					label: 'Nome',

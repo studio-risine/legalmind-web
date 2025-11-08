@@ -3,6 +3,7 @@
 import { formatZodError } from '@libs/zod/error-handlers'
 import { userAuthAction } from '@modules/auth/actions/user-auth.action'
 import { getProcessRepository } from '@modules/process/factories'
+import { getSpaceIdFromHeaders } from '@modules/space/http/get-space-id-headers'
 import type { AuthError } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
 import { cache } from 'react'
@@ -10,7 +11,6 @@ import z, { type ZodError } from 'zod'
 
 export interface Input {
 	id: string
-	spaceId: string
 }
 
 export interface Output {
@@ -21,8 +21,7 @@ export interface Output {
 }
 
 const inputSchema = z.object({
-	id: z.string().uuid('Invalid process id'),
-	spaceId: z.string().min(1, 'Space ID é obrigatório'),
+	id: z.uuid('Invalid process id'),
 })
 
 async function handler(input: Input): Promise<Output> {
@@ -48,13 +47,23 @@ async function handler(input: Input): Promise<Output> {
 		}
 	}
 
+	const spaceId = await getSpaceIdFromHeaders()
+
+	if (!spaceId) {
+		return {
+			data: null,
+			success: false,
+			message: 'Space ID não encontrado nos headers',
+		}
+	}
+
 	const processRepository = getProcessRepository()
 	await processRepository.delete({
 		id: inputParsed.data.id,
-		spaceId: inputParsed.data.spaceId,
+		spaceId,
 	})
 
-	revalidatePath(`/space/${input.spaceId}/processos`)
+	revalidatePath(`/space/${spaceId}/processos`)
 
 	return {
 		data: null,

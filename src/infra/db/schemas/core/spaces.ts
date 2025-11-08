@@ -20,3 +20,5 @@ export type Space = z.output<typeof spaceSelectSchema>
 
 export const insertSpaceSchema = createInsertSchema(spaces)
 export type InsertSpace = z.input<typeof insertSpaceSchema>
+
+export type SpaceId = Space['id']
