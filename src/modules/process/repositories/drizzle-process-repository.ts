@@ -4,70 +4,102 @@ import {
 	type InsertProcess,
 	type Process,
 	processes,
+	type SpaceId,
 } from '@infra/db/schemas'
-import { and, count, eq, ilike, isNull, or, sql } from 'drizzle-orm'
+import { and, asc, count, desc, eq, ilike, isNull, or } from 'drizzle-orm'
 import type {
 	DeleteProcessParams,
-	ListProcessesParams,
+	FindManyParams,
 	ProcessRepository,
 	UpdateProcessParams,
 } from './process-repository'
 
 export class DrizzleProcessRepository implements ProcessRepository {
-	async insert(input: InsertProcess): Promise<{ processId: string }> {
-		const [process] = await db
+	async insert(params: InsertProcess): Promise<{ processId: string }> {
+		const [result] = await db
 			.insert(processes)
-			.values({
-				spaceId: input.spaceId,
-				clientId: input.clientId,
-				title: input.title,
-				description: input.description,
-				processNumber: input.processNumber,
-				status: input.status,
-				assignedId: input.assignedId,
-				createdBy: input.createdBy,
-			})
+			.values(params)
 			.returning({ id: processes.id })
 
 		return {
-			processId: process.id,
+			processId: result.id,
 		}
 	}
-
 	async findById(params: {
 		id: string
-		spaceId: string
+		spaceId: SpaceId
 	}): Promise<Process | undefined> {
-		const process = await db.query.processes.findFirst({
-			where: (processes, { eq, and, isNull }) =>
+		const result = await db.query.processes.findFirst({
+			where: (tbl, { and, eq, isNull }) =>
+				and(
+					eq(tbl.id, params.id),
+					eq(tbl.spaceId, params.spaceId),
+					isNull(tbl.deletedAt),
+				),
+		})
+		return result
+	}
+	async update(params: UpdateProcessParams): Promise<{ processId: string }> {
+		const now = new Date()
+
+		const [updated] = await db
+			.update(processes)
+			.set({ ...params.data, updatedAt: now })
+			.where(
 				and(
 					eq(processes.id, params.id),
 					eq(processes.spaceId, params.spaceId),
 					isNull(processes.deletedAt),
 				),
-		})
+			)
+			.returning({ id: processes.id })
 
-		return process
+		return { processId: updated.id }
 	}
+	async delete(params: DeleteProcessParams): Promise<void> {
+		const now = new Date()
 
-	async list(params: ListProcessesParams): Promise<{
-		processes: Process[]
-		total: number
-	}> {
-		const limit = params.limit ?? 25
-		const offset = params.offset ?? 0
+		await db.transaction(async (tx) => {
+			await tx
+				.update(deadlines)
+				.set({ deletedAt: now })
+				.where(
+					and(
+						eq(deadlines.spaceId, params.spaceId),
+						eq(deadlines.processId, params.id),
+						isNull(deadlines.deletedAt),
+					),
+				)
+
+			await tx
+				.update(processes)
+				.set({ deletedAt: now })
+				.where(
+					and(
+						eq(processes.id, params.id),
+						eq(processes.spaceId, params.spaceId),
+						isNull(processes.deletedAt),
+					),
+				)
+		})
+	}
+	async findMany(
+		params: FindManyParams,
+	): Promise<{ data: Process[]; total: number }> {
+		const page = params.page ?? 1
+		const pageSize = params.pageSize ?? 10
+		const { searchQuery, sortBy, sortDirection } = params
 
 		const conditions = [
 			eq(processes.spaceId, params.spaceId),
 			isNull(processes.deletedAt),
 		]
 
-		if (params.search) {
+		if (searchQuery) {
 			conditions.push(
 				or(
-					ilike(processes.title, `%${params.search}%`),
-					ilike(processes.processNumber, `%${params.search}%`),
-					ilike(processes.description, `%${params.search}%`),
+					ilike(processes.title, `%${searchQuery}%`),
+					ilike(processes.processNumber, `%${searchQuery}%`),
 				)!,
 			)
 		}
@@ -86,72 +118,46 @@ export class DrizzleProcessRepository implements ProcessRepository {
 
 		const whereClause = and(...conditions)
 
-		const [processesResult, [{ total }]] = await Promise.all([
+		const [result, [{ total }]] = await Promise.all([
 			db
-				.select()
+				.select({
+					id: processes.id,
+					spaceId: processes.spaceId,
+					clientId: processes.clientId,
+					title: processes.title,
+					description: processes.description,
+					processNumber: processes.processNumber,
+					status: processes.status,
+					assignedId: processes.assignedId,
+					createdBy: processes.createdBy,
+					createdAt: processes.createdAt,
+					updatedAt: processes.updatedAt,
+					deletedAt: processes.deletedAt,
+				})
 				.from(processes)
 				.where(whereClause)
-				.limit(limit)
-				.offset(offset)
-				.orderBy(sql`${processes.createdAt} DESC`),
-			db.select({ total: count() }).from(processes).where(whereClause),
+				.orderBy((fields) => {
+					if (sortBy && sortDirection === 'asc') {
+						return asc(fields[sortBy])
+					}
+
+					if (sortBy && sortDirection === 'desc') {
+						return desc(fields[sortBy])
+					}
+
+					return desc(fields.createdAt)
+				})
+				.offset((page - 1) * pageSize)
+				.limit(pageSize),
+			db
+				.select({ total: count(processes.id) })
+				.from(processes)
+				.where(whereClause),
 		])
 
 		return {
-			processes: processesResult,
-			total: Number(total),
+			data: result,
+			total,
 		}
-	}
-
-	async update(params: UpdateProcessParams): Promise<{ processId: string }> {
-		const [process] = await db
-			.update(processes)
-			.set({
-				...params.data,
-				updatedAt: new Date(),
-			})
-			.where(
-				and(
-					eq(processes.id, params.id),
-					eq(processes.spaceId, params.spaceId),
-					isNull(processes.deletedAt),
-				),
-			)
-			.returning({ id: processes.id })
-
-		return {
-			processId: process.id,
-		}
-	}
-
-	async delete(params: DeleteProcessParams): Promise<void> {
-		const now = new Date()
-
-		// Soft-delete cascade: Process → Deadlines
-		await db.transaction(async (tx) => {
-			// 1. Soft-delete all deadlines for this process
-			await tx
-				.update(deadlines)
-				.set({ deletedAt: now })
-				.where(
-					and(
-						eq(deadlines.processId, params.id),
-						eq(deadlines.spaceId, params.spaceId),
-						isNull(deadlines.deletedAt),
-					),
-				)
-
-			// 2. Soft-delete the process
-			await tx
-				.update(processes)
-				.set({ deletedAt: now })
-				.where(
-					and(
-						eq(processes.id, params.id),
-						eq(processes.spaceId, params.spaceId),
-						isNull(processes.deletedAt),
-					),
-				)
-		})
 	}
 }

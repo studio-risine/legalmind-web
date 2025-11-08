@@ -19,14 +19,23 @@ export default async function Page({
 		<>
 			<PageHeaderWithBreadcrumb breadcrumb={breadcrumb} />
 
-			<MainContent size="2xl">
-				<div>
-					<h1 className="font-bold text-2xl text-foreground">
-						Processo Number
-					</h1>
+			<MainContent size="default">
+				<section>
+					<header className="">
+						<h1 className="font-bold text-2xl text-foreground">
+							Minimal Product
+						</h1>
+						<p className="text-muted-foreground">Add a short summary</p>
+					</header>
 
-					<p className="text-muted-foreground">Processos: {id}</p>
-				</div>
+					<div className="mt-8 space-y-6">
+						<div>Informaçoes</div>
+					</div>
+
+					<div className="mt-8">
+						<div>Prazos</div>
+					</div>
+				</section>
 			</MainContent>
 		</>
 	)

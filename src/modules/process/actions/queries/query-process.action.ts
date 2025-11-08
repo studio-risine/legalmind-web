@@ -1,6 +1,6 @@
 'use server'
 
-import type { Process } from '@infra/db/schemas'
+import { type Process, processSchema } from '@infra/db/schemas'
 import { formatZodError } from '@libs/zod/error-handlers'
 import { userAuthAction } from '@modules/auth/actions/user-auth.action'
 import { getProcessRepository } from '@modules/process/factories'
@@ -8,26 +8,23 @@ import type { AuthError } from '@supabase/supabase-js'
 import { cache } from 'react'
 import z, { type ZodError } from 'zod'
 
-export interface Input {
-	id: string
-	spaceId: string
-}
-
-export interface Output {
-	data: Process | null
-	success: boolean
-	message?: string | null
-	error?: ZodError | AuthError | null
-}
-
 const inputSchema = z.object({
 	id: z.string().uuid('Invalid process id'),
 	spaceId: z.string().min(1, 'Space ID é obrigatório'),
 })
 
 const outputSchema = z.object({
-	data: z.custom<Process>().nullable(),
+	row: processSchema,
 })
+
+type Input = z.input<typeof inputSchema>
+
+interface Output {
+	data: { row: Process } | null
+	success: boolean
+	message?: string | null
+	error?: ZodError | AuthError | null
+}
 
 async function handler(input: Input): Promise<Output> {
 	const inputParsed = inputSchema.safeParse(input)
@@ -47,40 +44,41 @@ async function handler(input: Input): Promise<Output> {
 		return {
 			data: null,
 			success: false,
-			error: error,
+			error,
 			message: 'Usuário não autenticado',
 		}
 	}
 
-	const processRepository = getProcessRepository()
-	const process = await processRepository.findById({
+	const repo = getProcessRepository()
+	const row = await repo.findById({
 		id: inputParsed.data.id,
 		spaceId: inputParsed.data.spaceId,
 	})
 
-	if (!process) {
+	if (!row) {
 		return {
 			data: null,
 			success: false,
-			message: 'Processo não encontrado.',
+			message: 'Processo não encontrado',
+			error: null,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: process })
-
-	if (!outputParsed.success) {
+	const parsed = outputSchema.safeParse({ row })
+	if (!parsed.success) {
 		return {
 			data: null,
 			success: false,
-			error: outputParsed.error,
-			message: formatZodError(outputParsed.error),
+			error: parsed.error,
+			message: formatZodError(parsed.error),
 		}
 	}
 
 	return {
-		data: process,
 		success: true,
+		data: parsed.data,
 	}
 }
 
-export const getProcessByIdAction = cache(handler)
+export const queryProcess = cache(handler)
+export const queryProcessWithoutCacheAction = handler

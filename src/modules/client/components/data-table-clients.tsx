@@ -2,37 +2,25 @@
 
 import { DataTableActions } from '@components/data-table'
 import { DataTable } from '@components/data-table/data-table'
-import {
-	DataTableActionBar,
-	DataTableActionBarSelection,
-} from '@components/data-table/data-table-action-bar'
+import { DataTableActionBar } from '@components/data-table/data-table-action-bar'
 import { DataTableColumnHeader } from '@components/data-table/data-table-column-header'
 import { DataTableToolbar } from '@components/data-table/data-table-toolbar'
 import {
 	TableCellEmail,
-	TableCellName,
 	TableCellPhone,
+	TableCellPrimary,
 	TableCellText,
 	TableCellTextEmpty,
 } from '@components/table'
-import { Button } from '@components/ui/button'
 import { Checkbox } from '@components/ui/checkbox'
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@components/ui/dropdown-menu'
 import { useDataTable } from '@hooks/use-data-table'
 import type { Client } from '@infra/db/schemas'
-import { getSpaceIdFromHeaders } from '@libs/http/space'
-import { RiExpandDiagonalLine, RiMoreFill } from '@remixicon/react'
 import type { Column, ColumnDef } from '@tanstack/react-table'
 import { formatDocumentWithMask } from '@utils/document-mask'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { parseAsInteger, useQueryState } from 'nuqs'
 import { useCallback, useMemo } from 'react'
+import { ClientDialog } from './client-dialog'
 import { ClientStatusBadge } from './status-badge'
 
 interface DataTableClientsProps {
@@ -42,6 +30,8 @@ interface DataTableClientsProps {
 
 export function DataTableClients({ data, total }: DataTableClientsProps) {
 	const router = useRouter()
+	const params = useParams<{ id: string }>()
+	const spaceId = (params?.id ?? '') as string
 	const [perPage] = useQueryState('perPage', parseAsInteger.withDefault(10))
 	const pageCount = Math.max(1, Math.ceil(total / perPage))
 
@@ -82,21 +72,10 @@ export function DataTableClients({ data, total }: DataTableClientsProps) {
 					<DataTableColumnHeader column={column} title="Nome" />
 				),
 				cell: ({ row }) => (
-					<div className="group relative">
-						<Link href={`cliente/${row.original.id}`}>
-							<TableCellName>{row.original.name}</TableCellName>
-						</Link>
-						<div className="-top-1 invisible absolute right-0 z-10 rounded duration-100 ease-in-out group-hover:visible">
-							<Button
-								size="sm"
-								variant="secondary"
-								onClick={() => handleRowClick(row.original.id)}
-							>
-								<RiExpandDiagonalLine />
-								Open
-							</Button>
-						</div>
-					</div>
+					<TableCellPrimary
+						link={`cliente/${row.original.id}`}
+						title={row.original.name}
+					/>
 				),
 				meta: {
 					label: 'Nome',
@@ -208,9 +187,7 @@ export function DataTableClients({ data, total }: DataTableClientsProps) {
 				}
 			>
 				<DataTableToolbar table={table}>
-					<Button onClick={() => console.log('novo')} size="sm">
-						Criar novo
-					</Button>
+					<ClientDialog spaceId={spaceId} />
 				</DataTableToolbar>
 			</DataTable>
 		</div>

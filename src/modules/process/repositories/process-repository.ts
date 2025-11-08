@@ -1,19 +1,27 @@
-import type { InsertProcess, Process } from '@infra/db/schemas'
+import type {
+	InsertProcess,
+	Process,
+	ProcessStatus,
+	SpaceId,
+	UpdateProcess,
+} from '@infra/db/schemas'
 
-export type ListProcessesParams = {
-	spaceId: string
-	limit?: number
-	offset?: number
-	search?: string
-	status?: 'PENDING' | 'ACTIVE' | 'SUSPENDED' | 'ARCHIVED' | 'CLOSED'
+export type FindManyParams = {
+	spaceId: SpaceId
+	page?: number
+	pageSize?: number
+	searchQuery?: string
+	sortBy?: 'createdAt'
+	sortDirection?: 'asc' | 'desc'
+	status?: ProcessStatus
 	clientId?: string
 	assignedId?: string
 }
 
 export type UpdateProcessParams = {
 	id: string
-	spaceId: string
-	data: Partial<InsertProcess>
+	spaceId: SpaceId
+	data: UpdateProcess
 }
 
 export type DeleteProcessParams = {
@@ -21,16 +29,15 @@ export type DeleteProcessParams = {
 	spaceId: string
 }
 
+type FindByIdParams = {
+	id: string
+	spaceId: SpaceId
+}
+
 export interface ProcessRepository {
-	insert(data: InsertProcess): Promise<{ processId: string }>
-	findById(params: {
-		id: string
-		spaceId: string
-	}): Promise<Process | undefined>
-	list(params: ListProcessesParams): Promise<{
-		processes: Process[]
-		total: number
-	}>
+	insert(params: InsertProcess): Promise<{ processId: string }>
+	findById(params: FindByIdParams): Promise<Process | undefined>
+	findMany(params: FindManyParams): Promise<{ data: Process[]; total: number }>
 	update(params: UpdateProcessParams): Promise<{ processId: string }>
 	delete(params: DeleteProcessParams): Promise<void>
 }
