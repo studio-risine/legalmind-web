@@ -3,10 +3,7 @@ import { applyPhoneMask, unformatPhone } from '@utils/phone-mask'
 import { forwardRef } from 'react'
 
 interface PhoneInputProps
-	extends Omit<
-		React.InputHTMLAttributes<HTMLInputElement>,
-		'onChange' | 'value'
-	> {
+	extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
 	value?: string
 	onChange?: (value: string) => void
 	/**
@@ -24,9 +21,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 			const maskedValue = applyPhoneMask(inputValue)
 
 			if (onChange) {
-				const valueToReturn = returnUnformatted
-					? unformatPhone(maskedValue)
-					: maskedValue
+				const valueToReturn = returnUnformatted ? unformatPhone(maskedValue) : maskedValue
 				onChange(valueToReturn)
 			}
 		}
@@ -34,11 +29,11 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 		return (
 			<Input
 				{...props}
+				onChange={handleChange}
+				placeholder={props.placeholder || ''}
 				ref={ref}
 				type="tel"
 				value={applyPhoneMask(value)}
-				onChange={handleChange}
-				placeholder={props.placeholder || ''}
 			/>
 		)
 	},

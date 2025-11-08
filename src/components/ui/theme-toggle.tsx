@@ -3,7 +3,6 @@
 import { RiMoonFill, RiSunFill } from '@remixicon/react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
-
 import { Button } from './button'
 
 export function ThemeToggle() {
@@ -16,7 +15,7 @@ export function ThemeToggle() {
 
 	if (!mounted) {
 		return (
-			<Button variant="outline" size="icon" disabled>
+			<Button disabled size="icon" variant="outline">
 				<RiSunFill className="h-4 w-4" />
 				<span className="sr-only">Toggle theme</span>
 			</Button>
@@ -25,15 +24,11 @@ export function ThemeToggle() {
 
 	return (
 		<Button
-			variant="outline"
-			size="icon"
 			onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+			size="icon"
+			variant="outline"
 		>
-			{theme === 'light' ? (
-				<RiMoonFill className="h-4 w-4" />
-			) : (
-				<RiSunFill className="h-4 w-4" />
-			)}
+			{theme === 'light' ? <RiMoonFill className="h-4 w-4" /> : <RiSunFill className="h-4 w-4" />}
 			<span className="sr-only">Toggle theme</span>
 		</Button>
 	)

@@ -9,20 +9,15 @@ import {
 } from '@components/ui/sidebar'
 import { useNavigation } from '@hooks/use-navigation'
 import { cn } from '@libs/utils'
-import {
-	RiBeerFill,
-	RiCake2Fill,
-	RiCheckboxBlankCircleFill,
-	RiCupFill,
-} from '@remixicon/react'
+import { RiBeerFill, RiCake2Fill, RiCheckboxBlankCircleFill, RiCupFill } from '@remixicon/react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import MainNavigationSidebar from './app-nav-main'
 
 export const teams = [
-	{ id: '1', name: 'Alpha Inc.', logo: RiCupFill, plan: 'Free' },
-	{ id: '2', name: 'Beta Corp.', logo: RiBeerFill, plan: 'Free' },
-	{ id: '3', name: 'Gamma Tech', logo: RiCake2Fill, plan: 'Free' },
+	{ id: '1', logo: RiCupFill, name: 'Alpha Inc.', plan: 'Free' },
+	{ id: '2', logo: RiBeerFill, name: 'Beta Corp.', plan: 'Free' },
+	{ id: '3', logo: RiCake2Fill, name: 'Gamma Tech', plan: 'Free' },
 ]
 
 interface AppSidebarProps {
@@ -37,7 +32,7 @@ export function AppSidebar({ spaceId }: AppSidebarProps) {
 	const routes = mainNavigationRoutes(spaceId)
 
 	return (
-		<Sidebar variant="inset" collapsible="icon">
+		<Sidebar collapsible="icon" variant="inset">
 			<SidebarHeader
 				className={cn(
 					'flex md:pt-1 md:pb-6',
@@ -49,12 +44,10 @@ export function AppSidebar({ spaceId }: AppSidebarProps) {
 				<div
 					className={cn(
 						'flex grow',
-						isCollapsed
-							? 'flex-col items-center gap-4'
-							: 'items-center justify-between',
+						isCollapsed ? 'flex-col items-center gap-4' : 'items-center justify-between',
 					)}
 				>
-					<Link href={`/space/${spaceId}`} className="flex items-center">
+					<Link className="flex items-center" href={`/space/${spaceId}`}>
 						<RiCheckboxBlankCircleFill size={24} />
 
 						{!isCollapsed && (
@@ -65,13 +58,13 @@ export function AppSidebar({ spaceId }: AppSidebarProps) {
 					</Link>
 
 					<motion.div
-						key={isCollapsed ? 'header-collapsed' : 'header-expanded'}
+						animate={{ opacity: 1 }}
 						className={cn(
 							'flex items-center gap-2',
 							isCollapsed ? 'flex-row md:flex-col-reverse' : 'flex-row',
 						)}
 						initial={{ opacity: 0 }}
-						animate={{ opacity: 1 }}
+						key={isCollapsed ? 'header-collapsed' : 'header-expanded'}
 						transition={{ duration: 0.1 }}
 					>
 						<SidebarTrigger />

@@ -3,10 +3,7 @@ import { applyDocumentMask, unformatDocument } from '@utils/document-mask'
 import { forwardRef } from 'react'
 
 interface DocumentInputProps
-	extends Omit<
-		React.InputHTMLAttributes<HTMLInputElement>,
-		'onChange' | 'value'
-	> {
+	extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
 	value?: string
 	onChange?: (value: string) => void
 	/**
@@ -24,9 +21,7 @@ export const DocumentInput = forwardRef<HTMLInputElement, DocumentInputProps>(
 			const maskedValue = applyDocumentMask(inputValue)
 
 			if (onChange) {
-				const valueToReturn = returnUnformatted
-					? unformatDocument(maskedValue)
-					: maskedValue
+				const valueToReturn = returnUnformatted ? unformatDocument(maskedValue) : maskedValue
 				onChange(valueToReturn)
 			}
 		}
@@ -34,11 +29,11 @@ export const DocumentInput = forwardRef<HTMLInputElement, DocumentInputProps>(
 		return (
 			<Input
 				{...props}
+				onChange={handleChange}
+				placeholder={props.placeholder || ''}
 				ref={ref}
 				type="text"
 				value={applyDocumentMask(value)}
-				onChange={handleChange}
-				placeholder={props.placeholder || ''}
 			/>
 		)
 	},

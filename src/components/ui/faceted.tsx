@@ -16,9 +16,7 @@ import { Check, ChevronsUpDown } from 'lucide-react'
 import type { ReactNode } from 'react'
 import * as React from 'react'
 
-type FacetedValue<Multiple extends boolean> = Multiple extends true
-	? string[]
-	: string
+type FacetedValue<Multiple extends boolean> = Multiple extends true ? string[] : string
 
 interface FacetedContextValue<Multiple extends boolean = boolean> {
 	value?: FacetedValue<Multiple>
@@ -26,9 +24,7 @@ interface FacetedContextValue<Multiple extends boolean = boolean> {
 	multiple?: Multiple
 }
 
-const FacetedContext = React.createContext<FacetedContextValue<boolean> | null>(
-	null,
-)
+const FacetedContext = React.createContext<FacetedContextValue<boolean> | null>(null)
 
 function useFacetedContext(name: string) {
 	const context = React.useContext(FacetedContext)
@@ -46,9 +42,7 @@ interface FacetedProps<Multiple extends boolean = false>
 	multiple?: Multiple
 }
 
-function Faceted<Multiple extends boolean = false>(
-	props: FacetedProps<Multiple>,
-) {
+function Faceted<Multiple extends boolean = false>(props: FacetedProps<Multiple>) {
 	const {
 		open: openProp,
 		onOpenChange: onOpenChangeProp,
@@ -97,13 +91,13 @@ function Faceted<Multiple extends boolean = false>(
 	)
 
 	const contextValue = React.useMemo<FacetedContextValue<typeof multiple>>(
-		() => ({ value, onItemSelect, multiple }),
+		() => ({ multiple, onItemSelect, value }),
 		[value, onItemSelect, multiple],
 	)
 
 	return (
 		<FacetedContext.Provider value={contextValue}>
-			<Popover open={open} onOpenChange={onOpenChange} {...facetedProps}>
+			<Popover onOpenChange={onOpenChange} open={open} {...facetedProps}>
 				{children}
 			</Popover>
 		</FacetedContext.Provider>
@@ -114,10 +108,7 @@ function FacetedTrigger(props: React.ComponentProps<typeof PopoverTrigger>) {
 	const { className, children, ...triggerProps } = props
 
 	return (
-		<PopoverTrigger
-			{...triggerProps}
-			className={cn('justify-between text-left', className)}
-		>
+		<PopoverTrigger {...triggerProps} className={cn('justify-between text-left', className)}>
 			{children}
 		</PopoverTrigger>
 	)
@@ -155,10 +146,7 @@ function FacetedBadgeList(props: FacetedBadgeListProps) {
 
 	if (!values || values.length === 0) {
 		return (
-			<div
-				{...badgeListProps}
-				className="flex w-full items-center gap-1 text-muted-foreground"
-			>
+			<div {...badgeListProps} className="flex w-full items-center gap-1 text-muted-foreground">
 				{placeholder}
 				<ChevronsUpDown className="ml-auto size-4 shrink-0 opacity-50" />
 			</div>
@@ -166,23 +154,17 @@ function FacetedBadgeList(props: FacetedBadgeListProps) {
 	}
 
 	return (
-		<div
-			{...badgeListProps}
-			className={cn('flex flex-wrap items-center gap-1', className)}
-		>
+		<div {...badgeListProps} className={cn('flex flex-wrap items-center gap-1', className)}>
 			{values.length > max ? (
-				<Badge
-					variant="secondary"
-					className={cn('rounded-sm px-1 font-normal', badgeClassName)}
-				>
+				<Badge className={cn('rounded-sm px-1 font-normal', badgeClassName)} variant="secondary">
 					{values.length} selected
 				</Badge>
 			) : (
 				values.map((value) => (
 					<Badge
+						className={cn('rounded-sm px-1 font-normal', badgeClassName)}
 						key={value}
 						variant="secondary"
-						className={cn('rounded-sm px-1 font-normal', badgeClassName)}
 					>
 						<span className="truncate">{getLabel(value)}</span>
 					</Badge>
@@ -199,10 +181,7 @@ function FacetedContent(props: React.ComponentProps<typeof PopoverContent>) {
 		<PopoverContent
 			{...contentProps}
 			align="start"
-			className={cn(
-				'w-[200px] origin-(--radix-popover-content-transform-origin) p-0',
-				className,
-			)}
+			className={cn('w-[200px] origin-(--radix-popover-content-transform-origin) p-0', className)}
 		>
 			<Command>{children}</Command>
 		</PopoverContent>
@@ -243,17 +222,15 @@ function FacetedItem(props: FacetedItemProps) {
 	return (
 		<CommandItem
 			aria-selected={isSelected}
-			data-selected={isSelected}
 			className={cn('gap-2', className)}
+			data-selected={isSelected}
 			onSelect={() => onItemSelect(value)}
 			{...itemProps}
 		>
 			<span
 				className={cn(
 					'flex size-4 items-center justify-center rounded-sm border border-primary',
-					isSelected
-						? 'bg-primary text-primary-foreground'
-						: 'opacity-50 [&_svg]:invisible',
+					isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible',
 				)}
 			>
 				<Check className="size-4" />

@@ -40,18 +40,18 @@ export function Stepper({ steps, initialStep = 0 }: StepperProps) {
 	}, [steps])
 
 	return (
-		<StepperContent.Provider value={{ previousStep, nextStep }}>
+		<StepperContent.Provider value={{ nextStep, previousStep }}>
 			<section className="space-y-10">
 				<div className="flex gap-20">
 					{steps.map((step, index) => (
 						<Button
-							onClick={() => setCurrentStep(index)}
 							className={cn(
 								'flex gap-4 px-0 dark:hover:bg-transparent',
 								index === currentStep ? 'text-primary' : '',
 							)}
-							variant="ghost"
 							key={step.id}
+							onClick={() => setCurrentStep(index)}
+							variant="ghost"
 						>
 							<span
 								className={cn(
@@ -65,12 +65,8 @@ export function Stepper({ steps, initialStep = 0 }: StepperProps) {
 								{String(index + 1).padStart(2, '0')}
 							</span>
 							<div className="flex flex-col items-start" key={step.id}>
-								<b className="font-semibold text-base/snug text-foreground">
-									{step.title}{' '}
-								</b>
-								<p className="text-muted-foreground text-sm/snug">
-									{step.description}
-								</p>
+								<b className="font-semibold text-base/snug text-foreground">{step.title} </b>
+								<p className="text-muted-foreground text-sm/snug">{step.description}</p>
 							</div>
 						</Button>
 					))}
@@ -82,19 +78,11 @@ export function Stepper({ steps, initialStep = 0 }: StepperProps) {
 	)
 }
 
-export function StepperHeader({
-	title,
-	description,
-}: {
-	title: string
-	description?: string
-}) {
+export function StepperHeader({ title, description }: { title: string; description?: string }) {
 	return (
 		<header>
 			<h1 className="font-bold text-2xl text-foreground">{title}</h1>
-			{description && (
-				<span className="text-muted-foreground">{description}</span>
-			)}
+			{description && <span className="text-muted-foreground">{description}</span>}
 		</header>
 	)
 }
@@ -113,10 +101,10 @@ export function StepperPreviuesButton({
 	const { previousStep } = useContext(StepperContent)
 	return (
 		<Button
-			variant="secondary"
-			size="sm"
 			onClick={!preventDefault ? previousStep : undefined}
+			size="sm"
 			type={type}
+			variant="secondary"
 			{...props}
 		>
 			Anterior
@@ -134,12 +122,7 @@ export function StepperNextButton({
 	const { nextStep } = useContext(StepperContent)
 
 	return (
-		<Button
-			size="sm"
-			type={type}
-			onClick={!preventDefault ? nextStep : undefined}
-			{...props}
-		>
+		<Button onClick={!preventDefault ? nextStep : undefined} size="sm" type={type} {...props}>
 			Próxima
 		</Button>
 	)

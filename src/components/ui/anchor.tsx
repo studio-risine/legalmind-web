@@ -9,10 +9,7 @@ interface AnchorProps extends LinkProps {
 
 export function Anchor({ children, className, ...props }: AnchorProps) {
 	return (
-		<Link
-			{...props}
-			className={cn('font-medium text-primary hover:underline', className)}
-		>
+		<Link {...props} className={cn('font-medium text-primary hover:underline', className)}>
 			{children}
 		</Link>
 	)
