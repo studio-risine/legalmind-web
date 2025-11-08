@@ -14,8 +14,8 @@ export const TableCellPhone = memo(({ phone }: TableCellPhoneProps) => {
 	return (
 		<TableCellText>
 			<Link
-				href={`tel:+55${cleanPhoneForHref}`}
 				className="hover:underline"
+				href={`tel:+55${cleanPhoneForHref}`}
 				title={`Ligar para ${formattedPhone}`}
 			>
 				{formattedPhone}

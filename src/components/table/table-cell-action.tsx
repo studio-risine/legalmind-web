@@ -53,7 +53,7 @@ export const TableCellAction = ({ entity }: { entity: EntityType }) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" size="icon">
+				<Button size="icon" variant="ghost">
 					<RiMoreFill />
 				</Button>
 			</DropdownMenuTrigger>
