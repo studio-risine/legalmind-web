@@ -4,10 +4,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@components/ui/tooltip'
 import type { Table } from '@tanstack/react-table'
 import * as React from 'react'
 import { useCallback, useState } from 'react'
-import {
-	DataTableActionBarAction,
-	DataTableActionBarSelection,
-} from './data-table-action-bar'
+import { DataTableActionBarAction, DataTableActionBarSelection } from './data-table-action-bar'
 
 interface DataTableActionsProps<TData> {
 	table: Table<TData>
@@ -27,9 +24,7 @@ export function DataTableActions<TData>({
 
 	const selected = table.getFilteredSelectedRowModel().rows
 	const selectedRows = selected.map((r) => r.original)
-	const selectedIds = selected.map((r) =>
-		getId ? getId(r.original, r.id) : r.id,
-	)
+	const selectedIds = selected.map((r) => (getId ? getId(r.original, r.id) : r.id))
 
 	const canEdit = selectedIds.length === 1 && !!onEdit
 	const canDelete = selectedIds.length > 0 && !!onDelete
@@ -55,16 +50,13 @@ export function DataTableActions<TData>({
 		<div className="flex items-center gap-2">
 			<DataTableActionBarSelection table={table} />
 
-			<Separator
-				orientation="vertical"
-				className="mr-1 ml-2 data-[orientation=vertical]:h-4"
-			/>
+			<Separator className="mr-1 ml-2 data-[orientation=vertical]:h-4" orientation="vertical" />
 
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DataTableActionBarAction
-						onClick={handleEdit}
 						disabled={!canEdit}
+						onClick={handleEdit}
 						tooltip={canEdit ? 'Edit selected' : 'Select exactly 1 row to edit'}
 					>
 						Editar
@@ -79,10 +71,10 @@ export function DataTableActions<TData>({
 				<TooltipTrigger asChild>
 					<span>
 						<DataTableActionBarAction
-							onClick={handleDelete}
+							className="text-red-600 hover:text-red-700"
 							disabled={!canDelete}
 							isPending={isDeleting}
-							className="text-red-600 hover:text-red-700"
+							onClick={handleDelete}
 							tooltip={canDelete ? 'Delete selected' : 'Select rows to delete'}
 						>
 							Deletar

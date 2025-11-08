@@ -36,18 +36,15 @@ export function DataTableRangeFilter<TData>({
 		return [values[0], values[1]]
 	}, [column])
 
-	const formatValue = React.useCallback(
-		(value: string | number | undefined) => {
-			if (value === undefined || value === '') return ''
-			const numValue = Number(value)
-			return Number.isNaN(numValue)
-				? ''
-				: numValue.toLocaleString(undefined, {
-						maximumFractionDigits: 0,
-					})
-		},
-		[],
-	)
+	const formatValue = React.useCallback((value: string | number | undefined) => {
+		if (value === undefined || value === '') return ''
+		const numValue = Number(value)
+		return Number.isNaN(numValue)
+			? ''
+			: numValue.toLocaleString(undefined, {
+					maximumFractionDigits: 0,
+				})
+	}, [])
 
 	const value = React.useMemo(() => {
 		if (Array.isArray(filter.value)) return filter.value.map(formatValue)
@@ -57,12 +54,8 @@ export function DataTableRangeFilter<TData>({
 	const onRangeValueChange = React.useCallback(
 		(value: string, isMin?: boolean) => {
 			const numValue = Number(value)
-			const currentValues = Array.isArray(filter.value)
-				? filter.value
-				: ['', '']
-			const otherValue = isMin
-				? (currentValues[1] ?? '')
-				: (currentValues[0] ?? '')
+			const currentValues = Array.isArray(filter.value) ? filter.value : ['', '']
+			const otherValue = isMin ? (currentValues[1] ?? '') : (currentValues[0] ?? '')
 
 			if (
 				value === '' ||
@@ -80,41 +73,37 @@ export function DataTableRangeFilter<TData>({
 	)
 
 	return (
-		<div
-			data-slot="range"
-			className={cn('flex w-full items-center gap-2', className)}
-			{...props}
-		>
+		<div className={cn('flex w-full items-center gap-2', className)} data-slot="range" {...props}>
 			<Input
-				id={`${inputId}-min`}
-				type="number"
 				aria-label={`${meta?.label} minimum value`}
-				aria-valuemin={min}
 				aria-valuemax={max}
-				data-slot="range-min"
-				inputMode="numeric"
-				placeholder={min.toString()}
-				min={min}
-				max={max}
+				aria-valuemin={min}
 				className="h-8 w-full rounded"
+				data-slot="range-min"
 				defaultValue={value[0]}
+				id={`${inputId}-min`}
+				inputMode="numeric"
+				max={max}
+				min={min}
 				onChange={(event) => onRangeValueChange(event.target.value, true)}
+				placeholder={min.toString()}
+				type="number"
 			/>
 			<span className="sr-only shrink-0 text-muted-foreground">to</span>
 			<Input
-				id={`${inputId}-max`}
-				type="number"
 				aria-label={`${meta?.label} maximum value`}
-				aria-valuemin={min}
 				aria-valuemax={max}
-				data-slot="range-max"
-				inputMode="numeric"
-				placeholder={max.toString()}
-				min={min}
-				max={max}
+				aria-valuemin={min}
 				className="h-8 w-full rounded"
+				data-slot="range-max"
 				defaultValue={value[1]}
+				id={`${inputId}-max`}
+				inputMode="numeric"
+				max={max}
+				min={min}
 				onChange={(event) => onRangeValueChange(event.target.value)}
+				placeholder={max.toString()}
+				type="number"
 			/>
 		</div>
 	)

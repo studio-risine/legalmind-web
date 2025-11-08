@@ -34,25 +34,17 @@ export function DataTableToolbar<TData>({
 
 	return (
 		<div
-			role="toolbar"
 			aria-orientation="horizontal"
-			className={cn(
-				'flex w-full items-start justify-between gap-2 p-1',
-				className,
-			)}
+			className={cn('flex w-full items-start justify-between gap-2 p-1', className)}
+			role="toolbar"
 			{...props}
 		>
 			<div className="flex flex-1 flex-wrap items-center gap-2">
 				{columns.map((column) => (
-					<DataTableToolbarFilter key={column.id} column={column} />
+					<DataTableToolbarFilter column={column} key={column.id} />
 				))}
 				{isFiltered && (
-					<Button
-						aria-label="Reset filters"
-						variant="outline"
-						size="sm"
-						onClick={onReset}
-					>
+					<Button aria-label="Reset filters" onClick={onReset} size="sm" variant="outline">
 						<RiCloseLine />
 						Reset
 					</Button>
@@ -69,9 +61,7 @@ interface DataTableToolbarFilterProps<TData> {
 	column: Column<TData>
 }
 
-function DataTableToolbarFilter<TData>({
-	column,
-}: DataTableToolbarFilterProps<TData>) {
+function DataTableToolbarFilter<TData>({ column }: DataTableToolbarFilterProps<TData>) {
 	{
 		const columnMeta = column.columnDef.meta
 
@@ -82,10 +72,10 @@ function DataTableToolbarFilter<TData>({
 				case 'text':
 					return (
 						<Input
+							className="h-8 w-40 lg:w-56"
+							onChange={(event) => column.setFilterValue(event.target.value)}
 							placeholder={columnMeta.placeholder ?? columnMeta.label}
 							value={(column.getFilterValue() as string) ?? ''}
-							onChange={(event) => column.setFilterValue(event.target.value)}
-							className="h-8 w-40 lg:w-56"
 						/>
 					)
 
@@ -93,12 +83,12 @@ function DataTableToolbarFilter<TData>({
 					return (
 						<div className="relative">
 							<Input
-								type="number"
-								inputMode="numeric"
-								placeholder={columnMeta.placeholder ?? columnMeta.label}
-								value={(column.getFilterValue() as string) ?? ''}
-								onChange={(event) => column.setFilterValue(event.target.value)}
 								className={cn('h-8 w-[120px]', columnMeta.unit && 'pr-8')}
+								inputMode="numeric"
+								onChange={(event) => column.setFilterValue(event.target.value)}
+								placeholder={columnMeta.placeholder ?? columnMeta.label}
+								type="number"
+								value={(column.getFilterValue() as string) ?? ''}
 							/>
 							{columnMeta.unit && (
 								<span className="absolute top-0 right-0 bottom-0 flex items-center rounded-r-md bg-accent px-2 text-muted-foreground text-sm">
@@ -109,20 +99,15 @@ function DataTableToolbarFilter<TData>({
 					)
 
 				case 'range':
-					return (
-						<DataTableSliderFilter
-							column={column}
-							title={columnMeta.label ?? column.id}
-						/>
-					)
+					return <DataTableSliderFilter column={column} title={columnMeta.label ?? column.id} />
 
 				case 'date':
 				case 'dateRange':
 					return (
 						<DataTableDateFilter
 							column={column}
-							title={columnMeta.label ?? column.id}
 							multiple={columnMeta.variant === 'dateRange'}
+							title={columnMeta.label ?? column.id}
 						/>
 					)
 
@@ -131,9 +116,9 @@ function DataTableToolbarFilter<TData>({
 					return (
 						<DataTableFacetedFilter
 							column={column}
-							title={columnMeta.label ?? column.id}
-							options={columnMeta.options ?? []}
 							multiple={columnMeta.variant === 'multiSelect'}
+							options={columnMeta.options ?? []}
+							title={columnMeta.label ?? column.id}
 						/>
 					)
 

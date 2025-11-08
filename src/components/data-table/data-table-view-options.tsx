@@ -20,17 +20,12 @@ interface DataTableViewOptionsProps<TData> {
 	table: Table<TData>
 }
 
-export function DataTableViewOptions<TData>({
-	table,
-}: DataTableViewOptionsProps<TData>) {
+export function DataTableViewOptions<TData>({ table }: DataTableViewOptionsProps<TData>) {
 	const columns = React.useMemo(
 		() =>
 			table
 				.getAllColumns()
-				.filter(
-					(column) =>
-						typeof column.accessorFn !== 'undefined' && column.getCanHide(),
-				),
+				.filter((column) => typeof column.accessorFn !== 'undefined' && column.getCanHide()),
 		[table],
 	)
 
@@ -39,10 +34,10 @@ export function DataTableViewOptions<TData>({
 			<PopoverTrigger asChild>
 				<Button
 					aria-label="Toggle columns"
-					role="combobox"
-					variant="outline"
-					size="sm"
 					className="ml-auto hidden h-8 lg:flex"
+					role="combobox"
+					size="sm"
+					variant="outline"
 				>
 					{/* <Settings2 /> */}
 					<RiEyeLine />
@@ -59,13 +54,9 @@ export function DataTableViewOptions<TData>({
 							{columns.map((column) => (
 								<CommandItem
 									key={column.id}
-									onSelect={() =>
-										column.toggleVisibility(!column.getIsVisible())
-									}
+									onSelect={() => column.toggleVisibility(!column.getIsVisible())}
 								>
-									<span className="truncate">
-										{column.columnDef.meta?.label ?? column.id}
-									</span>
+									<span className="truncate">{column.columnDef.meta?.label ?? column.id}</span>
 									<RiEyeLine
 										className={cn(
 											'ml-auto size-4 shrink-0',
