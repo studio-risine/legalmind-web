@@ -1,12 +1,11 @@
 import { dayjs } from '@libs/days'
 
 export const DATE_FORMATS = {
+	DATE: 'DD-MM-YYYY',
+	DATETIME: 'DD-MM-YYYY HH:mm:ss',
 	DISPLAY_DATE: 'LL', // August 16, 2018
 	DISPLAY_DATE_SHORT: 'D MMM YYYY', // 16 Aug de 2025
 	DISPLAY_DATETIME: 'LLL', // August 16, 25 8:02 PM
-
-	DATE: 'DD-MM-YYYY',
-	DATETIME: 'DD-MM-YYYY HH:mm:ss',
 } as const
 
 export const formatDate = (

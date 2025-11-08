@@ -9,19 +9,15 @@ export interface ActionResponse<T = unknown> {
 	message?: unknown
 }
 
-export function createValidatedAction<TInput, TOutput>(
-	inputSchema: ZodSchema<TInput>,
-) {
-	return <TReturn extends ActionResponse<TOutput>>(
-		action: (input: TInput) => Promise<TReturn>,
-	) => {
+export function createValidatedAction<TInput, TOutput>(inputSchema: ZodSchema<TInput>) {
+	return <TReturn extends ActionResponse<TOutput>>(action: (input: TInput) => Promise<TReturn>) => {
 		return async (rawInput: TInput): Promise<TReturn> => {
 			const parseResult = inputSchema.safeParse(rawInput)
 
 			if (!parseResult.success) {
 				return {
-					success: false,
 					error: formatZodError(parseResult.error),
+					success: false,
 				} as TReturn
 			}
 
@@ -31,9 +27,8 @@ export function createValidatedAction<TInput, TOutput>(
 				console.error('Action execution failed:', error)
 
 				return {
+					error: error instanceof Error ? error.message : 'Unknown error occurred',
 					success: false,
-					error:
-						error instanceof Error ? error.message : 'Unknown error occurred',
 				} as TReturn
 			}
 		}
@@ -50,8 +45,8 @@ export function createValidatedActionWithOutput<TInput, TOutput>(
 
 			if (!inputParseResult.success) {
 				return {
-					success: false,
 					error: `Input validation failed: ${formatZodError(inputParseResult.error)}`,
+					success: false,
 				}
 			}
 
@@ -64,22 +59,21 @@ export function createValidatedActionWithOutput<TInput, TOutput>(
 					console.error('Output validation failed:', outputParseResult.error)
 
 					return {
-						success: false,
 						error: 'Internal validation error',
+						success: false,
 					}
 				}
 
 				return {
-					success: true,
 					data: outputParseResult.data,
+					success: true,
 				}
 			} catch (error) {
 				console.error('Action execution failed:', error)
 
 				return {
+					error: error instanceof Error ? error.message : 'Unknown error occurred',
 					success: false,
-					error:
-						error instanceof Error ? error.message : 'Unknown error occurred',
 				}
 			}
 		}
@@ -90,8 +84,7 @@ export function createValidatedActionWithOutput<TInput, TOutput>(
  * Factory
  */
 export const createAction = {
+	raw: <TReturn extends ActionResponse>(action: () => Promise<TReturn>) => action,
 	withInput: createValidatedAction,
 	withInputOutput: createValidatedActionWithOutput,
-	raw: <TReturn extends ActionResponse>(action: () => Promise<TReturn>) =>
-		action,
 }

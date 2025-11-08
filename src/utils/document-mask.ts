@@ -31,10 +31,7 @@ export function formatDocumentWithMask(document: string): string {
 
 	// CNPJ format (14 digits): 12.345.678/0001-95
 	if (cleaned.length === 14) {
-		return cleaned.replace(
-			/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
-			'$1.$2.$3/$4-$5',
-		)
+		return cleaned.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5')
 	}
 
 	// If it doesn't match expected lengths, return the cleaned number

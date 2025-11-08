@@ -62,14 +62,8 @@ export function maskProcessNumber(value: string): string {
 		return cleanValue.replace(/^(\d{7})(\d{2})(\d{4})(\d{0,1})/, '$1-$2.$3.$4')
 	}
 	if (cleanValue.length <= 16) {
-		return cleanValue.replace(
-			/^(\d{7})(\d{2})(\d{4})(\d{1})(\d{0,2})/,
-			'$1-$2.$3.$4.$5',
-		)
+		return cleanValue.replace(/^(\d{7})(\d{2})(\d{4})(\d{1})(\d{0,2})/, '$1-$2.$3.$4.$5')
 	}
 
-	return cleanValue.replace(
-		/^(\d{7})(\d{2})(\d{4})(\d{1})(\d{2})(\d{0,4})/,
-		'$1-$2.$3.$4.$5.$6',
-	)
+	return cleanValue.replace(/^(\d{7})(\d{2})(\d{4})(\d{1})(\d{2})(\d{0,4})/, '$1-$2.$3.$4.$5.$6')
 }
