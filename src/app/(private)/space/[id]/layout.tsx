@@ -1,6 +1,6 @@
 import { AppSidebar } from '@components/ui/app-sidebar'
 import { SidebarInset, SidebarProvider } from '@components/ui/sidebar'
-import { getSpaceIdFromHeaders } from '@libs/http/space'
+import { getSpaceIdFromHeaders } from '@modules/space/http/get-space-id-headers'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import type { ReactNode } from 'react'
 

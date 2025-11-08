@@ -1,6 +1,6 @@
 import { MainContent } from '@components/ui/main-content'
-import { getSpaceIdFromHeaders } from '@libs/http/space'
 import { HeaderBreadcrumb } from '@modules/space/components'
+import { getSpaceIdFromHeaders } from '@modules/space/http/get-space-id-headers'
 
 export default async function Page() {
 	const spaceId = await getSpaceIdFromHeaders()
