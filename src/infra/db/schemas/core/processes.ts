@@ -13,21 +13,25 @@ import { core } from './schema'
 import { spaces } from './spaces'
 
 export const processes = core.table('processes', {
-	id: uuidPrimaryKey,
-	spaceId: text('space_id')
+	assignedId: uuid('assigned_id')
 		.notNull()
-		.references(() => spaces.id, { onDelete: 'cascade' }),
+		.references(() => accounts.id, {
+			onDelete: 'set default',
+		}),
 	clientId: uuid('client_id')
 		.notNull()
 		.references(() => clients.id, { onDelete: 'cascade' }),
-	title: text('title').notNull(),
+	deletedAt: timestamp('deleted_at', {
+		withTimezone: true,
+	}),
 	description: text('description'),
+	id: uuidPrimaryKey,
 	processNumber: text('process_number').notNull(),
-	status: processStatusEnum('status').notNull().default('ACTIVE'),
-	assignedId: uuid('assigned_id')
+	spaceId: text('space_id')
 		.notNull()
-		.references(() => accounts.id, { onDelete: 'set default' }),
-	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+		.references(() => spaces.id, { onDelete: 'cascade' }),
+	status: processStatusEnum('status').notNull().default('ACTIVE'),
+	title: text('title').notNull(),
 	...auditFields,
 })
 

@@ -31,9 +31,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -42,9 +42,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
@@ -58,8 +58,8 @@ async function handler(input: Input): Promise<Output> {
 
 	return {
 		data: null,
-		success: true,
 		message: 'Prazo excluído com sucesso!',
+		success: true,
 	}
 }
 

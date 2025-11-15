@@ -10,9 +10,9 @@ export function Providers({ children }: { children: ReactNode }) {
 		<NextThemesProvider
 			attribute="class"
 			defaultTheme="system"
-			enableSystem
 			disableTransitionOnChange
 			enableColorScheme
+			enableSystem
 		>
 			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 		</NextThemesProvider>

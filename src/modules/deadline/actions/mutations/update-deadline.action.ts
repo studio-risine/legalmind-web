@@ -28,15 +28,15 @@ export interface Output {
 }
 
 const inputSchema = z.object({
+	data: z.object({
+		dueDate: z.date().optional(),
+		notes: z.string().optional(),
+		priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
+		processId: z.string().uuid().optional(),
+		status: z.enum(['OPEN', 'DONE', 'CANCELED']).optional(),
+	}),
 	id: z.string().uuid('Invalid deadline id'),
 	spaceId: z.string().min(1, 'Space ID é obrigatório'),
-	data: z.object({
-		processId: z.string().uuid().optional(),
-		dueDate: z.date().optional(),
-		status: z.enum(['OPEN', 'DONE', 'CANCELED']).optional(),
-		priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
-		notes: z.string().optional(),
-	}),
 })
 
 const outputSchema = z.object({
@@ -49,9 +49,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -60,35 +60,37 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
 	const deadlineRepository = getDeadlineRepository()
 	const result = await deadlineRepository.update({
+		data: inputParsed.data.data,
 		id: inputParsed.data.id,
 		spaceId: inputParsed.data.spaceId,
-		data: inputParsed.data.data,
 	})
 
 	if (!result.deadlineId) {
 		return {
 			data: null,
-			success: false,
 			message: 'Ocorreu um erro ao atualizar o prazo, tente novamente.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: result.deadlineId })
+	const outputParsed = outputSchema.safeParse({
+		data: result.deadlineId,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 
@@ -96,8 +98,8 @@ async function handler(input: Input): Promise<Output> {
 
 	return {
 		data: result.deadlineId,
-		success: true,
 		message: 'Prazo atualizado com sucesso!',
+		success: true,
 	}
 }
 

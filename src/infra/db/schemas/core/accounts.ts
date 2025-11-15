@@ -10,15 +10,17 @@ import { timestamps, uuidPrimaryKey } from '../helpers'
 import { core } from './schema'
 
 export const accounts = core.table('accounts', {
-	id: uuidPrimaryKey,
-	userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }),
 	displayName: text('display_name').notNull(),
-	fullName: text('full_name'),
 	email: text('email').notNull().unique(),
-	phoneNumber: text('phone_number').unique(),
-	profilePictureUrl: text('profile_picture_url'),
+	fullName: text('full_name'),
+	id: uuidPrimaryKey,
 	oabNumber: text('oab_number'),
 	oabState: char('oab_state', { length: 2 }),
+	phoneNumber: text('phone_number').unique(),
+	profilePictureUrl: text('profile_picture_url'),
+	userId: uuid('user_id').references(() => users.id, {
+		onDelete: 'cascade',
+	}),
 	...timestamps,
 })
 

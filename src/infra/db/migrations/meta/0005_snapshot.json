@@ -1,635 +1,10 @@
 {
-	"id": "df42ce1a-8863-4a10-973d-b7d8037ca5ac",
-	"prevId": "787cae6e-0dbe-4b38-af1f-81375a09f184",
-	"version": "7",
-	"dialect": "postgresql",
-	"tables": {
-		"core.accounts": {
-			"name": "accounts",
-			"schema": "core",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "uuid",
-					"primaryKey": true,
-					"notNull": true,
-					"default": "gen_random_uuid()"
-				},
-				"user_id": {
-					"name": "user_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"display_name": {
-					"name": "display_name",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"full_name": {
-					"name": "full_name",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"email": {
-					"name": "email",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"phone_number": {
-					"name": "phone_number",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"profile_picture_url": {
-					"name": "profile_picture_url",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"oab_number": {
-					"name": "oab_number",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"oab_state": {
-					"name": "oab_state",
-					"type": "char(2)",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {
-				"accounts_user_id_users_id_fk": {
-					"name": "accounts_user_id_users_id_fk",
-					"tableFrom": "accounts",
-					"tableTo": "users",
-					"schemaTo": "auth",
-					"columnsFrom": ["user_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {
-				"accounts_email_unique": {
-					"name": "accounts_email_unique",
-					"nullsNotDistinct": false,
-					"columns": ["email"]
-				},
-				"accounts_phone_number_unique": {
-					"name": "accounts_phone_number_unique",
-					"nullsNotDistinct": false,
-					"columns": ["phone_number"]
-				}
-			},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"core.clients": {
-			"name": "clients",
-			"schema": "core",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "uuid",
-					"primaryKey": true,
-					"notNull": true,
-					"default": "gen_random_uuid()"
-				},
-				"space_id": {
-					"name": "space_id",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"name": {
-					"name": "name",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"email": {
-					"name": "email",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"phone_number": {
-					"name": "phone_number",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"type": {
-					"name": "type",
-					"type": "client_type",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"document_number": {
-					"name": "document_number",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"status": {
-					"name": "status",
-					"type": "client_status",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"deleted_at": {
-					"name": "deleted_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {
-				"clients_space_id_spaces_id_fk": {
-					"name": "clients_space_id_spaces_id_fk",
-					"tableFrom": "clients",
-					"tableTo": "spaces",
-					"schemaTo": "core",
-					"columnsFrom": ["space_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"core.deadlines": {
-			"name": "deadlines",
-			"schema": "core",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "uuid",
-					"primaryKey": true,
-					"notNull": true,
-					"default": "gen_random_uuid()"
-				},
-				"space_id": {
-					"name": "space_id",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"process_id": {
-					"name": "process_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"due_date": {
-					"name": "due_date",
-					"type": "date",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"status": {
-					"name": "status",
-					"type": "deadline_status",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "'OPEN'"
-				},
-				"priority": {
-					"name": "priority",
-					"type": "deadline_priority",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "'MEDIUM'"
-				},
-				"notes": {
-					"name": "notes",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"deleted_at": {
-					"name": "deleted_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {
-				"deadlines_space_id_spaces_id_fk": {
-					"name": "deadlines_space_id_spaces_id_fk",
-					"tableFrom": "deadlines",
-					"tableTo": "spaces",
-					"schemaTo": "core",
-					"columnsFrom": ["space_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				},
-				"deadlines_process_id_processes_id_fk": {
-					"name": "deadlines_process_id_processes_id_fk",
-					"tableFrom": "deadlines",
-					"tableTo": "processes",
-					"schemaTo": "core",
-					"columnsFrom": ["process_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"core.notes": {
-			"name": "notes",
-			"schema": "core",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "uuid",
-					"primaryKey": true,
-					"notNull": true,
-					"default": "gen_random_uuid()"
-				},
-				"client_id": {
-					"name": "client_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"content": {
-					"name": "content",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"created_by": {
-					"name": "created_by",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {
-				"notes_client_id_clients_id_fk": {
-					"name": "notes_client_id_clients_id_fk",
-					"tableFrom": "notes",
-					"tableTo": "clients",
-					"schemaTo": "core",
-					"columnsFrom": ["client_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				},
-				"notes_created_by_accounts_id_fk": {
-					"name": "notes_created_by_accounts_id_fk",
-					"tableFrom": "notes",
-					"tableTo": "accounts",
-					"schemaTo": "core",
-					"columnsFrom": ["created_by"],
-					"columnsTo": ["id"],
-					"onDelete": "no action",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"core.processes": {
-			"name": "processes",
-			"schema": "core",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "uuid",
-					"primaryKey": true,
-					"notNull": true,
-					"default": "gen_random_uuid()"
-				},
-				"space_id": {
-					"name": "space_id",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"client_id": {
-					"name": "client_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"title": {
-					"name": "title",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"description": {
-					"name": "description",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"process_number": {
-					"name": "process_number",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"status": {
-					"name": "status",
-					"type": "process_status",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "'ACTIVE'"
-				},
-				"assigned_id": {
-					"name": "assigned_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"deleted_at": {
-					"name": "deleted_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"created_by": {
-					"name": "created_by",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {
-				"processes_space_id_spaces_id_fk": {
-					"name": "processes_space_id_spaces_id_fk",
-					"tableFrom": "processes",
-					"tableTo": "spaces",
-					"schemaTo": "core",
-					"columnsFrom": ["space_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				},
-				"processes_client_id_clients_id_fk": {
-					"name": "processes_client_id_clients_id_fk",
-					"tableFrom": "processes",
-					"tableTo": "clients",
-					"schemaTo": "core",
-					"columnsFrom": ["client_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				},
-				"processes_assigned_id_accounts_id_fk": {
-					"name": "processes_assigned_id_accounts_id_fk",
-					"tableFrom": "processes",
-					"tableTo": "accounts",
-					"schemaTo": "core",
-					"columnsFrom": ["assigned_id"],
-					"columnsTo": ["id"],
-					"onDelete": "set default",
-					"onUpdate": "no action"
-				},
-				"processes_created_by_accounts_id_fk": {
-					"name": "processes_created_by_accounts_id_fk",
-					"tableFrom": "processes",
-					"tableTo": "accounts",
-					"schemaTo": "core",
-					"columnsFrom": ["created_by"],
-					"columnsTo": ["id"],
-					"onDelete": "no action",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"core.spaces": {
-			"name": "spaces",
-			"schema": "core",
-			"columns": {
-				"id": {
-					"name": "id",
-					"type": "text",
-					"primaryKey": true,
-					"notNull": true
-				},
-				"name": {
-					"name": "name",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"type": {
-					"name": "type",
-					"type": "space_type",
-					"typeSchema": "public",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				},
-				"created_by": {
-					"name": "created_by",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {
-				"spaces_created_by_accounts_id_fk": {
-					"name": "spaces_created_by_accounts_id_fk",
-					"tableFrom": "spaces",
-					"tableTo": "accounts",
-					"schemaTo": "core",
-					"columnsFrom": ["created_by"],
-					"columnsTo": ["id"],
-					"onDelete": "no action",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {},
-			"uniqueConstraints": {},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		},
-		"core.spaces_to_accounts": {
-			"name": "spaces_to_accounts",
-			"schema": "core",
-			"columns": {
-				"space_id": {
-					"name": "space_id",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"account_id": {
-					"name": "account_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"created_at": {
-					"name": "created_at",
-					"type": "timestamp with time zone",
-					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				}
-			},
-			"indexes": {},
-			"foreignKeys": {
-				"spaces_to_accounts_space_id_spaces_id_fk": {
-					"name": "spaces_to_accounts_space_id_spaces_id_fk",
-					"tableFrom": "spaces_to_accounts",
-					"tableTo": "spaces",
-					"schemaTo": "core",
-					"columnsFrom": ["space_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				},
-				"spaces_to_accounts_account_id_accounts_id_fk": {
-					"name": "spaces_to_accounts_account_id_accounts_id_fk",
-					"tableFrom": "spaces_to_accounts",
-					"tableTo": "accounts",
-					"schemaTo": "core",
-					"columnsFrom": ["account_id"],
-					"columnsTo": ["id"],
-					"onDelete": "cascade",
-					"onUpdate": "no action"
-				}
-			},
-			"compositePrimaryKeys": {
-				"spaces_to_accounts_space_id_account_id_pk": {
-					"name": "spaces_to_accounts_space_id_account_id_pk",
-					"columns": ["space_id", "account_id"]
-				}
-			},
-			"uniqueConstraints": {},
-			"policies": {},
-			"checkConstraints": {},
-			"isRLSEnabled": false
-		}
+	"_meta": {
+		"columns": {},
+		"schemas": {},
+		"tables": {}
 	},
+	"dialect": "postgresql",
 	"enums": {
 		"public.client_status": {
 			"name": "client_status",
@@ -662,108 +37,733 @@
 			"values": ["INDIVIDUAL", "FIRM", "DEPARTMENT"]
 		}
 	},
+	"id": "df42ce1a-8863-4a10-973d-b7d8037ca5ac",
+	"policies": {},
+	"prevId": "787cae6e-0dbe-4b38-af1f-81375a09f184",
+	"roles": {},
 	"schemas": {
 		"core": "core"
 	},
 	"sequences": {},
-	"roles": {},
-	"policies": {},
-	"views": {
-		"core.view_accounts": {
+	"tables": {
+		"core.accounts": {
+			"checkConstraints": {},
 			"columns": {
-				"user_id": {
-					"name": "user_id",
-					"type": "uuid",
+				"created_at": {
+					"default": "now()",
+					"name": "created_at",
+					"notNull": true,
 					"primaryKey": false,
-					"notNull": false
+					"type": "timestamp with time zone"
+				},
+				"display_name": {
+					"name": "display_name",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
 				},
 				"email": {
 					"name": "email",
-					"type": "text",
+					"notNull": true,
 					"primaryKey": false,
-					"notNull": true
-				},
-				"phone_number": {
-					"name": "phone_number",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
+					"type": "text"
 				},
 				"full_name": {
 					"name": "full_name",
-					"type": "text",
+					"notNull": false,
 					"primaryKey": false,
-					"notNull": false
+					"type": "text"
 				},
-				"display_name": {
-					"name": "display_name",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
-				},
-				"profile_picture_url": {
-					"name": "profile_picture_url",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": false
+				"id": {
+					"default": "gen_random_uuid()",
+					"name": "id",
+					"notNull": true,
+					"primaryKey": true,
+					"type": "uuid"
 				},
 				"oab_number": {
 					"name": "oab_number",
-					"type": "text",
+					"notNull": false,
 					"primaryKey": false,
-					"notNull": false
+					"type": "text"
 				},
 				"oab_state": {
 					"name": "oab_state",
-					"type": "char(2)",
+					"notNull": false,
 					"primaryKey": false,
-					"notNull": false
+					"type": "char(2)"
 				},
-				"updated_at": {
-					"name": "updated_at",
-					"type": "timestamp with time zone",
+				"phone_number": {
+					"name": "phone_number",
+					"notNull": false,
 					"primaryKey": false,
-					"notNull": true,
-					"default": "now()"
-				}
-			},
-			"definition": "select \"user_id\", \"email\", \"phone_number\", \"full_name\", \"display_name\", \"profile_picture_url\", \"oab_number\", \"oab_state\", \"created_at\" as \"account_created_at\", \"updated_at\" from \"core\".\"accounts\"",
-			"name": "view_accounts",
-			"schema": "core",
-			"isExisting": false,
-			"materialized": false
-		},
-		"core.view_accounts_public": {
-			"columns": {
-				"user_id": {
-					"name": "user_id",
-					"type": "uuid",
-					"primaryKey": false,
-					"notNull": false
-				},
-				"display_name": {
-					"name": "display_name",
-					"type": "text",
-					"primaryKey": false,
-					"notNull": true
+					"type": "text"
 				},
 				"profile_picture_url": {
 					"name": "profile_picture_url",
-					"type": "text",
+					"notNull": false,
 					"primaryKey": false,
-					"notNull": false
+					"type": "text"
+				},
+				"updated_at": {
+					"default": "now()",
+					"name": "updated_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"user_id": {
+					"name": "user_id",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "uuid"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"foreignKeys": {
+				"accounts_user_id_users_id_fk": {
+					"columnsFrom": ["user_id"],
+					"columnsTo": ["id"],
+					"name": "accounts_user_id_users_id_fk",
+					"onDelete": "cascade",
+					"onUpdate": "no action",
+					"schemaTo": "auth",
+					"tableFrom": "accounts",
+					"tableTo": "users"
+				}
+			},
+			"indexes": {},
+			"isRLSEnabled": false,
+			"name": "accounts",
+			"policies": {},
+			"schema": "core",
+			"uniqueConstraints": {
+				"accounts_email_unique": {
+					"columns": ["email"],
+					"name": "accounts_email_unique",
+					"nullsNotDistinct": false
+				},
+				"accounts_phone_number_unique": {
+					"columns": ["phone_number"],
+					"name": "accounts_phone_number_unique",
+					"nullsNotDistinct": false
+				}
+			}
+		},
+		"core.clients": {
+			"checkConstraints": {},
+			"columns": {
+				"created_at": {
+					"default": "now()",
+					"name": "created_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"document_number": {
+					"name": "document_number",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"email": {
+					"name": "email",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"id": {
+					"default": "gen_random_uuid()",
+					"name": "id",
+					"notNull": true,
+					"primaryKey": true,
+					"type": "uuid"
+				},
+				"name": {
+					"name": "name",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"phone_number": {
+					"name": "phone_number",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"space_id": {
+					"name": "space_id",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"status": {
+					"name": "status",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "client_status",
+					"typeSchema": "public"
+				},
+				"type": {
+					"name": "type",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "client_type",
+					"typeSchema": "public"
+				},
+				"updated_at": {
+					"default": "now()",
+					"name": "updated_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"foreignKeys": {
+				"clients_space_id_spaces_id_fk": {
+					"columnsFrom": ["space_id"],
+					"columnsTo": ["id"],
+					"name": "clients_space_id_spaces_id_fk",
+					"onDelete": "cascade",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "clients",
+					"tableTo": "spaces"
+				}
+			},
+			"indexes": {},
+			"isRLSEnabled": false,
+			"name": "clients",
+			"policies": {},
+			"schema": "core",
+			"uniqueConstraints": {}
+		},
+		"core.deadlines": {
+			"checkConstraints": {},
+			"columns": {
+				"created_at": {
+					"default": "now()",
+					"name": "created_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"due_date": {
+					"name": "due_date",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "date"
+				},
+				"id": {
+					"default": "gen_random_uuid()",
+					"name": "id",
+					"notNull": true,
+					"primaryKey": true,
+					"type": "uuid"
+				},
+				"notes": {
+					"name": "notes",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"priority": {
+					"default": "'MEDIUM'",
+					"name": "priority",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "deadline_priority",
+					"typeSchema": "public"
+				},
+				"process_id": {
+					"name": "process_id",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "uuid"
+				},
+				"space_id": {
+					"name": "space_id",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"status": {
+					"default": "'OPEN'",
+					"name": "status",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "deadline_status",
+					"typeSchema": "public"
+				},
+				"updated_at": {
+					"default": "now()",
+					"name": "updated_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"foreignKeys": {
+				"deadlines_process_id_processes_id_fk": {
+					"columnsFrom": ["process_id"],
+					"columnsTo": ["id"],
+					"name": "deadlines_process_id_processes_id_fk",
+					"onDelete": "cascade",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "deadlines",
+					"tableTo": "processes"
+				},
+				"deadlines_space_id_spaces_id_fk": {
+					"columnsFrom": ["space_id"],
+					"columnsTo": ["id"],
+					"name": "deadlines_space_id_spaces_id_fk",
+					"onDelete": "cascade",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "deadlines",
+					"tableTo": "spaces"
+				}
+			},
+			"indexes": {},
+			"isRLSEnabled": false,
+			"name": "deadlines",
+			"policies": {},
+			"schema": "core",
+			"uniqueConstraints": {}
+		},
+		"core.notes": {
+			"checkConstraints": {},
+			"columns": {
+				"client_id": {
+					"name": "client_id",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "uuid"
+				},
+				"content": {
+					"name": "content",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"created_at": {
+					"default": "now()",
+					"name": "created_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"created_by": {
+					"name": "created_by",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "uuid"
+				},
+				"id": {
+					"default": "gen_random_uuid()",
+					"name": "id",
+					"notNull": true,
+					"primaryKey": true,
+					"type": "uuid"
+				},
+				"updated_at": {
+					"default": "now()",
+					"name": "updated_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"foreignKeys": {
+				"notes_client_id_clients_id_fk": {
+					"columnsFrom": ["client_id"],
+					"columnsTo": ["id"],
+					"name": "notes_client_id_clients_id_fk",
+					"onDelete": "cascade",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "notes",
+					"tableTo": "clients"
+				},
+				"notes_created_by_accounts_id_fk": {
+					"columnsFrom": ["created_by"],
+					"columnsTo": ["id"],
+					"name": "notes_created_by_accounts_id_fk",
+					"onDelete": "no action",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "notes",
+					"tableTo": "accounts"
+				}
+			},
+			"indexes": {},
+			"isRLSEnabled": false,
+			"name": "notes",
+			"policies": {},
+			"schema": "core",
+			"uniqueConstraints": {}
+		},
+		"core.processes": {
+			"checkConstraints": {},
+			"columns": {
+				"assigned_id": {
+					"name": "assigned_id",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "uuid"
+				},
+				"client_id": {
+					"name": "client_id",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "uuid"
+				},
+				"created_at": {
+					"default": "now()",
+					"name": "created_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"created_by": {
+					"name": "created_by",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "uuid"
+				},
+				"deleted_at": {
+					"name": "deleted_at",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"description": {
+					"name": "description",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"id": {
+					"default": "gen_random_uuid()",
+					"name": "id",
+					"notNull": true,
+					"primaryKey": true,
+					"type": "uuid"
+				},
+				"process_number": {
+					"name": "process_number",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"space_id": {
+					"name": "space_id",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"status": {
+					"default": "'ACTIVE'",
+					"name": "status",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "process_status",
+					"typeSchema": "public"
+				},
+				"title": {
+					"name": "title",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"updated_at": {
+					"default": "now()",
+					"name": "updated_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"foreignKeys": {
+				"processes_assigned_id_accounts_id_fk": {
+					"columnsFrom": ["assigned_id"],
+					"columnsTo": ["id"],
+					"name": "processes_assigned_id_accounts_id_fk",
+					"onDelete": "set default",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "processes",
+					"tableTo": "accounts"
+				},
+				"processes_client_id_clients_id_fk": {
+					"columnsFrom": ["client_id"],
+					"columnsTo": ["id"],
+					"name": "processes_client_id_clients_id_fk",
+					"onDelete": "cascade",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "processes",
+					"tableTo": "clients"
+				},
+				"processes_created_by_accounts_id_fk": {
+					"columnsFrom": ["created_by"],
+					"columnsTo": ["id"],
+					"name": "processes_created_by_accounts_id_fk",
+					"onDelete": "no action",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "processes",
+					"tableTo": "accounts"
+				},
+				"processes_space_id_spaces_id_fk": {
+					"columnsFrom": ["space_id"],
+					"columnsTo": ["id"],
+					"name": "processes_space_id_spaces_id_fk",
+					"onDelete": "cascade",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "processes",
+					"tableTo": "spaces"
+				}
+			},
+			"indexes": {},
+			"isRLSEnabled": false,
+			"name": "processes",
+			"policies": {},
+			"schema": "core",
+			"uniqueConstraints": {}
+		},
+		"core.spaces": {
+			"checkConstraints": {},
+			"columns": {
+				"created_at": {
+					"default": "now()",
+					"name": "created_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"created_by": {
+					"name": "created_by",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "uuid"
+				},
+				"id": {
+					"name": "id",
+					"notNull": true,
+					"primaryKey": true,
+					"type": "text"
+				},
+				"name": {
+					"name": "name",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"type": {
+					"name": "type",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "space_type",
+					"typeSchema": "public"
+				},
+				"updated_at": {
+					"default": "now()",
+					"name": "updated_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				}
+			},
+			"compositePrimaryKeys": {},
+			"foreignKeys": {
+				"spaces_created_by_accounts_id_fk": {
+					"columnsFrom": ["created_by"],
+					"columnsTo": ["id"],
+					"name": "spaces_created_by_accounts_id_fk",
+					"onDelete": "no action",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "spaces",
+					"tableTo": "accounts"
+				}
+			},
+			"indexes": {},
+			"isRLSEnabled": false,
+			"name": "spaces",
+			"policies": {},
+			"schema": "core",
+			"uniqueConstraints": {}
+		},
+		"core.spaces_to_accounts": {
+			"checkConstraints": {},
+			"columns": {
+				"account_id": {
+					"name": "account_id",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "uuid"
+				},
+				"created_at": {
+					"default": "now()",
+					"name": "created_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"space_id": {
+					"name": "space_id",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				}
+			},
+			"compositePrimaryKeys": {
+				"spaces_to_accounts_space_id_account_id_pk": {
+					"columns": ["space_id", "account_id"],
+					"name": "spaces_to_accounts_space_id_account_id_pk"
+				}
+			},
+			"foreignKeys": {
+				"spaces_to_accounts_account_id_accounts_id_fk": {
+					"columnsFrom": ["account_id"],
+					"columnsTo": ["id"],
+					"name": "spaces_to_accounts_account_id_accounts_id_fk",
+					"onDelete": "cascade",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "spaces_to_accounts",
+					"tableTo": "accounts"
+				},
+				"spaces_to_accounts_space_id_spaces_id_fk": {
+					"columnsFrom": ["space_id"],
+					"columnsTo": ["id"],
+					"name": "spaces_to_accounts_space_id_spaces_id_fk",
+					"onDelete": "cascade",
+					"onUpdate": "no action",
+					"schemaTo": "core",
+					"tableFrom": "spaces_to_accounts",
+					"tableTo": "spaces"
+				}
+			},
+			"indexes": {},
+			"isRLSEnabled": false,
+			"name": "spaces_to_accounts",
+			"policies": {},
+			"schema": "core",
+			"uniqueConstraints": {}
+		}
+	},
+	"version": "7",
+	"views": {
+		"core.view_accounts": {
+			"columns": {
+				"display_name": {
+					"name": "display_name",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"email": {
+					"name": "email",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"full_name": {
+					"name": "full_name",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"oab_number": {
+					"name": "oab_number",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"oab_state": {
+					"name": "oab_state",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "char(2)"
+				},
+				"phone_number": {
+					"name": "phone_number",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"profile_picture_url": {
+					"name": "profile_picture_url",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"updated_at": {
+					"default": "now()",
+					"name": "updated_at",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "timestamp with time zone"
+				},
+				"user_id": {
+					"name": "user_id",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "uuid"
+				}
+			},
+			"definition": "select \"user_id\", \"email\", \"phone_number\", \"full_name\", \"display_name\", \"profile_picture_url\", \"oab_number\", \"oab_state\", \"created_at\" as \"account_created_at\", \"updated_at\" from \"core\".\"accounts\"",
+			"isExisting": false,
+			"materialized": false,
+			"name": "view_accounts",
+			"schema": "core"
+		},
+		"core.view_accounts_public": {
+			"columns": {
+				"display_name": {
+					"name": "display_name",
+					"notNull": true,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"profile_picture_url": {
+					"name": "profile_picture_url",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "text"
+				},
+				"user_id": {
+					"name": "user_id",
+					"notNull": false,
+					"primaryKey": false,
+					"type": "uuid"
 				}
 			},
 			"definition": "select \"user_id\", \"display_name\", \"profile_picture_url\" from \"core\".\"accounts\"",
-			"name": "view_accounts_public",
-			"schema": "core",
 			"isExisting": false,
-			"materialized": false
+			"materialized": false,
+			"name": "view_accounts_public",
+			"schema": "core"
 		}
-	},
-	"_meta": {
-		"columns": {},
-		"schemas": {},
-		"tables": {}
 	}
 }

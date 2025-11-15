@@ -27,12 +27,12 @@ export class DrizzleDeadlineRepository implements DeadlineRepository {
 		const [deadline] = await db
 			.insert(deadlines)
 			.values({
-				spaceId: input.spaceId,
-				processId: input.processId,
 				dueDate: input.dueDate,
-				status: input.status,
-				priority: input.priority,
 				notes: input.notes,
+				priority: input.priority,
+				processId: input.processId,
+				spaceId: input.spaceId,
+				status: input.status,
 			})
 			.returning({ id: deadlines.id })
 

@@ -20,10 +20,10 @@ import { updatePassword } from '../actions'
 
 const schema = z
 	.object({
-		password: z.string().min(6, {
+		confirmPassword: z.string().min(6, {
 			message: 'A senha deve ter pelo menos 6 caracteres.',
 		}),
-		confirmPassword: z.string().min(6, {
+		password: z.string().min(6, {
 			message: 'A senha deve ter pelo menos 6 caracteres.',
 		}),
 	})
@@ -37,17 +37,19 @@ export type UpdatePasswordFormData = z.infer<typeof schema>
 export function UpdatePasswordForm() {
 	const [isPending, setIsPending] = useState(false)
 	const form = useForm<UpdatePasswordFormData>({
-		resolver: zodResolver(schema),
 		defaultValues: {
-			password: '',
 			confirmPassword: '',
+			password: '',
 		},
+		resolver: zodResolver(schema),
 	})
 
 	const onSubmit = async (data: UpdatePasswordFormData) => {
 		setIsPending(true)
 
-		const { user, error } = await updatePassword({ password: data.password })
+		const { user, error } = await updatePassword({
+			password: data.password,
+		})
 
 		if (error) {
 			setIsPending(false)
@@ -85,7 +87,7 @@ export function UpdatePasswordForm() {
 							<FormItem>
 								<FormLabel>Nova Senha</FormLabel>
 								<FormControl>
-									<Input type="password" placeholder="" {...field} />
+									<Input placeholder="" type="password" {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -98,16 +100,16 @@ export function UpdatePasswordForm() {
 							<FormItem>
 								<FormLabel>Confirmar Nova Senha</FormLabel>
 								<FormControl>
-									<Input type="password" placeholder="" {...field} />
+									<Input placeholder="" type="password" {...field} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
 					<Button
-						type="submit"
 						className="w-full"
 						disabled={!form.formState.isValid}
+						type="submit"
 					>
 						{isPending ? 'Atualizando...' : 'Solicitar atualização'}
 					</Button>

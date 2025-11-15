@@ -3,7 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('@modules/auth/actions/user-auth.action', () => ({
 	userAuthAction: vi.fn(),
 }))
-vi.mock('@modules/client/factories', () => ({ clientRepository: vi.fn() }))
+vi.mock('@modules/client/factories', () => ({
+	clientRepository: vi.fn(),
+}))
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
 
 const { userAuthAction } = await import(
@@ -19,11 +21,11 @@ import type { ClientRepository } from '../../repositories/client-repository'
 
 function mockRepo(): ClientRepository {
 	return {
-		insert: vi.fn(),
+		delete: vi.fn(),
 		findById: vi.fn(),
 		findMany: vi.fn(),
+		insert: vi.fn(),
 		update: vi.fn(),
-		delete: vi.fn(),
 	}
 }
 
@@ -31,7 +33,10 @@ describe('deleteClientAction', () => {
 	beforeEach(() => vi.clearAllMocks())
 
 	it('fails on invalid id', async () => {
-		const invalidInput = { id: 'bad-id', spaceId: 'space-1' } as unknown as {
+		const invalidInput = {
+			id: 'bad-id',
+			spaceId: 'space-1',
+		} as unknown as {
 			id: string
 			spaceId: string
 		}
@@ -42,9 +47,9 @@ describe('deleteClientAction', () => {
 
 	it('fails when unauthenticated', async () => {
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: false,
 			data: null,
 			error: null,
+			success: false,
 		})
 		vi.mocked(clientRepository).mockReturnValue(mockRepo())
 		const result = await deleteClientAction({
@@ -60,13 +65,13 @@ describe('deleteClientAction', () => {
 		vi.mocked(repo.delete).mockResolvedValue(undefined)
 		vi.mocked(clientRepository).mockReturnValue(repo)
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: {
-				id: 'acc-1',
 				aud: 'authenticated',
 				created_at: new Date().toISOString(),
+				id: 'acc-1',
 			} as unknown as import('@supabase/supabase-js').User,
 			error: null,
+			success: true,
 		})
 		const result = await deleteClientAction({
 			id: '550e8400-e29b-41d4-a716-446655440000',

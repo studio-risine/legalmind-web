@@ -34,10 +34,10 @@ export interface Output {
 }
 
 const inputSchema = z.object({
-	spaceId: spaceIdSchemaDefault,
 	limit: z.number().min(1).max(100).optional(),
 	offset: z.number().min(0).optional(),
 	search: z.string().optional(),
+	spaceId: spaceIdSchemaDefault,
 	status: clientStatusSchema.optional(),
 	type: clientTypesSchema.optional(),
 })
@@ -55,9 +55,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -66,9 +66,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
@@ -80,14 +80,16 @@ async function handler(input: Input): Promise<Output> {
 		total: result.total,
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: formattedResult })
+	const outputParsed = outputSchema.safeParse({
+		data: formattedResult,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 

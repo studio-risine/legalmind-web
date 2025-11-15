@@ -10,11 +10,14 @@ export default async function Page({
 	const { customerServiceId } = await params
 
 	const breadcrumb = [
-		{ label: 'Meu Space', href: `/space/${id}` },
-		{ label: 'Atendimentos', href: `/space/${id}/atendimentos` },
+		{ href: `/space/${id}`, label: 'Meu Space' },
 		{
-			label: 'Nome do Cliente',
+			href: `/space/${id}/atendimentos`,
+			label: 'Atendimentos',
+		},
+		{
 			href: `/space/${id}/atendimentos/${customerServiceId}`,
+			label: 'Nome do Cliente',
 		},
 	]
 

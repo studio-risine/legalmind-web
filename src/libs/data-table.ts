@@ -28,9 +28,9 @@ export function getCommonPinningStyles<TData>({
 					: undefined
 			: undefined,
 		left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
-		right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
 		opacity: isPinned ? 0.9 : 1,
 		position: isPinned ? 'sticky' : 'relative',
+		right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
 		// background: isPinned ? 'var(--table)' : 'var(--table)',
 		width: column.getSize(),
 		zIndex: isPinned ? 1 : 0,
@@ -42,14 +42,14 @@ export function getFilterOperators(filterVariant: FilterVariant) {
 		FilterVariant,
 		{ label: string; value: FilterOperator }[]
 	> = {
-		text: dataTableConfig.textOperators,
-		number: dataTableConfig.numericOperators,
-		range: dataTableConfig.numericOperators,
+		boolean: dataTableConfig.booleanOperators,
 		date: dataTableConfig.dateOperators,
 		dateRange: dataTableConfig.dateOperators,
-		boolean: dataTableConfig.booleanOperators,
-		select: dataTableConfig.selectOperators,
 		multiSelect: dataTableConfig.multiSelectOperators,
+		number: dataTableConfig.numericOperators,
+		range: dataTableConfig.numericOperators,
+		select: dataTableConfig.selectOperators,
+		text: dataTableConfig.textOperators,
 	}
 
 	return operatorMap[filterVariant] ?? dataTableConfig.textOperators

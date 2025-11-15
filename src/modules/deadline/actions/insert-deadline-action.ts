@@ -12,15 +12,15 @@ import type { z } from 'zod'
 
 const deadlineInsertInput = insertDeadlineSchema
 	.pick({
-		processId: true,
 		dueDate: true,
-		status: true,
-		priority: true,
 		notes: true,
+		priority: true,
+		processId: true,
+		status: true,
 	})
 	.required({
-		processId: true,
 		dueDate: true,
+		processId: true,
 	})
 
 export type DeadlineInsertInput = z.infer<typeof deadlineInsertInput>
@@ -37,7 +37,7 @@ export async function insertDeadlineAction(
 	const parsed = deadlineInsertInput.safeParse(input)
 
 	if (!parsed.success) {
-		return { success: false, error: parsed.error.message }
+		return { error: parsed.error.message, success: false }
 	}
 
 	try {
@@ -45,8 +45,8 @@ export async function insertDeadlineAction(
 
 		if (!accountId) {
 			return {
-				success: false,
 				error: 'No account found to associate deadline.',
+				success: false,
 			}
 		}
 
@@ -56,17 +56,20 @@ export async function insertDeadlineAction(
 			.returning()
 
 		if (!row) {
-			return { success: false, error: 'Failed to create deadline' }
+			return {
+				error: 'Failed to create deadline',
+				success: false,
+			}
 		}
 
 		revalidatePath('/space/deadlines')
 		revalidatePath(`/space/processes/${parsed.data.processId}`)
 
-		return { success: true, data: row }
+		return { data: row, success: true }
 	} catch (error) {
 		return {
-			success: false,
 			error: error instanceof Error ? error.message : 'Unknown error',
+			success: false,
 		}
 	}
 }

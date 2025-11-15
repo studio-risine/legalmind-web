@@ -7,15 +7,15 @@ import { and, asc, count, desc, eq, gte, isNull, lte } from 'drizzle-orm'
 import { z } from 'zod'
 
 const getDeadlinesInput = z.object({
-	processId: z.string().uuid().optional(),
-	status: z.enum(['OPEN', 'DONE', 'CANCELED']).optional(),
-	priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
 	dueFrom: z.date().optional(),
 	dueTo: z.date().optional(),
-	sortBy: z.enum(['dueDate', 'createdAt', 'priority']).optional(),
-	sortDirection: z.enum(['asc', 'desc']).optional(),
 	page: z.number().optional().default(1),
 	perPage: z.number().min(1).max(100).optional().default(25),
+	priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
+	processId: z.string().uuid().optional(),
+	sortBy: z.enum(['dueDate', 'createdAt', 'priority']).optional(),
+	sortDirection: z.enum(['asc', 'desc']).optional(),
+	status: z.enum(['OPEN', 'DONE', 'CANCELED']).optional(),
 })
 
 type GetDeadlinesInput = z.infer<typeof getDeadlinesInput>
@@ -44,7 +44,11 @@ export async function getDeadlinesAction(
 
 		const accountId = await getCurrentAccountId()
 		if (!accountId) {
-			return { data: null, total: null, error: 'No account context.' }
+			return {
+				data: null,
+				error: 'No account context.',
+				total: null,
+			}
 		}
 
 		const conditions = [
@@ -101,8 +105,8 @@ export async function getDeadlinesAction(
 	} catch (error) {
 		return {
 			data: null,
-			total: null,
 			error: error instanceof Error ? error.message : 'Unknown error',
+			total: null,
 		}
 	}
 }

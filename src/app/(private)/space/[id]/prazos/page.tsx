@@ -31,18 +31,18 @@ export default async function Page({
 	const offset = (Number.parseInt(page, 10) - 1) * limit
 
 	const { data } = await listDeadlinesAction({
-		spaceId,
 		limit,
 		offset,
-		search,
-		status: status as 'OPEN' | 'DONE' | 'CANCELED',
 		priority: priority as 'LOW' | 'MEDIUM' | 'HIGH',
 		processId,
+		search,
+		spaceId,
+		status: status as 'OPEN' | 'DONE' | 'CANCELED',
 	})
 
 	const breadcrumb = [
-		{ label: 'Meu Space', href: `/space/${spaceId}` },
-		{ label: 'Prazos', href: `/space/${spaceId}/prazos` },
+		{ href: `/space/${spaceId}`, label: 'Meu Space' },
+		{ href: `/space/${spaceId}/prazos`, label: 'Prazos' },
 	]
 
 	return (

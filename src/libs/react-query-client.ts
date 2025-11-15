@@ -13,14 +13,14 @@ export const queryClient =
 	globalThis.__reactQueryClient ??
 	new QueryClient({
 		defaultOptions: {
+			mutations: {
+				retry: MUTATION_RETRY,
+			},
 			queries: {
+				gcTime: GC_TIME,
 				refetchOnWindowFocus: false,
 				retry: QUERY_RETRY,
 				staleTime: STALE_TIME,
-				gcTime: GC_TIME,
-			},
-			mutations: {
-				retry: MUTATION_RETRY,
 			},
 		},
 	})

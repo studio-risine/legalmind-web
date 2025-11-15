@@ -27,10 +27,10 @@ export async function signUpWithEmail(
 
 	if (!parsed.success) {
 		return {
-			success: false,
-			message: parsed.error.message,
 			data: null,
 			errors: parsed.error,
+			message: parsed.error.message,
+			success: false,
 		}
 	}
 
@@ -42,32 +42,32 @@ export async function signUpWithEmail(
 			error,
 		} = await supabase.auth.signUp({
 			email: parsed.data.email,
-			password: parsed.data.password,
 			options: {
 				emailRedirectTo: `${env.DATABASE_URL}/space/onboarding`,
 			},
+			password: parsed.data.password,
 		})
 
 		if (!user) {
 			return {
 				data: null,
-				success: false,
-				message: error?.message || 'Sign up failed',
 				errors: error,
+				message: error?.message || 'Sign up failed',
+				success: false,
 			}
 		}
 
 		return {
-			success: true,
 			data: user.id,
+			success: true,
 		}
 	} catch (error) {
 		if (error instanceof AuthError) {
 			return {
 				data: null,
-				success: false,
-				message: error.message,
 				errors: error,
+				message: error.message,
+				success: false,
 			}
 		}
 
@@ -75,9 +75,9 @@ export async function signUpWithEmail(
 
 		return {
 			data: null,
-			success: false,
-			message: 'Unknown error occurred',
 			errors: null,
+			message: 'Unknown error occurred',
+			success: false,
 		}
 	}
 }

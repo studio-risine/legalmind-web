@@ -16,16 +16,16 @@ export class MemoryClientRepository implements ClientRepository {
 		const id = randomUUID()
 		const now = new Date()
 		const client: Client = {
-			id,
-			spaceId: params.spaceId,
-			name: params.name,
-			email: params.email ?? null,
-			phoneNumber: params.phoneNumber ?? null,
-			type: params.type,
-			documentNumber: params.documentNumber,
-			status: params.status,
-			deletedAt: null,
 			createdAt: now,
+			deletedAt: null,
+			documentNumber: params.documentNumber,
+			email: params.email ?? null,
+			id,
+			name: params.name,
+			phoneNumber: params.phoneNumber ?? null,
+			spaceId: params.spaceId,
+			status: params.status,
+			type: params.type,
 			updatedAt: now,
 		}
 		this.items.push(client)
@@ -62,7 +62,10 @@ export class MemoryClientRepository implements ClientRepository {
 		const total = list.length
 		const offset = params.offset ?? 0
 		const limit = params.limit ?? 25
-		return { data: list.slice(offset, offset + limit), total }
+		return {
+			data: list.slice(offset, offset + limit),
+			total,
+		}
 	}
 
 	async update(params: UpdateClientParams): Promise<{ clientId: string }> {
@@ -74,7 +77,11 @@ export class MemoryClientRepository implements ClientRepository {
 		)
 		if (idx === -1) return { clientId: '' }
 		const current = this.items[idx]
-		this.items[idx] = { ...current, ...params.data, updatedAt: new Date() }
+		this.items[idx] = {
+			...current,
+			...params.data,
+			updatedAt: new Date(),
+		}
 		return { clientId: this.items[idx].id }
 	}
 

@@ -29,17 +29,20 @@ export default async function Page({
 	const offset = (Number.parseInt(page, 10) - 1) * limit
 
 	const { data } = await listClientsAction({
-		spaceId,
 		limit,
 		offset,
 		search,
+		spaceId,
 		status: status as 'LEAD' | 'PROSPECT' | 'ACTIVE' | 'INACTIVE' | 'ARCHIVED',
 		type: type as 'INDIVIDUAL' | 'COMPANY',
 	})
 
 	const breadcrumb = [
-		{ label: 'Meu Space', href: `/space/${spaceId}` },
-		{ label: 'Clientes', href: `/space/${spaceId}/clientes` },
+		{ href: `/space/${spaceId}`, label: 'Meu Space' },
+		{
+			href: `/space/${spaceId}/clientes`,
+			label: 'Clientes',
+		},
 	]
 
 	return (

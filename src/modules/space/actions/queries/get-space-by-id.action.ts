@@ -33,9 +33,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -44,31 +44,35 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'User not authenticated',
+			success: false,
 		}
 	}
 
 	const spaceRepository = makeSpaceRepository()
-	const space = await spaceRepository.findById({ id: inputParsed.data.id })
+	const space = await spaceRepository.findById({
+		id: inputParsed.data.id,
+	})
 
 	if (!space) {
 		return {
 			data: null,
-			success: false,
 			message: 'Space não encontrado.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: space })
+	const outputParsed = outputSchema.safeParse({
+		data: space,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 

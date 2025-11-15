@@ -33,18 +33,18 @@ export interface Output {
 }
 
 const inputSchema = z.object({
-	id: z.string().uuid('Invalid process id'),
-	spaceId: z.string().min(1, 'Space ID é obrigatório'),
 	data: z.object({
+		assignedId: z.string().uuid().optional(),
 		clientId: z.string().uuid().optional(),
-		title: z.string().min(3).max(255).optional(),
 		description: z.string().optional(),
 		processNumber: z.string().min(20).max(25).optional(),
 		status: z
 			.enum(['PENDING', 'ACTIVE', 'SUSPENDED', 'ARCHIVED', 'CLOSED'])
 			.optional(),
-		assignedId: z.string().uuid().optional(),
+		title: z.string().min(3).max(255).optional(),
 	}),
+	id: z.string().uuid('Invalid process id'),
+	spaceId: z.string().min(1, 'Space ID é obrigatório'),
 })
 
 const outputSchema = z.object({
@@ -57,9 +57,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -68,35 +68,37 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
 	const processRepository = getProcessRepository()
 	const result = await processRepository.update({
+		data: inputParsed.data.data,
 		id: inputParsed.data.id,
 		spaceId: inputParsed.data.spaceId,
-		data: inputParsed.data.data,
 	})
 
 	if (!result.processId) {
 		return {
 			data: null,
-			success: false,
 			message: 'Ocorreu um erro ao atualizar o processo, tente novamente.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: result.processId })
+	const outputParsed = outputSchema.safeParse({
+		data: result.processId,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 
@@ -104,8 +106,8 @@ async function handler(input: Input): Promise<Output> {
 
 	return {
 		data: result.processId,
-		success: true,
 		message: 'Processo atualizado com sucesso!',
+		success: true,
 	}
 }
 

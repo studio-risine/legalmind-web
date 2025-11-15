@@ -41,12 +41,12 @@ export type ClientFormValues = {
 }
 
 const schema = z.object({
-	name: nameSchemaDefault,
 	documentNumber: z.string().min(11, 'CPF/CNPJ inválido').max(18),
 	email: emailSchemaDefault,
+	name: nameSchemaDefault,
 	phoneNumber: z.string().nullable().optional(),
-	type: clientTypesSchema,
 	status: clientStatusSchema,
+	type: clientTypesSchema,
 })
 
 type FormData = z.input<typeof schema>
@@ -65,17 +65,17 @@ export function InsertClientForm({
 	const [isPending, startTransition] = useTransition()
 
 	const form = useForm<FormData>({
-		resolver: zodResolver(schema),
 		defaultValues: {
-			type: 'INDIVIDUAL',
 			status: 'ACTIVE',
+			type: 'INDIVIDUAL',
 		},
+		resolver: zodResolver(schema),
 	})
 
 	const formState = useMemo(
 		() => ({
-			isValid: form.formState.isValid,
 			errors: form.formState.errors,
+			isValid: form.formState.isValid,
 		}),
 		[form.formState.isValid, form.formState.errors],
 	)
@@ -83,13 +83,13 @@ export function InsertClientForm({
 	const onSubmit = (formData: FormData) => {
 		startTransition(async () => {
 			const { error, success, message, data } = await createClientAction({
-				spaceId,
-				name: formData.name,
-				email: formData.email,
-				phoneNumber: formData.phoneNumber ?? undefined,
-				type: formData.type,
 				documentNumber: formData.documentNumber,
+				email: formData.email,
+				name: formData.name,
+				phoneNumber: formData.phoneNumber ?? undefined,
+				spaceId,
 				status: formData.status,
+				type: formData.type,
 			})
 
 			if (error || !success) {
@@ -134,12 +134,12 @@ export function InsertClientForm({
 								<FormControl>
 									<Input
 										{...field}
-										id={field.name}
-										type="text"
-										placeholder=""
 										aria-invalid={fieldState.invalid}
-										value={field.value || ''}
 										disabled={isPending}
+										id={field.name}
+										placeholder=""
+										type="text"
+										value={field.value || ''}
 									/>
 								</FormControl>
 								{fieldState.invalid && (
@@ -161,13 +161,13 @@ export function InsertClientForm({
 								<FormControl>
 									<DocumentInput
 										{...field}
-										id={field.name}
 										aria-invalid={fieldState.invalid}
-										value={field.value || ''}
-										onChange={field.onChange}
-										returnUnformatted={true}
-										placeholder=""
 										disabled={isPending}
+										id={field.name}
+										onChange={field.onChange}
+										placeholder=""
+										returnUnformatted={true}
+										value={field.value || ''}
 									/>
 								</FormControl>
 								{fieldState.invalid && (
@@ -188,12 +188,12 @@ export function InsertClientForm({
 								<FormControl>
 									<Input
 										{...field}
-										id={field.name}
 										aria-invalid={fieldState.invalid}
-										type="email"
-										placeholder=""
-										value={field.value || ''}
 										disabled={isPending}
+										id={field.name}
+										placeholder=""
+										type="email"
+										value={field.value || ''}
 									/>
 								</FormControl>
 								{fieldState.invalid && (
@@ -214,8 +214,8 @@ export function InsertClientForm({
 									</FormLabel>
 									<FormControl>
 										<Select
-											value={field.value || ''}
 											onValueChange={field.onChange}
+											value={field.value || ''}
 										>
 											<SelectTrigger
 												aria-invalid={fieldState.invalid}
@@ -247,8 +247,8 @@ export function InsertClientForm({
 									</FormLabel>
 									<FormControl>
 										<Select
-											value={field.value || ''}
 											onValueChange={field.onChange}
+											value={field.value || ''}
 										>
 											<SelectTrigger
 												aria-invalid={fieldState.invalid}
@@ -292,13 +292,13 @@ export function InsertClientForm({
 								<FormControl>
 									<PhoneInput
 										{...field}
-										id={field.name}
 										aria-invalid={fieldState.invalid}
-										value={field.value || ''}
-										onChange={field.onChange}
-										returnUnformatted={true}
-										placeholder=""
 										disabled={isPending}
+										id={field.name}
+										onChange={field.onChange}
+										placeholder=""
+										returnUnformatted={true}
+										value={field.value || ''}
 									/>
 								</FormControl>
 								{fieldState.invalid && (

@@ -5,7 +5,7 @@ import { getSpaceIdFromHeaders } from '@modules/space/http/get-space-id-headers'
 export default async function Page() {
 	const spaceId = await getSpaceIdFromHeaders()
 
-	const breadcrumb = [{ label: 'Meu Space', href: `/space/${spaceId}` }]
+	const breadcrumb = [{ href: `/space/${spaceId}`, label: 'Meu Space' }]
 
 	return (
 		<>

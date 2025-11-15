@@ -18,7 +18,6 @@ import {
 	StepperHeader,
 	StepperNextButton,
 } from '@components/ui/stepper'
-
 import { OAB_STATES } from '@constants/oab-states'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useStepper } from '@hooks/use-stepper'
@@ -30,9 +29,9 @@ import z from 'zod'
 
 const schema = z.object({
 	displayName: z.string().min(1, 'Nome é obrigatório'),
-	phoneNumber: z.string().nullable().optional(),
 	oabNumber: z.string().min(1, 'Preencha o número da OAB'),
 	oabState: z.string().min(1, 'Escolha o estado da OAB'),
+	phoneNumber: z.string().nullable().optional(),
 })
 
 type FormData = z.input<typeof schema>
@@ -54,24 +53,24 @@ export function AccountStepForm({
 	const defaultValues = useMemo(() => {
 		return {
 			displayName: initialValues?.displayName,
-			phoneNumber: initialValues?.phoneNumber,
 			oabNumber: initialValues?.oabNumber,
 			oabState: initialValues?.oabState,
+			phoneNumber: initialValues?.phoneNumber,
 		}
 	}, [initialValues])
 
 	const form = useForm<FormData>({
-		resolver: zodResolver(schema),
 		defaultValues,
+		resolver: zodResolver(schema),
 	})
 
 	const onSubmit = (formData: FormData) => {
 		startTransition(async () => {
 			const insertAccount = {
 				displayName: formData.displayName,
-				phoneNumber: formData.oabNumber ?? null,
 				oabNumber: formData.oabNumber,
 				oabState: formData.oabState,
+				phoneNumber: formData.oabNumber ?? null,
 			}
 
 			if (accountId) {
@@ -110,13 +109,13 @@ export function AccountStepForm({
 		<>
 			<Card>
 				<CardHeader>
-					<StepperHeader title="Conta" description="Dados da sua conta" />
+					<StepperHeader description="Dados da sua conta" title="Conta" />
 				</CardHeader>
 				<CardContent>
 					<Form {...form}>
 						<form
-							id={formId}
 							className="grid gap-4"
+							id={formId}
 							onSubmit={form.handleSubmit(onSubmit)}
 						>
 							{form.formState.errors.root && (
@@ -140,9 +139,9 @@ export function AccountStepForm({
 											<FormControl>
 												<Input
 													{...field}
+													data-invalid={fieldState.invalid}
 													id={field.name}
 													placeholder=""
-													data-invalid={fieldState.invalid}
 													value={field.value}
 												/>
 											</FormControl>
@@ -204,8 +203,8 @@ export function AccountStepForm({
 												<FormLabel htmlFor={field.name}>Estado OAB</FormLabel>
 												<FormControl>
 													<Select
-														value={field.value}
 														onValueChange={field.onChange}
+														value={field.value}
 													>
 														<SelectTrigger id={field.name}>
 															<SelectValue placeholder="" />
@@ -234,10 +233,10 @@ export function AccountStepForm({
 
 			<StepperFooter>
 				<StepperNextButton
-					type="submit"
-					form={formId}
 					disabled={isPending}
+					form={formId}
 					preventDefault={true}
+					type="submit"
 				/>
 			</StepperFooter>
 		</>

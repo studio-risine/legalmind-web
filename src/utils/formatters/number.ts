@@ -7,8 +7,8 @@
 
 export function formatNumber(value: number, decimals = 0): string {
 	return new Intl.NumberFormat('pt-BR', {
-		minimumFractionDigits: decimals,
 		maximumFractionDigits: decimals,
+		minimumFractionDigits: decimals,
 	}).format(value)
 }
 
@@ -31,9 +31,9 @@ export function formatPercentage(value: number, decimals = 1): string {
 	const normalizedValue = Math.abs(value) > 1 ? value / 100 : value
 
 	return new Intl.NumberFormat('pt-BR', {
-		style: 'percent',
-		minimumFractionDigits: clampedDecimals,
 		maximumFractionDigits: clampedDecimals,
+		minimumFractionDigits: clampedDecimals,
+		style: 'percent',
 	}).format(normalizedValue)
 }
 

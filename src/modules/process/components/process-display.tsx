@@ -22,21 +22,21 @@ export async function ProcessDisplay({
 	}
 
 	const { data: processes } = await queryProcesses({
+		page,
+		pageSize,
 		searchQuery: search,
 		spaceId,
-		pageSize,
-		page,
 	})
 
 	const resultProcesses = processes?.rows ?? []
 	const total = processes?.total ?? 0
 
 	const rows: DataTableRows[] = resultProcesses.map((process) => ({
+		createdAt: process.createdAt,
 		id: process.id,
 		processNumber: process.processNumber,
-		title: process.title,
 		status: process.status,
-		createdAt: process.createdAt,
+		title: process.title,
 		updatedAt: process.updatedAt,
 	}))
 

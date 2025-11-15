@@ -20,39 +20,39 @@ import type { User } from '@supabase/supabase-js'
 
 function mockRepo() {
 	return {
-		insert: vi.fn(),
+		delete: vi.fn(),
 		findById: vi.fn(),
 		findMany: vi.fn(),
+		insert: vi.fn(),
 		update: vi.fn(),
-		delete: vi.fn(),
 	}
 }
 
 function makeProcess(id: string, overrides: Partial<Process> = {}): Process {
 	return {
-		id,
-		spaceId: overrides.spaceId ?? 'b7d6e7f8-a9b0-c1d2-e3f4-567890123456',
-		clientId: overrides.clientId ?? '550e8400-e29b-41d4-a716-446655440000',
-		title: overrides.title ?? `Process ${id.slice(0, 4)}`,
-		description: overrides.description ?? `Description for ${id.slice(0, 4)}`,
-		processNumber: overrides.processNumber ?? `P${id.slice(0, 4)}`,
-		status: overrides.status ?? 'ACTIVE',
 		assignedId: overrides.assignedId ?? '660e8400-e29b-41d4-a716-446655440000',
-		deletedAt: overrides.deletedAt ?? null,
+		clientId: overrides.clientId ?? '550e8400-e29b-41d4-a716-446655440000',
 		createdAt: overrides.createdAt ?? new Date(),
-		updatedAt: overrides.updatedAt ?? new Date(),
 		createdBy: overrides.createdBy ?? 'a1b2c3d4-e5f6-7890-abcd-ef0123456789',
+		deletedAt: overrides.deletedAt ?? null,
+		description: overrides.description ?? `Description for ${id.slice(0, 4)}`,
+		id,
+		processNumber: overrides.processNumber ?? `P${id.slice(0, 4)}`,
+		spaceId: overrides.spaceId ?? 'b7d6e7f8-a9b0-c1d2-e3f4-567890123456',
+		status: overrides.status ?? 'ACTIVE',
+		title: overrides.title ?? `Process ${id.slice(0, 4)}`,
+		updatedAt: overrides.updatedAt ?? new Date(),
 	}
 }
 
 function mockUser(): User {
 	return {
-		id: 'f1e2d3c4-b5a6-9876-5432-10fedcba9876',
 		app_metadata: {},
-		user_metadata: {},
 		aud: 'authenticated',
 		created_at: new Date().toISOString(),
 		email: 'user@example.com',
+		id: 'f1e2d3c4-b5a6-9876-5432-10fedcba9876',
+		user_metadata: {},
 	} as unknown as User
 }
 
@@ -60,9 +60,9 @@ describe('queryProcessAction', () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: mockUser(),
 			error: null,
+			success: true,
 		})
 		const defaultRepo = mockRepo()
 		vi.mocked(defaultRepo.findById).mockResolvedValue(undefined)
@@ -94,9 +94,9 @@ describe('queryProcessAction', () => {
 	describe('Authentication', () => {
 		it('should fail when user not authenticated', async () => {
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: false,
 				data: null,
 				error: null,
+				success: false,
 			})
 			const result = await queryProcessAction({
 				id: '550e8400-e29b-41d4-a716-446655440000',

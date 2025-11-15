@@ -25,9 +25,9 @@ async function handler(): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'User not authenticated',
+			success: false,
 		}
 	}
 
@@ -37,19 +37,21 @@ async function handler(): Promise<Output> {
 	if (!account) {
 		return {
 			data: null,
-			success: false,
 			message: 'Conta não encontrada.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: account })
+	const outputParsed = outputSchema.safeParse({
+		data: account,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 

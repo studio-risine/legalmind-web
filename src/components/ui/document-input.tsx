@@ -34,11 +34,11 @@ export const DocumentInput = forwardRef<HTMLInputElement, DocumentInputProps>(
 		return (
 			<Input
 				{...props}
+				onChange={handleChange}
+				placeholder={props.placeholder || ''}
 				ref={ref}
 				type="text"
 				value={applyDocumentMask(value)}
-				onChange={handleChange}
-				placeholder={props.placeholder || ''}
 			/>
 		)
 	},

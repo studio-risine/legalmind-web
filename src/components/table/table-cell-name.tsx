@@ -4,7 +4,6 @@ import { Button } from '@components/ui/button'
 import { RiExpandDiagonalLine } from '@remixicon/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-
 import { memo, type ReactNode, useCallback } from 'react'
 
 interface TableCellPrimaryProps {
@@ -35,9 +34,9 @@ export const TableCellPrimary = memo(
 
 				<div className="-top-1 invisible absolute right-0 z-10 rounded duration-100 ease-in-out group-hover:visible">
 					<Button
+						onClick={() => handleRowClick(link)}
 						size="sm"
 						variant="secondary"
-						onClick={() => handleRowClick(link)}
 					>
 						<RiExpandDiagonalLine />
 						Open

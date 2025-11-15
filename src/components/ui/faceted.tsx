@@ -97,13 +97,13 @@ function Faceted<Multiple extends boolean = false>(
 	)
 
 	const contextValue = React.useMemo<FacetedContextValue<typeof multiple>>(
-		() => ({ value, onItemSelect, multiple }),
+		() => ({ multiple, onItemSelect, value }),
 		[value, onItemSelect, multiple],
 	)
 
 	return (
 		<FacetedContext.Provider value={contextValue}>
-			<Popover open={open} onOpenChange={onOpenChange} {...facetedProps}>
+			<Popover onOpenChange={onOpenChange} open={open} {...facetedProps}>
 				{children}
 			</Popover>
 		</FacetedContext.Provider>
@@ -172,17 +172,17 @@ function FacetedBadgeList(props: FacetedBadgeListProps) {
 		>
 			{values.length > max ? (
 				<Badge
-					variant="secondary"
 					className={cn('rounded-sm px-1 font-normal', badgeClassName)}
+					variant="secondary"
 				>
 					{values.length} selected
 				</Badge>
 			) : (
 				values.map((value) => (
 					<Badge
+						className={cn('rounded-sm px-1 font-normal', badgeClassName)}
 						key={value}
 						variant="secondary"
-						className={cn('rounded-sm px-1 font-normal', badgeClassName)}
 					>
 						<span className="truncate">{getLabel(value)}</span>
 					</Badge>
@@ -243,8 +243,8 @@ function FacetedItem(props: FacetedItemProps) {
 	return (
 		<CommandItem
 			aria-selected={isSelected}
-			data-selected={isSelected}
 			className={cn('gap-2', className)}
+			data-selected={isSelected}
 			onSelect={() => onItemSelect(value)}
 			{...itemProps}
 		>

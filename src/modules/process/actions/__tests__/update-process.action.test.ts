@@ -3,7 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('@modules/auth/actions/user-auth.action', () => ({
 	userAuthAction: vi.fn(),
 }))
-vi.mock('@modules/process/factories', () => ({ getProcessRepository: vi.fn() }))
+vi.mock('@modules/process/factories', () => ({
+	getProcessRepository: vi.fn(),
+}))
 
 const { userAuthAction } = await import(
 	'@modules/auth/actions/user-auth.action'
@@ -17,12 +19,12 @@ import type { User } from '@supabase/supabase-js'
 
 function mockUser(): User {
 	return {
-		id: '11111111-1111-4111-8111-111111111111',
 		app_metadata: {},
-		user_metadata: {},
 		aud: 'authenticated',
 		created_at: new Date().toISOString(),
 		email: 'user@example.com',
+		id: '11111111-1111-4111-8111-111111111111',
+		user_metadata: {},
 	} as unknown as User
 }
 
@@ -34,17 +36,17 @@ describe('updateProcessAction', () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: mockUser(),
 			error: null,
+			success: true,
 		})
 	})
 
 	it('fails validation (invalid id)', async () => {
 		const invalidInput = {
+			data: { title: 'Updated' },
 			id: 'not-uuid',
 			spaceId: 'space-1',
-			data: { title: 'Updated' },
 		} as unknown as Parameters<typeof updateProcessAction>[0]
 		const result = await updateProcessAction(invalidInput)
 
@@ -62,9 +64,9 @@ describe('updateProcessAction', () => {
 		)
 
 		const result = await updateProcessAction({
+			data: { title: 'Updated' },
 			id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
 			spaceId: 'space-1',
-			data: { title: 'Updated' },
 		})
 
 		expect(result.success).toBe(true)

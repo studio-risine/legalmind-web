@@ -31,15 +31,15 @@ export interface Output {
 }
 
 const inputSchema = z.object({
-	spaceId: z.string().min(1, 'Space ID é obrigatório'),
-	limit: z.number().min(1).max(100).optional(),
-	offset: z.number().min(0).optional(),
-	search: z.string().optional(),
-	status: z.enum(['OPEN', 'DONE', 'CANCELED']).optional(),
-	priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
-	processId: z.string().uuid().optional(),
 	dueDateFrom: z.date().optional(),
 	dueDateTo: z.date().optional(),
+	limit: z.number().min(1).max(100).optional(),
+	offset: z.number().min(0).optional(),
+	priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
+	processId: z.string().uuid().optional(),
+	search: z.string().optional(),
+	spaceId: z.string().min(1, 'Space ID é obrigatório'),
+	status: z.enum(['OPEN', 'DONE', 'CANCELED']).optional(),
 })
 
 const outputSchema = z.object({
@@ -55,9 +55,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -66,23 +66,25 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
 	const deadlineRepository = getDeadlineRepository()
 	const result = await deadlineRepository.list(inputParsed.data)
 
-	const outputParsed = outputSchema.safeParse({ data: result })
+	const outputParsed = outputSchema.safeParse({
+		data: result,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 

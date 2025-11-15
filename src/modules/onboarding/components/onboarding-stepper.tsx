@@ -16,41 +16,41 @@ export default async function OnboardingStepper() {
 		{
 			initialValues: {
 				displayName: account?.displayName ?? '',
-				phoneNumber: account?.phoneNumber ?? '',
 				oabNumber: account?.oabNumber ?? '',
 				oabState: account?.oabState ?? '',
+				phoneNumber: account?.phoneNumber ?? '',
 			},
 		}
 
 	const STEPS = [
 		{
-			id: 'account',
-			title: 'Conta',
-			description: '',
 			content: (
 				<AccountStepForm
 					accountId={account?.id}
 					initialValues={registeredAccountDetails.initialValues}
 				/>
 			),
+			description: '',
+			id: 'account',
+			title: 'Conta',
 		},
 		{
+			content: <SpaceStepForm accountId={account?.id} />,
+			description: '',
 			id: 'space',
 			title: 'Space',
-			description: '',
-			content: <SpaceStepForm accountId={account?.id} />,
 		},
 		{
+			content: <CompleteOnboarding />,
+			description: '',
 			id: 'complete',
 			title: 'Completo',
-			description: '',
-			content: <CompleteOnboarding />,
 		},
 	]
 
 	return (
 		<div className="flex w-full max-w-lg justify-center">
-			<Stepper steps={STEPS} initialStep={0} />
+			<Stepper initialStep={0} steps={STEPS} />
 		</div>
 	)
 }

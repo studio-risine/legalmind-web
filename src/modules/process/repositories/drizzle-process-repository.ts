@@ -121,18 +121,18 @@ export class DrizzleProcessRepository implements ProcessRepository {
 		const [result, [{ total }]] = await Promise.all([
 			db
 				.select({
-					id: processes.id,
-					spaceId: processes.spaceId,
-					clientId: processes.clientId,
-					title: processes.title,
-					description: processes.description,
-					processNumber: processes.processNumber,
-					status: processes.status,
 					assignedId: processes.assignedId,
-					createdBy: processes.createdBy,
+					clientId: processes.clientId,
 					createdAt: processes.createdAt,
-					updatedAt: processes.updatedAt,
+					createdBy: processes.createdBy,
 					deletedAt: processes.deletedAt,
+					description: processes.description,
+					id: processes.id,
+					processNumber: processes.processNumber,
+					spaceId: processes.spaceId,
+					status: processes.status,
+					title: processes.title,
+					updatedAt: processes.updatedAt,
 				})
 				.from(processes)
 				.where(whereClause)

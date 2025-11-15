@@ -28,7 +28,7 @@ export function ProcessDialog() {
 	}, [startTransition])
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger asChild>
 				<Button size="sm">Novo Processo</Button>
 			</DialogTrigger>
@@ -43,18 +43,18 @@ export function ProcessDialog() {
 				<InsertProcessForm formId={formId} onSuccess={handleSuccess} />
 
 				<DialogFooter>
-					<DialogClose className="grow" asChild>
-						<Button variant="ghost" disabled={isPending}>
+					<DialogClose asChild className="grow">
+						<Button disabled={isPending} variant="ghost">
 							Cancelar
 						</Button>
 					</DialogClose>
 					<SubmitButton
 						className="grow"
-						isLoading={isPending}
 						disabled={isPending}
+						form={formId}
+						isLoading={isPending}
 						text="Criar"
 						textLoading="Criando..."
-						form={formId}
 					/>
 				</DialogFooter>
 			</DialogContent>

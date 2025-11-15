@@ -24,32 +24,32 @@ export const userAuthAction = cache(async (): Promise<UserAuthActionOutput> => {
 		if (!user) {
 			return {
 				data: null,
-				success: false,
-				message: error?.message || 'User not authenticated',
 				error: error,
+				message: error?.message || 'User not authenticated',
+				success: false,
 			}
 		}
 
 		if (error) {
 			return {
 				data: null,
-				success: false,
-				message: error?.message || 'User not authenticated',
 				error: error,
+				message: error?.message || 'User not authenticated',
+				success: false,
 			}
 		}
 
 		return {
-			success: true,
 			data: user,
+			success: true,
 		}
 	} catch (error) {
 		if (error instanceof AuthError) {
 			return {
 				data: null,
-				success: false,
-				message: error?.message || 'User not authenticated',
 				error,
+				message: error?.message || 'User not authenticated',
+				success: false,
 			}
 		}
 
@@ -57,9 +57,9 @@ export const userAuthAction = cache(async (): Promise<UserAuthActionOutput> => {
 
 		return {
 			data: null,
-			success: false,
-			message: 'Unknown error occurred',
 			error: null,
+			message: 'Unknown error occurred',
+			success: false,
 		}
 	}
 })

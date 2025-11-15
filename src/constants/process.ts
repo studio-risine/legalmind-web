@@ -1,31 +1,37 @@
 // NOTE: Using generic string types to avoid drift with evolving Process type definitions.
 // TODO: Align these constants with src/modules/process/types once enums are finalized.
 
-export const PROCESS_STATUS: { value: string; label: string }[] = [
-	{ value: 'active', label: 'Ativo' },
-	{ value: 'undefined', label: 'Indefinido' },
-	{ value: 'dismissed', label: 'Baixado' },
-	{ value: 'closed', label: 'Encerrado' },
-	{ value: 'suspended', label: 'Suspenso' },
-	{ value: 'archived', label: 'Arquivado' },
+export const PROCESS_STATUS: {
+	value: string
+	label: string
+}[] = [
+	{ label: 'Ativo', value: 'active' },
+	{ label: 'Indefinido', value: 'undefined' },
+	{ label: 'Baixado', value: 'dismissed' },
+	{ label: 'Encerrado', value: 'closed' },
+	{ label: 'Suspenso', value: 'suspended' },
+	{ label: 'Arquivado', value: 'archived' },
 ]
 
-export const PROCESS_AREAS: { value: string; label: string }[] = [
-	{ value: 'civil', label: 'Cível' },
-	{ value: 'labor', label: 'Trabalhista' },
-	{ value: 'criminal', label: 'Criminal' },
-	{ value: 'family', label: 'Família' },
-	{ value: 'tax', label: 'Tributário' },
-	{ value: 'administrative', label: 'Administrativo' },
-	{ value: 'constitutional', label: 'Constitucional' },
-	{ value: 'international', label: 'Internacional' },
+export const PROCESS_AREAS: {
+	value: string
+	label: string
+}[] = [
+	{ label: 'Cível', value: 'civil' },
+	{ label: 'Trabalhista', value: 'labor' },
+	{ label: 'Criminal', value: 'criminal' },
+	{ label: 'Família', value: 'family' },
+	{ label: 'Tributário', value: 'tax' },
+	{ label: 'Administrativo', value: 'administrative' },
+	{ label: 'Constitucional', value: 'constitutional' },
+	{ label: 'Internacional', value: 'international' },
 ]
 
 export const PARTY_TYPES: {
 	value: 'individual' | 'company' | 'government'
 	label: string
 }[] = [
-	{ value: 'individual', label: 'Pessoa Física' },
-	{ value: 'company', label: 'Pessoa Jurídica' },
-	{ value: 'government', label: 'Governo' },
+	{ label: 'Pessoa Física', value: 'individual' },
+	{ label: 'Pessoa Jurídica', value: 'company' },
+	{ label: 'Governo', value: 'government' },
 ]

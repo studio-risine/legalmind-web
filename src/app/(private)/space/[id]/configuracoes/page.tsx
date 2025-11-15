@@ -10,8 +10,11 @@ export default async function Page() {
 	const spaceId = await getSpaceIdFromHeaders()
 
 	const breadcrumb = [
-		{ label: 'Home', href: `/space/${spaceId}` },
-		{ label: 'Configurações', href: `/space/${spaceId}/configuracoes` },
+		{ href: `/space/${spaceId}`, label: 'Home' },
+		{
+			href: `/space/${spaceId}/configuracoes`,
+			label: 'Configurações',
+		},
 	]
 
 	return (
@@ -35,12 +38,12 @@ export default async function Page() {
 
 					<Card className="py-0">
 						<CardContent className="divide-y px-4 py-0">
-							<ItemRow title="Foto de Perfil" description="">
+							<ItemRow description="" title="Foto de Perfil">
 								<Input />
 							</ItemRow>
 							<ItemRow
-								title="Nome"
 								description="Como será exibido e identificado"
+								title="Nome"
 							>
 								<Input />
 							</ItemRow>
@@ -67,8 +70,8 @@ export default async function Page() {
 						<Card className="py-0">
 							<CardContent className="divide-y px-4 py-0">
 								<ItemRow
-									title="Modo de cor"
 									description="Escolha entre claro, escuro ou automático"
+									title="Modo de cor"
 								>
 									<Input />
 								</ItemRow>
@@ -85,8 +88,8 @@ export default async function Page() {
 						<Card className="py-0">
 							<CardContent className="divide-y px-4 py-0">
 								<ItemRow
-									title="Nome"
 									description="Como será exibido e identificado"
+									title="Nome"
 								>
 									<Input />
 								</ItemRow>
@@ -100,8 +103,8 @@ export default async function Page() {
 						<Card className="py-0">
 							<CardContent className="divide-y px-4 py-0">
 								<ItemRow
-									title="Excluir Space"
 									description="Esta ação é irreversível"
+									title="Excluir Space"
 								>
 									<Button variant="destructive">Excluir</Button>
 								</ItemRow>

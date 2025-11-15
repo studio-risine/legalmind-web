@@ -8,18 +8,22 @@ import { core } from './schema'
 import { spaces } from './spaces'
 
 export const deadlines = core.table('deadlines', {
+	deletedAt: timestamp('deleted_at', {
+		withTimezone: true,
+	}),
+	dueDate: date('due_date', { mode: 'date' }).notNull(),
 	id: uuidPrimaryKey,
+	notes: text('notes'),
+	priority: deadlinePriorityEnum('priority').notNull().default('MEDIUM'),
+	processId: uuid('process_id')
+		.notNull()
+		.references(() => processes.id, {
+			onDelete: 'cascade',
+		}),
 	spaceId: text('space_id')
 		.notNull()
 		.references(() => spaces.id, { onDelete: 'cascade' }),
-	processId: uuid('process_id')
-		.notNull()
-		.references(() => processes.id, { onDelete: 'cascade' }),
-	dueDate: date('due_date', { mode: 'date' }).notNull(),
 	status: deadlineStatusEnum('status').notNull().default('OPEN'),
-	priority: deadlinePriorityEnum('priority').notNull().default('MEDIUM'),
-	notes: text('notes'),
-	deletedAt: timestamp('deleted_at', { withTimezone: true }),
 	...timestamps,
 })
 

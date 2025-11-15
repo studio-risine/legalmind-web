@@ -83,13 +83,13 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
 		Omit<UseQueryStateOptions<string>, 'parse'>
 	>(
 		() => ({
+			clearOnDefault,
+			debounceMs,
 			history,
 			scroll,
 			shallow,
-			throttleMs,
-			debounceMs,
-			clearOnDefault,
 			startTransition,
+			throttleMs,
 		}),
 		[
 			history,
@@ -260,36 +260,36 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
 	const table = useReactTable({
 		...tableProps,
 		columns,
-		initialState,
-		pageCount,
-		state: {
-			pagination,
-			sorting,
-			columnVisibility,
-			rowSelection,
-			columnFilters,
-		},
 		defaultColumn: {
 			...tableProps.defaultColumn,
 			enableColumnFilter: false,
 		},
 		enableRowSelection: true,
-		onRowSelectionChange: setRowSelection,
-		onPaginationChange,
-		onSortingChange,
-		onColumnFiltersChange,
-		onColumnVisibilityChange: setColumnVisibility,
 		getCoreRowModel: getCoreRowModel(),
+		getFacetedMinMaxValues: getFacetedMinMaxValues(),
+		getFacetedRowModel: getFacetedRowModel(),
+		getFacetedUniqueValues: getFacetedUniqueValues(),
 		getFilteredRowModel: getFilteredRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 		getSortedRowModel: getSortedRowModel(),
-		getFacetedRowModel: getFacetedRowModel(),
-		getFacetedUniqueValues: getFacetedUniqueValues(),
-		getFacetedMinMaxValues: getFacetedMinMaxValues(),
+		initialState,
+		manualFiltering: true,
 		manualPagination: true,
 		manualSorting: false,
-		manualFiltering: true,
+		onColumnFiltersChange,
+		onColumnVisibilityChange: setColumnVisibility,
+		onPaginationChange,
+		onRowSelectionChange: setRowSelection,
+		onSortingChange,
+		pageCount,
+		state: {
+			columnFilters,
+			columnVisibility,
+			pagination,
+			rowSelection,
+			sorting,
+		},
 	})
 
-	return { table, shallow, debounceMs, throttleMs }
+	return { debounceMs, shallow, table, throttleMs }
 }

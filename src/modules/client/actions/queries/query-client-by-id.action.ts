@@ -36,9 +36,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -47,9 +47,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
@@ -62,19 +62,21 @@ async function handler(input: Input): Promise<Output> {
 	if (!client) {
 		return {
 			data: null,
-			success: false,
 			message: 'Cliente não encontrado.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: client })
+	const outputParsed = outputSchema.safeParse({
+		data: client,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 

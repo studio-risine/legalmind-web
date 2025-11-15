@@ -5,8 +5,8 @@ export function ResetPasswordView() {
 	return (
 		<AuthBox>
 			<AuthBoxHeader
-				title="Esqueci minha senha"
 				description="Digite seu email que enviamos um link de recuperação"
+				title="Esqueci minha senha"
 			/>
 
 			<AuthBoxContent>

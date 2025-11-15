@@ -16,12 +16,12 @@ import { cache } from 'react'
 import z, { type ZodError } from 'zod'
 
 const inputSchema = z.object({
-	spaceId: spaceIdSchemaDefault,
 	clientId: clientIdSchema,
-	title: z.string().min(2, 'Nome deve ter ao menos 2 caracteres').max(255),
 	description: z.string().optional(),
 	processNumber: processNumberSchema,
+	spaceId: spaceIdSchemaDefault,
 	status: processStatusSchema.default('ACTIVE'),
+	title: z.string().min(2, 'Nome deve ter ao menos 2 caracteres').max(255),
 })
 
 const outputSchema = z.object({
@@ -43,9 +43,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -54,9 +54,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
@@ -67,25 +67,27 @@ async function handler(input: Input): Promise<Output> {
 		if (!accountExists) {
 			return {
 				data: null,
-				success: false,
 				message: 'Conta do usuário não encontrada.',
+				success: false,
 			}
 		}
 
 		const process = makeProcessRepository()
 		const result = await process.insert({
 			...inputParsed.data,
-			createdBy: accountExists.id,
 			assignedId: accountExists.id,
+			createdBy: accountExists.id,
 		})
 
-		const outputParsed = outputSchema.safeParse({ data: result.processId })
+		const outputParsed = outputSchema.safeParse({
+			data: result.processId,
+		})
 		if (!outputParsed.success) {
 			return {
 				data: null,
-				success: false,
 				error: outputParsed.error,
 				message: formatZodError(outputParsed.error),
+				success: false,
 			}
 		}
 
@@ -93,19 +95,19 @@ async function handler(input: Input): Promise<Output> {
 
 		return {
 			data: result.processId,
-			success: true,
 			message: 'Processo criado com sucesso!',
+			success: true,
 		}
 	} catch (error) {
 		console.error('Error in insertProcessAction:', error)
 
 		return {
 			data: null,
-			success: false,
 			message:
 				error instanceof Error
 					? error.message
 					: 'Ocorreu um erro ao criar o processo, tente novamente.',
+			success: false,
 		}
 	}
 }

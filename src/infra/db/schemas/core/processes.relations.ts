@@ -6,21 +6,16 @@ import { processes } from './processes'
 import { spaces } from './spaces'
 
 export const processesRelations = relations(processes, ({ one, many }) => ({
-	// Many-to-one: process belongs to a space
-	space: one(spaces, {
-		fields: [processes.spaceId],
-		references: [spaces.id],
+	// Many-to-one: process assigned to an account
+	assignedTo: one(accounts, {
+		fields: [processes.assignedId],
+		references: [accounts.id],
+		relationName: 'accountAssignedProcesses',
 	}),
 	// Many-to-one: process belongs to a client
 	client: one(clients, {
 		fields: [processes.clientId],
 		references: [clients.id],
-	}),
-	// Many-to-one: process assigned to an account
-	assignedTo: one(accounts, {
-		relationName: 'accountAssignedProcesses',
-		fields: [processes.assignedId],
-		references: [accounts.id],
 	}),
 	// Many-to-one: process creator
 	creator: one(accounts, {
@@ -29,4 +24,9 @@ export const processesRelations = relations(processes, ({ one, many }) => ({
 	}),
 	// One-to-many: process has many deadlines
 	deadlines: many(deadlines),
+	// Many-to-one: process belongs to a space
+	space: one(spaces, {
+		fields: [processes.spaceId],
+		references: [spaces.id],
+	}),
 }))
