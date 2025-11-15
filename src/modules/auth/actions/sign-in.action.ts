@@ -26,10 +26,10 @@ export async function signInWithPassword(
 
 	if (!parsed.success) {
 		return {
-			success: false,
-			message: parsed.error.message,
 			data: null,
 			errors: parsed.error,
+			message: parsed.error.message,
+			success: false,
 		}
 	}
 
@@ -47,23 +47,23 @@ export async function signInWithPassword(
 		if (!user) {
 			return {
 				data: null,
-				success: false,
-				message: error?.message || 'Sign in failed',
 				errors: error,
+				message: error?.message || 'Sign in failed',
+				success: false,
 			}
 		}
 
 		return {
-			success: true,
 			data: user.id,
+			success: true,
 		}
 	} catch (error) {
 		if (error instanceof AuthError) {
 			return {
 				data: null,
-				success: false,
-				message: error.message,
 				errors: error,
+				message: error.message,
+				success: false,
 			}
 		}
 
@@ -71,9 +71,9 @@ export async function signInWithPassword(
 
 		return {
 			data: null,
-			success: false,
-			message: 'Unknown error occurred',
 			errors: null,
+			message: 'Unknown error occurred',
+			success: false,
 		}
 	}
 }

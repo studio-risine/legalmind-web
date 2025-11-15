@@ -8,7 +8,6 @@ import {
 	useSidebar,
 } from '@components/ui/sidebar'
 import { cn } from '@libs/utils'
-
 import type { RemixiconComponentType } from '@remixicon/react'
 import Link from 'next/link'
 
@@ -36,17 +35,17 @@ export default function MainNavigationSidebar({
 
 					return (
 						<SidebarMenuItem
-							key={item.id}
 							className={cn(
 								isCollapsed ? 'flex items-center justify-center' : ' ',
 							)}
+							key={item.id}
 						>
 							<Link href={item.link}>
 								<SidebarMenuButton tooltip={item.title}>
 									{Icon && (
 										<Icon
-											size={32}
 											className={cn('size-5', isCollapsed ? '' : 'mr-3')}
+											size={32}
 										/>
 									)}
 

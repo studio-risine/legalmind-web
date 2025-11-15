@@ -38,13 +38,13 @@ export interface Output {
 }
 
 const inputSchema = z.object({
-	spaceId: spaceIdSchemaDefault,
-	name: nameSchemaDefault,
-	email: emailSchemaDefault,
-	phoneNumber: z.string().optional(),
-	type: clientTypesSchema,
 	documentNumber: z.string().min(11, 'CPF/CNPJ inválido').max(18),
+	email: emailSchemaDefault,
+	name: nameSchemaDefault,
+	phoneNumber: z.string().optional(),
+	spaceId: spaceIdSchemaDefault,
 	status: clientStatusSchema,
+	type: clientTypesSchema,
 })
 
 const outputSchema = z.object({
@@ -57,9 +57,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -68,9 +68,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
@@ -80,19 +80,21 @@ async function handler(input: Input): Promise<Output> {
 	if (!result.clientId) {
 		return {
 			data: null,
-			success: false,
 			message: 'Ocorreu um erro ao criar o cliente, tente novamente.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: result.clientId })
+	const outputParsed = outputSchema.safeParse({
+		data: result.clientId,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 
@@ -100,8 +102,8 @@ async function handler(input: Input): Promise<Output> {
 
 	return {
 		data: result.clientId,
-		success: true,
 		message: 'Cliente criado com sucesso!',
+		success: true,
 	}
 }
 

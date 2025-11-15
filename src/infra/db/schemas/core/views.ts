@@ -5,16 +5,16 @@ import { core } from './schema'
 export const viewAccounts = core.view('view_accounts').as((qb) =>
 	qb
 		.select({
-			userId: accounts.userId,
-			email: accounts.email,
-			phone: accounts.phoneNumber,
-			fullName: accounts.fullName,
-			displayName: accounts.displayName,
-			profilePictureUrl: accounts.profilePictureUrl,
-			oabNumber: accounts.oabNumber,
-			oabState: accounts.oabState,
 			accountCreatedAt: sql`${accounts.createdAt}`.as('account_created_at'),
 			accountUpdatedAt: accounts.updatedAt,
+			displayName: accounts.displayName,
+			email: accounts.email,
+			fullName: accounts.fullName,
+			oabNumber: accounts.oabNumber,
+			oabState: accounts.oabState,
+			phone: accounts.phoneNumber,
+			profilePictureUrl: accounts.profilePictureUrl,
+			userId: accounts.userId,
 		})
 		.from(accounts),
 )
@@ -22,9 +22,9 @@ export const viewAccounts = core.view('view_accounts').as((qb) =>
 export const viewAccountsPublic = core.view('view_accounts_public').as((qb) =>
 	qb
 		.select({
-			userId: accounts.userId,
 			displayName: accounts.displayName,
 			profilePictureUrl: accounts.profilePictureUrl,
+			userId: accounts.userId,
 		})
 		.from(accounts),
 )

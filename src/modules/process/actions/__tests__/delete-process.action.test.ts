@@ -3,7 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('@modules/auth/actions/user-auth.action', () => ({
 	userAuthAction: vi.fn(),
 }))
-vi.mock('@modules/process/factories', () => ({ getProcessRepository: vi.fn() }))
+vi.mock('@modules/process/factories', () => ({
+	getProcessRepository: vi.fn(),
+}))
 vi.mock('@modules/space/http/get-space-id-headers', () => ({
 	getSpaceIdFromHeaders: vi.fn(),
 }))
@@ -26,12 +28,12 @@ import type { AuthError, User } from '@supabase/supabase-js'
 
 function mockUser(): User {
 	return {
-		id: '11111111-1111-4111-8111-111111111111',
 		app_metadata: {},
-		user_metadata: {},
 		aud: 'authenticated',
 		created_at: new Date().toISOString(),
 		email: 'user@example.com',
+		id: '11111111-1111-4111-8111-111111111111',
+		user_metadata: {},
 	} as unknown as User
 }
 
@@ -43,9 +45,9 @@ describe('deleteProcessAction', () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: mockUser(),
 			error: null,
+			success: true,
 		})
 		vi.mocked(getSpaceIdFromHeaders).mockResolvedValue('space-1')
 	})
@@ -62,9 +64,9 @@ describe('deleteProcessAction', () => {
 
 	it('fails when user is not authenticated', async () => {
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: false,
 			data: null,
 			error: { message: 'Unauthorized' } as AuthError,
+			success: false,
 		})
 
 		const result = await deleteProcessAction({

@@ -42,10 +42,10 @@ export function DataTablePagination<TData>({
 				<div className="flex items-center space-x-2">
 					<p className="whitespace-nowrap font-medium text-sm">Rows per page</p>
 					<Select
-						value={`${table.getState().pagination.pageSize}`}
 						onValueChange={(value) => {
 							table.setPageSize(Number(value))
 						}}
+						value={`${table.getState().pagination.pageSize}`}
 					>
 						<SelectTrigger className="h-8 w-[4.5rem] [&[data-size]]:h-8">
 							<SelectValue placeholder={table.getState().pagination.pageSize} />
@@ -66,41 +66,41 @@ export function DataTablePagination<TData>({
 				<div className="flex items-center space-x-2">
 					<Button
 						aria-label="Go to first page"
-						variant="outline"
-						size="icon"
 						className="hidden size-8 lg:flex"
-						onClick={() => table.setPageIndex(0)}
 						disabled={!table.getCanPreviousPage()}
+						onClick={() => table.setPageIndex(0)}
+						size="icon"
+						variant="outline"
 					>
 						<ChevronsLeft />
 					</Button>
 					<Button
 						aria-label="Go to previous page"
-						variant="outline"
-						size="icon"
 						className="size-8"
-						onClick={() => table.previousPage()}
 						disabled={!table.getCanPreviousPage()}
+						onClick={() => table.previousPage()}
+						size="icon"
+						variant="outline"
 					>
 						<ChevronLeft />
 					</Button>
 					<Button
 						aria-label="Go to next page"
-						variant="outline"
-						size="icon"
 						className="size-8"
-						onClick={() => table.nextPage()}
 						disabled={!table.getCanNextPage()}
+						onClick={() => table.nextPage()}
+						size="icon"
+						variant="outline"
 					>
 						<ChevronRight />
 					</Button>
 					<Button
 						aria-label="Go to last page"
-						variant="outline"
-						size="icon"
 						className="hidden size-8 lg:flex"
-						onClick={() => table.setPageIndex(table.getPageCount() - 1)}
 						disabled={!table.getCanNextPage()}
+						onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+						size="icon"
+						variant="outline"
 					>
 						<ChevronsRight />
 					</Button>

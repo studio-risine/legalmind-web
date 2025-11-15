@@ -6,20 +6,20 @@ type ClientStatusProps = {
 }
 
 export const clientStatusMap: Record<ClientStatus, string> = {
-	LEAD: 'Lead',
-	PROSPECT: 'Prospect',
 	ACTIVE: 'Ativo',
 	ARCHIVED: 'Arquivado',
 	INACTIVE: 'Inativo',
+	LEAD: 'Lead',
+	PROSPECT: 'Prospect',
 }
 
 export function ClientStatusBadge({ status }: ClientStatusProps) {
 	return (
-		<Badge variant="secondary" className="flex items-center gap-2">
+		<Badge className="flex items-center gap-2" variant="secondary">
 			{status === 'ACTIVE' && (
 				<span
-					data-testid="badge"
 					className="h-2 w-2 rounded-full bg-emerald-300"
+					data-testid="badge"
 				/>
 			)}
 

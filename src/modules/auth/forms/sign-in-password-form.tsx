@@ -30,17 +30,17 @@ export function SignInPasswordForm() {
 	const [isPending, startTransition] = useTransition()
 
 	const form = useForm<SignInFormData>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
 			email: '',
 			password: '',
 		},
+		resolver: zodResolver(formSchema),
 	})
 
 	const formState = useMemo(
 		() => ({
-			isValid: form.formState.isValid,
 			errors: form.formState.errors,
+			isValid: form.formState.isValid,
 		}),
 		[form.formState.isValid, form.formState.errors],
 	)
@@ -80,10 +80,10 @@ export function SignInPasswordForm() {
 								<FormLabel>Email</FormLabel>
 								<FormControl>
 									<Input
-										type="email"
-										placeholder=""
 										autoComplete="email"
 										disabled={isPending}
+										placeholder=""
+										type="email"
 										{...field}
 									/>
 								</FormControl>
@@ -98,16 +98,16 @@ export function SignInPasswordForm() {
 							<FormItem>
 								<div className="flex justify-between gap-2">
 									<FormLabel>Senha</FormLabel>
-									<Anchor href="/account/reset-password" className="text-sm">
+									<Anchor className="text-sm" href="/account/reset-password">
 										Esqueceu sua senha?
 									</Anchor>
 								</div>
 								<FormControl>
 									<Input
-										type="password"
-										placeholder=""
 										autoComplete="current-password"
 										disabled={isPending}
+										placeholder=""
+										type="password"
 										{...field}
 									/>
 								</FormControl>

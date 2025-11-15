@@ -35,16 +35,16 @@ export function ResetPasswordForm() {
 		useResetPasswordCooldown()
 
 	const form = useForm<ResetPasswordFormData>({
-		resolver: zodResolver(schema),
 		defaultValues: {
 			email: '',
 		},
+		resolver: zodResolver(schema),
 	})
 
 	const formState = useMemo(
 		() => ({
-			isValid: form.formState.isValid,
 			errors: form.formState.errors,
+			isValid: form.formState.isValid,
 		}),
 		[form.formState.isValid, form.formState.errors],
 	)
@@ -111,9 +111,9 @@ export function ResetPasswordForm() {
 								<FormLabel>Email</FormLabel>
 								<FormControl>
 									<Input
-										type="email"
-										placeholder="Digite seu email"
 										disabled={isOnCooldown || isPending}
+										placeholder="Digite seu email"
+										type="email"
 										{...field}
 									/>
 								</FormControl>

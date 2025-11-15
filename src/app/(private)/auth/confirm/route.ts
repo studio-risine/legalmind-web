@@ -19,7 +19,10 @@ export async function GET(req: NextRequest) {
 	}
 
 	const supabase = await createClient()
-	const { error } = await supabase.auth.verifyOtp({ token_hash, type })
+	const { error } = await supabase.auth.verifyOtp({
+		token_hash,
+		type,
+	})
 
 	if (error) {
 		// Invalid or expired token

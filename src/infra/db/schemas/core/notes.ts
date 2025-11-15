@@ -5,11 +5,11 @@ import { clients } from './clients'
 import { core } from './schema'
 
 export const notes = core.table('notes', {
-	id: uuidPrimaryKey,
 	clientId: uuid('client_id')
 		.notNull()
 		.references(() => clients.id, { onDelete: 'cascade' }),
 	content: text('content').notNull(),
+	id: uuidPrimaryKey,
 	...auditFields,
 })
 

@@ -24,11 +24,11 @@ import type { ClientRepository } from '../../repositories/client-repository'
 
 function mockRepo(): ClientRepository {
 	return {
-		insert: vi.fn(),
+		delete: vi.fn(),
 		findById: vi.fn(),
 		findMany: vi.fn(),
+		insert: vi.fn(),
 		update: vi.fn(),
-		delete: vi.fn(),
 	}
 }
 
@@ -39,12 +39,12 @@ describe('insertClientAction', () => {
 
 	it('fails on invalid input schema', async () => {
 		const client = {
-			name: '',
-			email: 'invalid-email',
-			phoneNumber: '',
-			type: 'INDIVIDUAL',
 			documentNumber: '123',
+			email: 'invalid-email',
+			name: '',
+			phoneNumber: '',
 			status: 'ACTIVE',
+			type: 'INDIVIDUAL',
 		} as Parameters<typeof insertClientAction>[0]
 
 		const result = await insertClientAction(client)
@@ -65,20 +65,20 @@ describe('insertClientAction', () => {
 			'auth',
 		) as unknown as import('@supabase/supabase-js').AuthError
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: false,
 			data: null,
 			error: authError,
+			success: false,
 		})
 		vi.mocked(clientRepository).mockReturnValue(mockRepo())
 
 		const result = await insertClientAction({
-			spaceId: 'space-1',
-			name: 'John Doe',
-			email: 'john@example.com',
-			phoneNumber: '123',
-			type: 'INDIVIDUAL',
 			documentNumber: '12345678901',
+			email: 'john@example.com',
+			name: 'John Doe',
+			phoneNumber: '123',
+			spaceId: 'space-1',
 			status: 'ACTIVE',
+			type: 'INDIVIDUAL',
 		})
 
 		expect(result.success).toBe(false)
@@ -92,35 +92,35 @@ describe('insertClientAction', () => {
 		})
 		vi.mocked(clientRepository).mockReturnValue(repo)
 		const fakeUser = {
-			id: 'user-1',
 			aud: 'authenticated',
 			created_at: new Date().toISOString(),
 			email: 'user@example.com',
+			id: 'user-1',
 		}
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: fakeUser as unknown as import('@supabase/supabase-js').User,
 			error: null,
+			success: true,
 		})
 
 		const result = await insertClientAction({
-			spaceId: 'space-1',
-			name: 'Jane',
-			email: 'jane@example.com',
-			phoneNumber: '123',
-			type: 'INDIVIDUAL',
 			documentNumber: '12345678901',
+			email: 'jane@example.com',
+			name: 'Jane',
+			phoneNumber: '123',
+			spaceId: 'space-1',
 			status: 'ACTIVE',
+			type: 'INDIVIDUAL',
 		})
 
 		expect(repo.insert).toHaveBeenCalledWith({
-			spaceId: 'space-1',
-			name: 'Jane',
-			email: 'jane@example.com',
-			phoneNumber: '123',
-			type: 'INDIVIDUAL',
 			documentNumber: '12345678901',
+			email: 'jane@example.com',
+			name: 'Jane',
+			phoneNumber: '123',
+			spaceId: 'space-1',
 			status: 'ACTIVE',
+			type: 'INDIVIDUAL',
 		})
 		expect(result.success).toBe(true)
 		expect(result.data).toBe('550e8400-e29b-41d4-a716-446655440000')
@@ -129,17 +129,19 @@ describe('insertClientAction', () => {
 
 	it('handles repository failure (missing id)', async () => {
 		const repo = mockRepo()
-		vi.mocked(repo.insert).mockResolvedValue({ clientId: '' })
+		vi.mocked(repo.insert).mockResolvedValue({
+			clientId: '',
+		})
 		vi.mocked(clientRepository).mockReturnValue(repo)
 
 		const result = await insertClientAction({
-			spaceId: 'space-1',
-			name: 'Jane',
-			email: 'jane@example.com',
-			phoneNumber: '123',
-			type: 'INDIVIDUAL',
 			documentNumber: '12345678901',
+			email: 'jane@example.com',
+			name: 'Jane',
+			phoneNumber: '123',
+			spaceId: 'space-1',
 			status: 'ACTIVE',
+			type: 'INDIVIDUAL',
 		})
 
 		expect(result.success).toBe(false)

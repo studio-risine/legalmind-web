@@ -20,39 +20,39 @@ import type { User } from '@supabase/supabase-js'
 
 function mockRepo() {
 	return {
-		insert: vi.fn(),
+		delete: vi.fn(),
 		findById: vi.fn(),
 		findMany: vi.fn(),
+		insert: vi.fn(),
 		update: vi.fn(),
-		delete: vi.fn(),
 	}
 }
 
 function makeProcess(id: string, overrides: Partial<Process> = {}): Process {
 	return {
-		id,
-		spaceId: overrides.spaceId ?? 'b7d6e7f8-a9b0-c1d2-e3f4-567890123456',
-		clientId: overrides.clientId ?? '550e8400-e29b-41d4-a716-446655440000',
-		title: overrides.title ?? `Process ${id.slice(0, 4)}`,
-		description: overrides.description ?? `Description for ${id.slice(0, 4)}`,
-		processNumber: overrides.processNumber ?? `P${id.slice(0, 4)}`,
-		status: overrides.status ?? 'ACTIVE',
 		assignedId: overrides.assignedId ?? '660e8400-e29b-41d4-a716-446655440000',
-		deletedAt: overrides.deletedAt ?? null,
+		clientId: overrides.clientId ?? '550e8400-e29b-41d4-a716-446655440000',
 		createdAt: overrides.createdAt ?? new Date(),
-		updatedAt: overrides.updatedAt ?? new Date(),
 		createdBy: overrides.createdBy ?? 'a1b2c3d4-e5f6-7890-abcd-ef0123456789',
+		deletedAt: overrides.deletedAt ?? null,
+		description: overrides.description ?? `Description for ${id.slice(0, 4)}`,
+		id,
+		processNumber: overrides.processNumber ?? `P${id.slice(0, 4)}`,
+		spaceId: overrides.spaceId ?? 'b7d6e7f8-a9b0-c1d2-e3f4-567890123456',
+		status: overrides.status ?? 'ACTIVE',
+		title: overrides.title ?? `Process ${id.slice(0, 4)}`,
+		updatedAt: overrides.updatedAt ?? new Date(),
 	}
 }
 
 function mockUser(): User {
 	return {
-		id: 'f1e2d3c4-b5a6-9876-5432-10fedcba9876',
 		app_metadata: {},
-		user_metadata: {},
 		aud: 'authenticated',
 		created_at: new Date().toISOString(),
 		email: 'user@example.com',
+		id: 'f1e2d3c4-b5a6-9876-5432-10fedcba9876',
+		user_metadata: {},
 	} as unknown as User
 }
 
@@ -60,13 +60,16 @@ describe('queryProcessesAction', () => {
 	beforeEach(() => {
 		vi.clearAllMocks()
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: mockUser(),
 			error: null,
+			success: true,
 		})
 
 		const defaultRepo = mockRepo()
-		vi.mocked(defaultRepo.findMany).mockResolvedValue({ data: [], total: 0 })
+		vi.mocked(defaultRepo.findMany).mockResolvedValue({
+			data: [],
+			total: 0,
+		})
 		vi.mocked(getProcessRepository).mockReturnValue(defaultRepo)
 	})
 
@@ -84,8 +87,8 @@ describe('queryProcessesAction', () => {
 
 		it('should fail with pageSize > 100', async () => {
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				pageSize: 101,
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(false)
@@ -95,8 +98,8 @@ describe('queryProcessesAction', () => {
 
 		it('should fail with pageSize < 1', async () => {
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				pageSize: 0,
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(false)
@@ -106,8 +109,8 @@ describe('queryProcessesAction', () => {
 
 		it('should fail with negative pageSize', async () => {
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				pageSize: -5,
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(false)
@@ -117,8 +120,8 @@ describe('queryProcessesAction', () => {
 
 		it('should fail with invalid sortDirection', async () => {
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				sortDirection: 'invalid' as unknown as 'asc' | 'desc',
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(false)
@@ -128,8 +131,8 @@ describe('queryProcessesAction', () => {
 
 		it('should fail with invalid sortBy', async () => {
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				sortBy: 'title' as unknown as 'createdAt',
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(false)
@@ -155,22 +158,25 @@ describe('queryProcessesAction', () => {
 
 		it('should accept valid sortDirection values', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			const resultAsc = await queryProcessesAction({
-				spaceId: 'space-1',
 				sortDirection: 'asc',
+				spaceId: 'space-1',
 			})
 
 			const resultDesc = await queryProcessesAction({
-				spaceId: 'space-1',
 				sortDirection: 'desc',
+				spaceId: 'space-1',
 			})
 
 			expect(resultAsc.success).toBe(true)
@@ -179,12 +185,15 @@ describe('queryProcessesAction', () => {
 
 		it('should accept all valid status values', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			const statuses = [
@@ -208,9 +217,9 @@ describe('queryProcessesAction', () => {
 	describe('Authentication', () => {
 		it('should fail when user is not authenticated', async () => {
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: false,
 				data: null,
 				error: null,
+				success: false,
 			})
 
 			const result = await queryProcessesAction({
@@ -228,9 +237,9 @@ describe('queryProcessesAction', () => {
 				'Auth failed',
 			) as unknown as import('@supabase/supabase-js').AuthError
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: false,
 				data: null,
 				error: authError,
+				success: false,
 			})
 
 			const result = await queryProcessesAction({
@@ -246,7 +255,10 @@ describe('queryProcessesAction', () => {
 	describe('Basic Search', () => {
 		it('should return empty list when no processes found', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 
 			const result = await queryProcessesAction({
@@ -285,7 +297,10 @@ describe('queryProcessesAction', () => {
 
 		it('should use default values for page and pageSize', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 
 			await queryProcessesAction({
@@ -293,12 +308,12 @@ describe('queryProcessesAction', () => {
 			})
 
 			expect(repo.findMany).toHaveBeenCalledWith({
-				spaceId: 'space-1',
 				page: 1,
 				pageSize: 10,
 				searchQuery: undefined,
 				sortBy: undefined,
 				sortDirection: undefined,
+				spaceId: 'space-1',
 				status: undefined,
 			})
 		})
@@ -307,54 +322,60 @@ describe('queryProcessesAction', () => {
 	describe('Pagination', () => {
 		it('should handle first page correctly', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				page: 1,
 				pageSize: 10,
+				spaceId: 'space-1',
 			})
 
 			expect(repo.findMany).toHaveBeenCalledWith({
-				spaceId: 'space-1',
 				page: 1,
 				pageSize: 10,
 				searchQuery: undefined,
 				sortBy: undefined,
 				sortDirection: undefined,
+				spaceId: 'space-1',
 				status: undefined,
 			})
 		})
 
 		it('should handle second page correctly', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				page: 2,
 				pageSize: 10,
+				spaceId: 'space-1',
 			})
 
 			expect(repo.findMany).toHaveBeenCalledWith({
-				spaceId: 'space-1',
 				page: 2,
 				pageSize: 10,
 				searchQuery: undefined,
 				sortBy: undefined,
 				sortDirection: undefined,
+				spaceId: 'space-1',
 				status: undefined,
 			})
 		})
@@ -369,15 +390,15 @@ describe('queryProcessesAction', () => {
 			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				page: 2,
 				pageSize: 10,
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(true)
@@ -387,26 +408,29 @@ describe('queryProcessesAction', () => {
 
 		it('should handle custom pageSize', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				pageSize: 50,
+				spaceId: 'space-1',
 			})
 
 			expect(repo.findMany).toHaveBeenCalledWith({
-				spaceId: 'space-1',
 				page: 1,
 				pageSize: 50,
 				searchQuery: undefined,
 				sortBy: undefined,
 				sortDirection: undefined,
+				spaceId: 'space-1',
 				status: undefined,
 			})
 		})
@@ -415,7 +439,10 @@ describe('queryProcessesAction', () => {
 	describe('Filters', () => {
 		beforeEach(() => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 		})
 
@@ -432,25 +459,25 @@ describe('queryProcessesAction', () => {
 			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				searchQuery: 'Contract',
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(true)
 			expect(result.data?.rows[0].title).toContain('Contract')
 			expect(repo.findMany).toHaveBeenCalledWith({
-				spaceId: 'space-1',
 				page: 1,
 				pageSize: 10,
 				searchQuery: 'Contract',
 				sortBy: undefined,
 				sortDirection: undefined,
+				spaceId: 'space-1',
 				status: undefined,
 			})
 		})
@@ -522,26 +549,26 @@ describe('queryProcessesAction', () => {
 
 		it('should combine searchQuery and status filters', async () => {
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				searchQuery: 'Contract',
+				spaceId: 'space-1',
 				status: 'ACTIVE',
 			})
 
 			expect(getProcessRepository().findMany).toHaveBeenCalledWith({
-				spaceId: 'space-1',
 				page: 1,
 				pageSize: 10,
 				searchQuery: 'Contract',
 				sortBy: undefined,
 				sortDirection: undefined,
+				spaceId: 'space-1',
 				status: 'ACTIVE',
 			})
 		})
 
 		it('should handle empty searchQuery', async () => {
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				searchQuery: '',
+				spaceId: 'space-1',
 			})
 
 			expect(getProcessRepository().findMany).toHaveBeenCalledWith(
@@ -553,8 +580,8 @@ describe('queryProcessesAction', () => {
 
 		it('should handle whitespace searchQuery', async () => {
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				searchQuery: '   ',
+				spaceId: 'space-1',
 			})
 
 			expect(getProcessRepository().findMany).toHaveBeenCalledWith(
@@ -566,8 +593,8 @@ describe('queryProcessesAction', () => {
 
 		it('should handle special characters in searchQuery', async () => {
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				searchQuery: "Process with 'quotes' and % symbols",
+				spaceId: 'space-1',
 			})
 
 			expect(getProcessRepository().findMany).toHaveBeenCalledWith(
@@ -581,50 +608,53 @@ describe('queryProcessesAction', () => {
 	describe('Sorting', () => {
 		beforeEach(() => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 		})
 
 		it('should sort by createdAt ascending', async () => {
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				sortBy: 'createdAt',
 				sortDirection: 'asc',
+				spaceId: 'space-1',
 			})
 
 			expect(getProcessRepository().findMany).toHaveBeenCalledWith({
-				spaceId: 'space-1',
 				page: 1,
 				pageSize: 10,
 				searchQuery: undefined,
 				sortBy: 'createdAt',
 				sortDirection: 'asc',
+				spaceId: 'space-1',
 				status: undefined,
 			})
 		})
 
 		it('should sort by createdAt descending', async () => {
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				sortBy: 'createdAt',
 				sortDirection: 'desc',
+				spaceId: 'space-1',
 			})
 
 			expect(getProcessRepository().findMany).toHaveBeenCalledWith({
-				spaceId: 'space-1',
 				page: 1,
 				pageSize: 10,
 				searchQuery: undefined,
 				sortBy: 'createdAt',
 				sortDirection: 'desc',
+				spaceId: 'space-1',
 				status: undefined,
 			})
 		})
 
 		it('should handle sortBy without sortDirection', async () => {
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				sortBy: 'createdAt',
+				spaceId: 'space-1',
 			})
 
 			expect(getProcessRepository().findMany).toHaveBeenCalledWith(
@@ -658,9 +688,9 @@ describe('queryProcessesAction', () => {
 			} as unknown as { data: Process[]; total: number })
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			const result = await queryProcessesAction({
@@ -681,9 +711,9 @@ describe('queryProcessesAction', () => {
 			} as unknown as { data: Process[]; total: number })
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			const result = await queryProcessesAction({
@@ -703,9 +733,9 @@ describe('queryProcessesAction', () => {
 			} as unknown as { data: Process[]; total: number })
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 			vi.mocked(userAuthAction).mockResolvedValue({
-				success: true,
 				data: mockUser(),
 				error: null,
+				success: true,
 			})
 
 			const result = await queryProcessesAction({
@@ -721,12 +751,15 @@ describe('queryProcessesAction', () => {
 	describe('Edge Cases', () => {
 		it('should handle non-existent page gracefully', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 10 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 10,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				page: 999,
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(true)
@@ -736,12 +769,15 @@ describe('queryProcessesAction', () => {
 
 		it('should handle maximum pageSize', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				pageSize: 100,
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(true)
@@ -754,12 +790,15 @@ describe('queryProcessesAction', () => {
 
 		it('should handle very large page numbers', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 
 			const result = await queryProcessesAction({
-				spaceId: 'space-1',
 				page: 1000000,
+				spaceId: 'space-1',
 			})
 
 			expect(result.success).toBe(true)
@@ -772,7 +811,10 @@ describe('queryProcessesAction', () => {
 
 		it('should handle non-existent spaceId', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 
 			const result = await queryProcessesAction({
@@ -788,34 +830,40 @@ describe('queryProcessesAction', () => {
 	describe('Repository Calls', () => {
 		it('should call repository with correct parameters', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 
 			await queryProcessesAction({
-				spaceId: 'space-1',
 				page: 2,
 				pageSize: 25,
 				searchQuery: 'test',
 				sortBy: 'createdAt',
 				sortDirection: 'desc',
+				spaceId: 'space-1',
 				status: 'ACTIVE',
 			})
 
 			expect(repo.findMany).toHaveBeenCalledTimes(1)
 			expect(repo.findMany).toHaveBeenCalledWith({
-				spaceId: 'space-1',
 				page: 2,
 				pageSize: 25,
 				searchQuery: 'test',
 				sortBy: 'createdAt',
 				sortDirection: 'desc',
+				spaceId: 'space-1',
 				status: 'ACTIVE',
 			})
 		})
 
 		it('should call userAuthAction exactly once', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 
 			await queryProcessesAction({
@@ -827,7 +875,10 @@ describe('queryProcessesAction', () => {
 
 		it('should call getProcessRepository exactly once', async () => {
 			const repo = mockRepo()
-			vi.mocked(repo.findMany).mockResolvedValue({ data: [], total: 0 })
+			vi.mocked(repo.findMany).mockResolvedValue({
+				data: [],
+				total: 0,
+			})
 			vi.mocked(getProcessRepository).mockReturnValue(repo)
 
 			await queryProcessesAction({

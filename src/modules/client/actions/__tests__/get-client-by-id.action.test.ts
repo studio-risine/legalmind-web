@@ -3,7 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('@modules/auth/actions/user-auth.action', () => ({
 	userAuthAction: vi.fn(),
 }))
-vi.mock('@modules/client/factories', () => ({ clientRepository: vi.fn() }))
+vi.mock('@modules/client/factories', () => ({
+	clientRepository: vi.fn(),
+}))
 
 const { userAuthAction } = await import(
 	'@modules/auth/actions/user-auth.action'
@@ -19,11 +21,11 @@ import type { User } from '@supabase/supabase-js'
 
 function mockRepo() {
 	return {
-		insert: vi.fn(),
+		delete: vi.fn(),
 		findById: vi.fn(),
 		findMany: vi.fn(),
+		insert: vi.fn(),
 		update: vi.fn(),
-		delete: vi.fn(),
 	}
 }
 
@@ -41,9 +43,9 @@ describe('getClientByIdAction', () => {
 
 	it('fails when unauthenticated', async () => {
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: false,
 			data: null,
 			error: null,
+			success: false,
 		})
 		vi.mocked(clientRepository).mockReturnValue(mockRepo())
 		const result = await getClientByIdAction({
@@ -59,15 +61,15 @@ describe('getClientByIdAction', () => {
 		vi.mocked(repo.findById).mockResolvedValue(undefined)
 		vi.mocked(clientRepository).mockReturnValue(repo)
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: {
-				id: 'user-1',
 				app_metadata: {},
-				user_metadata: {},
 				aud: 'authenticated',
 				created_at: new Date().toISOString(),
+				id: 'user-1',
+				user_metadata: {},
 			} as unknown as User,
 			error: null,
+			success: true,
 		})
 		const result = await getClientByIdAction({
 			id: '550e8400-e29b-41d4-a716-446655440000',
@@ -80,30 +82,30 @@ describe('getClientByIdAction', () => {
 	it('returns client successfully', async () => {
 		const repo = mockRepo()
 		const client: Client = {
-			id: '550e8400-e29b-41d4-a716-446655440000',
-			spaceId: 'space-1',
-			name: 'Acme',
-			email: 'a@b.com',
-			phoneNumber: null,
+			createdAt: new Date(),
+			deletedAt: null,
 			documentNumber: '123',
+			email: 'a@b.com',
+			id: '550e8400-e29b-41d4-a716-446655440000',
+			name: 'Acme',
+			phoneNumber: null,
+			spaceId: 'space-1',
 			status: 'ACTIVE',
 			type: 'COMPANY',
-			createdAt: new Date(),
 			updatedAt: new Date(),
-			deletedAt: null,
 		}
 		vi.mocked(repo.findById).mockResolvedValue(client)
 		vi.mocked(clientRepository).mockReturnValue(repo)
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: {
-				id: 'user-1',
 				app_metadata: {},
-				user_metadata: {},
 				aud: 'authenticated',
 				created_at: new Date().toISOString(),
+				id: 'user-1',
+				user_metadata: {},
 			} as unknown as User,
 			error: null,
+			success: true,
 		})
 		const result = await getClientByIdAction({
 			id: client.id,

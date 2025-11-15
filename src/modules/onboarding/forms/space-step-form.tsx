@@ -29,25 +29,25 @@ import { Controller, useForm } from 'react-hook-form'
 import z from 'zod'
 
 const schema = z.object({
+	spaceDescription: z.string().optional(),
 	spaceName: z
 		.string()
 		.min(2, 'O nome do space é obrigatório e deve ter ao menos 2 caracteres'),
 	spaceType: createSelectSchema(spaceTypeEnum).optional(),
-	spaceDescription: z.string().optional(),
 })
 
 const spaceTypeLabels: Record<
 	(typeof spaceTypeEnum.enumValues)[number],
 	string
 > = {
-	INDIVIDUAL: 'Individual',
-	FIRM: 'Escritório',
 	DEPARTMENT: 'Departamento',
+	FIRM: 'Escritório',
+	INDIVIDUAL: 'Individual',
 }
 
 const SPACE_TYPES = spaceTypeEnum.enumValues.map((value) => ({
-	value,
 	label: spaceTypeLabels[value],
+	value,
 }))
 
 type FormData = z.infer<typeof schema>
@@ -63,12 +63,12 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 	const router = useRouter()
 
 	const form = useForm<FormData>({
-		resolver: zodResolver(schema),
 		defaultValues: {
-			spaceName: '',
 			spaceDescription: '',
+			spaceName: '',
 			spaceType: 'INDIVIDUAL',
 		},
+		resolver: zodResolver(schema),
 	})
 
 	const onSubmit = (formData: FormData) => {
@@ -87,9 +87,9 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 				data: spaceId,
 			} = await createSpaceAction({
 				accountId,
+				description: formData.spaceDescription,
 				name: formData.spaceName,
 				type: formData.spaceType ?? 'INDIVIDUAL',
-				description: formData.spaceDescription,
 			})
 
 			if (error || !success) {
@@ -109,15 +109,15 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 			<Card>
 				<CardHeader>
 					<StepperHeader
-						title="Space"
 						description="Escolha o nome do seu space"
+						title="Space"
 					/>
 				</CardHeader>
 				<CardContent>
 					<Form {...form}>
 						<form
-							id={formId}
 							className="grid gap-4"
+							id={formId}
 							onSubmit={form.handleSubmit(onSubmit)}
 						>
 							{form.formState.errors.root && (
@@ -136,14 +136,15 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 									render={({ field, fieldState }) => (
 										<Field data-invalid={fieldState.invalid}>
 											<FormLabel htmlFor={field.name}>
-												Nome<span className="text-red-400">*</span>
+												Nome
+												<span className="text-red-400">*</span>
 											</FormLabel>
 											<FormControl>
 												<Input
 													{...field}
+													data-invalid={fieldState.invalid}
 													id={field.name}
 													placeholder=""
-													data-invalid={fieldState.invalid}
 													value={field.value}
 												/>
 											</FormControl>
@@ -162,8 +163,8 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 											<FormLabel htmlFor={field.name}>Tipo</FormLabel>
 											<FormControl>
 												<Select
-													value={field.value}
 													onValueChange={field.onChange}
+													value={field.value}
 												>
 													<SelectTrigger id={field.name}>
 														<SelectValue placeholder="" />
@@ -195,8 +196,8 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 													{...field}
 													id={field.name}
 													placeholder=""
-													value={field.value}
 													rows={3}
+													value={field.value}
 												/>
 											</FormControl>
 											{fieldState.error && (
@@ -215,10 +216,10 @@ export function SpaceStepForm({ accountId }: SpaceStepFormProps) {
 				<div className="flex gap-2">
 					<StepperPreviuesButton />
 					<StepperNextButton
-						type="submit"
-						form={formId}
 						disabled={isPending}
+						form={formId}
 						preventDefault
+						type="submit"
 					/>
 				</div>
 			</StepperFooter>

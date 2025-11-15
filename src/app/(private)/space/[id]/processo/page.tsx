@@ -9,8 +9,11 @@ export default async function Page({
 	const { id } = await params
 
 	const breadcrumb = [
-		{ label: 'Meu Space', href: `/space/${id}` },
-		{ label: 'Processo', href: `/space/${id}/processo/${id}` },
+		{ href: `/space/${id}`, label: 'Meu Space' },
+		{
+			href: `/space/${id}/processo/${id}`,
+			label: 'Processo',
+		},
 	]
 
 	return (

@@ -45,9 +45,18 @@ export function DataTableProcess({ rows, total }: DataTableProcessProps) {
 	const columns = useMemo<ColumnDef<DataTableRows>[]>(
 		() => [
 			{
-				id: 'select',
+				cell: ({ row }) => (
+					<Checkbox
+						aria-label="Select row"
+						checked={row.getIsSelected()}
+						onCheckedChange={(value) => row.toggleSelected(!!value)}
+					/>
+				),
+				enableColumnFilter: false,
+				enableSorting: false,
 				header: ({ table }) => (
 					<Checkbox
+						aria-label="Select all"
 						checked={
 							table.getIsAllPageRowsSelected() ||
 							(table.getIsSomePageRowsSelected() && 'indeterminate')
@@ -55,83 +64,74 @@ export function DataTableProcess({ rows, total }: DataTableProcessProps) {
 						onCheckedChange={(value) =>
 							table.toggleAllPageRowsSelected(!!value)
 						}
-						aria-label="Select all"
 					/>
 				),
-				cell: ({ row }) => (
-					<Checkbox
-						checked={row.getIsSelected()}
-						onCheckedChange={(value) => row.toggleSelected(!!value)}
-						aria-label="Select row"
-					/>
-				),
+				id: 'select',
 				meta: {
 					label: '#',
 				},
-				enableColumnFilter: false,
-				enableSorting: false,
 				size: 32,
 			},
 			{
-				id: 'search',
 				accessorFn: (row) => row.title,
+				cell: ({ row }) => (
+					<TableCellPrimary
+						link={`processo/${row.original.id}`}
+						title={row.original.title}
+					/>
+				),
+				enableColumnFilter: true,
 				header: ({ column }: { column: Column<DataTableRows, unknown> }) => (
 					<DataTableColumnHeader column={column} title="Título" />
 				),
-				cell: ({ row }) => (
-					<TableCellPrimary
-						title={row.original.title}
-						link={`processo/${row.original.id}`}
-					/>
-				),
+				id: 'search',
 				meta: {
 					label: 'Título',
 					placeholder: 'Pesquisar...',
 					variant: 'text',
 				},
-				enableColumnFilter: true,
 				minSize: 240,
 			},
 			{
-				id: 'processNumber',
 				accessorFn: (row) => row.processNumber,
-				header: ({ column }: { column: Column<DataTableRows, unknown> }) => (
-					<DataTableColumnHeader column={column} title="Processo" />
-				),
 				cell: ({ row }) => (
 					<TableCellText>
 						{maskProcessNumber(row.original.processNumber)}
 					</TableCellText>
 				),
+				header: ({ column }: { column: Column<DataTableRows, unknown> }) => (
+					<DataTableColumnHeader column={column} title="Processo" />
+				),
+				id: 'processNumber',
 				meta: {
 					label: 'Número',
 				},
 				minSize: 220,
 			},
 			{
-				id: 'client',
 				accessorFn: (row) => row.client?.name ?? '',
-				header: ({ column }: { column: Column<DataTableRows, unknown> }) => (
-					<DataTableColumnHeader column={column} title="Cliente" />
-				),
 				cell: ({ row }) =>
 					row.original.client ? (
 						<TableCellText>{row.original.client.name}</TableCellText>
 					) : (
 						<TableCellTextEmpty />
 					),
+				header: ({ column }: { column: Column<DataTableRows, unknown> }) => (
+					<DataTableColumnHeader column={column} title="Cliente" />
+				),
+				id: 'client',
 				meta: {
 					label: 'Cliente',
 				},
 				minSize: 200,
 			},
 			{
-				id: 'status',
 				accessorFn: (row) => row.status,
+				cell: ({ row }) => <ProcessStatusBadge status={row.original.status} />,
 				header: ({ column }: { column: Column<DataTableRows, unknown> }) => (
 					<DataTableColumnHeader column={column} title="Status" />
 				),
-				cell: ({ row }) => <ProcessStatusBadge status={row.original.status} />,
+				id: 'status',
 				meta: {
 					label: 'Status',
 					variant: 'select',
@@ -143,35 +143,39 @@ export function DataTableProcess({ rows, total }: DataTableProcessProps) {
 	)
 
 	const { table } = useDataTable({
-		data: rows,
-		columns,
-		pageCount,
-		getRowId: (row) => row.id,
-		shallow: false,
 		clearOnDefault: true,
+		columns,
+		data: rows,
+		getRowId: (row) => row.id,
+		pageCount,
+		shallow: false,
 	})
 
 	const handleDelete = useCallback(async (id: string) => {
-		const { success, error } = await deleteProcessAction({ id })
+		const { success, error } = await deleteProcessAction({
+			id,
+		})
 
 		if (success) {
 			toast.success('Processo excluído com sucesso!')
 		}
 
 		if (!success || error) {
-			toast.error('Erro ao excluir o processo', { description: error?.message })
+			toast.error('Erro ao excluir o processo', {
+				description: error?.message,
+			})
 		}
 	}, [])
 
 	return (
 		<div className="data-table-container">
 			<DataTable
-				table={table}
 				actionBar={
 					<DataTableActionBar table={table}>
-						<DataTableActions table={table} onDelete={handleDelete} />
+						<DataTableActions onDelete={handleDelete} table={table} />
 					</DataTableActionBar>
 				}
+				table={table}
 			>
 				<DataTableToolbar table={table}>
 					<ProcessDialog />

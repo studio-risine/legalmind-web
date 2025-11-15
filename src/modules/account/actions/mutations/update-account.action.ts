@@ -27,13 +27,13 @@ const inputSchema = z.object({
 	}),
 	data: z.object({
 		displayName: z.string().min(2).max(100),
-		phoneNumber: z.string().optional(),
 		oabNumber: z.string().min(1, {
 			message: 'O número da OAB é obrigatório',
 		}),
 		oabState: z.string().length(2, {
 			message: 'O estado da OAB é obrigatório',
 		}),
+		phoneNumber: z.string().optional(),
 	}),
 })
 
@@ -47,9 +47,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -58,9 +58,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id || !user?.email) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'User not authenticated',
+			success: false,
 		}
 	}
 
@@ -70,16 +70,16 @@ async function handler(input: Input): Promise<Output> {
 	if (!account) {
 		return {
 			data: null,
-			success: false,
 			message: 'Conta não encontrada.',
+			success: false,
 		}
 	}
 
 	if (account.userId !== user.id) {
 		return {
 			data: null,
-			success: false,
 			message: 'Você não tem permissão para atualizar esta conta.',
+			success: false,
 		}
 	}
 
@@ -91,20 +91,22 @@ async function handler(input: Input): Promise<Output> {
 	if (!result.accountId) {
 		return {
 			data: null,
-			success: false,
 			message:
 				'Ocorreu um erro ao atualizar a conta, tente novamente mais tarde.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: result.accountId })
+	const outputParsed = outputSchema.safeParse({
+		data: result.accountId,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 

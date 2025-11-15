@@ -26,20 +26,20 @@ export async function updatePassword(
 
 	if (error) {
 		return {
-			user: null,
 			error,
+			user: null,
 		}
 	}
 
 	if (!user) {
 		return {
-			user: null,
 			error,
+			user: null,
 		}
 	}
 
 	return {
-		user,
 		error: null,
+		user,
 	}
 }

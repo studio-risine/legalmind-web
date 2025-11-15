@@ -8,9 +8,9 @@ import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 
 export const metadata: Metadata = {
-	title: 'Legal Mind',
 	description:
 		'Modern legal process and deadline management for law firms and solo practitioners',
+	title: 'Legal Mind',
 }
 
 export default function RootLayout({

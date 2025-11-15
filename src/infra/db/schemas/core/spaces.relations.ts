@@ -10,8 +10,8 @@ export const spacesRelations = relations(spaces, ({ one, many }) => ({
 		fields: [spaces.createdBy],
 		references: [accounts.userId],
 	}),
-	// Many-to-many: space to many accounts
-	spacesToAccounts: many(spacesToAccounts),
 	// One-to-many: space to many processes
 	processes: many(processes),
+	// Many-to-many: space to many accounts
+	spacesToAccounts: many(spacesToAccounts),
 }))

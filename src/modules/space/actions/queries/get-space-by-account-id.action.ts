@@ -34,9 +34,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -45,9 +45,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'User not authenticated',
+			success: false,
 		}
 	}
 
@@ -57,16 +57,16 @@ async function handler(input: Input): Promise<Output> {
 	if (!account) {
 		return {
 			data: null,
-			success: false,
 			message: 'Conta não encontrada.',
+			success: false,
 		}
 	}
 
 	if (account.userId !== user.id) {
 		return {
 			data: null,
-			success: false,
 			message: 'Você não tem permissão para acessar este space.',
+			success: false,
 		}
 	}
 
@@ -78,19 +78,21 @@ async function handler(input: Input): Promise<Output> {
 	if (!space) {
 		return {
 			data: null,
-			success: false,
 			message: 'Space não encontrado.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: space })
+	const outputParsed = outputSchema.safeParse({
+		data: space,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 

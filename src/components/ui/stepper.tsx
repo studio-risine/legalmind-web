@@ -40,18 +40,18 @@ export function Stepper({ steps, initialStep = 0 }: StepperProps) {
 	}, [steps])
 
 	return (
-		<StepperContent.Provider value={{ previousStep, nextStep }}>
+		<StepperContent.Provider value={{ nextStep, previousStep }}>
 			<section className="space-y-10">
 				<div className="flex gap-20">
 					{steps.map((step, index) => (
 						<Button
-							onClick={() => setCurrentStep(index)}
 							className={cn(
 								'flex gap-4 px-0 dark:hover:bg-transparent',
 								index === currentStep ? 'text-primary' : '',
 							)}
-							variant="ghost"
 							key={step.id}
+							onClick={() => setCurrentStep(index)}
+							variant="ghost"
 						>
 							<span
 								className={cn(
@@ -113,10 +113,10 @@ export function StepperPreviuesButton({
 	const { previousStep } = useContext(StepperContent)
 	return (
 		<Button
-			variant="secondary"
-			size="sm"
 			onClick={!preventDefault ? previousStep : undefined}
+			size="sm"
 			type={type}
+			variant="secondary"
 			{...props}
 		>
 			Anterior
@@ -135,9 +135,9 @@ export function StepperNextButton({
 
 	return (
 		<Button
+			onClick={!preventDefault ? nextStep : undefined}
 			size="sm"
 			type={type}
-			onClick={!preventDefault ? nextStep : undefined}
 			{...props}
 		>
 			Próxima

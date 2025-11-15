@@ -56,15 +56,15 @@ export function DataTableActions<TData>({
 			<DataTableActionBarSelection table={table} />
 
 			<Separator
-				orientation="vertical"
 				className="mr-1 ml-2 data-[orientation=vertical]:h-4"
+				orientation="vertical"
 			/>
 
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<DataTableActionBarAction
-						onClick={handleEdit}
 						disabled={!canEdit}
+						onClick={handleEdit}
 						tooltip={canEdit ? 'Edit selected' : 'Select exactly 1 row to edit'}
 					>
 						Editar
@@ -79,10 +79,10 @@ export function DataTableActions<TData>({
 				<TooltipTrigger asChild>
 					<span>
 						<DataTableActionBarAction
-							onClick={handleDelete}
+							className="text-red-600 hover:text-red-700"
 							disabled={!canDelete}
 							isPending={isDeleting}
-							className="text-red-600 hover:text-red-700"
+							onClick={handleDelete}
 							tooltip={canDelete ? 'Delete selected' : 'Select rows to delete'}
 						>
 							Deletar

@@ -30,17 +30,17 @@ export function SignUpForm() {
 	const [isPending, startTransition] = useTransition()
 
 	const form = useForm<SignUpFormData>({
-		resolver: zodResolver(formSchema),
 		defaultValues: {
 			email: '',
 			password: '',
 		},
+		resolver: zodResolver(formSchema),
 	})
 
 	const formState = useMemo(
 		() => ({
-			isValid: form.formState.isValid,
 			errors: form.formState.errors,
+			isValid: form.formState.isValid,
 		}),
 		[form.formState.isValid, form.formState.errors],
 	)
@@ -86,10 +86,10 @@ export function SignUpForm() {
 								<FormLabel>Email</FormLabel>
 								<FormControl>
 									<Input
-										type="email"
-										placeholder=""
 										autoComplete="email"
 										disabled={isPending}
+										placeholder=""
+										type="email"
 										{...field}
 									/>
 								</FormControl>
@@ -105,10 +105,10 @@ export function SignUpForm() {
 								<FormLabel>Senha</FormLabel>
 								<FormControl>
 									<Input
-										type="password"
-										placeholder=""
 										autoComplete="new-password"
 										disabled={isPending}
+										placeholder=""
+										type="password"
 										{...field}
 									/>
 								</FormControl>
@@ -117,9 +117,9 @@ export function SignUpForm() {
 						)}
 					/>
 					<SubmitButton
-						text="Criar"
 						disabled={isPending}
 						isLoading={isPending}
+						text="Criar"
 						textLoading="Criando..."
 					/>
 				</div>

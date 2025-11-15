@@ -31,7 +31,7 @@ export function ClientDialog({ spaceId }: ClientDialogProps) {
 	}, [startTransition])
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<Dialog onOpenChange={setOpen} open={open}>
 			<DialogTrigger asChild>
 				<Button size="sm">Novo Cliente</Button>
 			</DialogTrigger>
@@ -44,24 +44,24 @@ export function ClientDialog({ spaceId }: ClientDialogProps) {
 				</DialogHeader>
 
 				<InsertClientForm
-					spaceId={spaceId}
 					formId={formId}
 					onSuccess={handleSuccess}
+					spaceId={spaceId}
 				/>
 
 				<DialogFooter>
-					<DialogClose className="grow" asChild>
-						<Button variant="ghost" disabled={isPending}>
+					<DialogClose asChild className="grow">
+						<Button disabled={isPending} variant="ghost">
 							Cancel
 						</Button>
 					</DialogClose>
 					<SubmitButton
 						className="grow"
-						isLoading={isPending}
 						disabled={isPending}
+						form={formId}
+						isLoading={isPending}
 						text="Criar"
 						textLoading="Criando..."
-						form={formId}
 					/>
 				</DialogFooter>
 			</DialogContent>

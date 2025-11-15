@@ -15,10 +15,10 @@ export const pg =
 	globalForPg.pg ??
 	// biome-ignore lint/suspicious/noAssignInExpressions: False positive, pg is initialized only once
 	(globalForPg.pg = postgres(env.DATABASE_URL, {
-		prepare: false,
-		max: 5,
-		idle_timeout: 5000,
 		connect_timeout: 10_000,
+		idle_timeout: 5000,
+		max: 5,
+		prepare: false,
 	}))
 
 // biome-ignore lint/suspicious/noAssignInExpressions: False positive, db is initialized only once

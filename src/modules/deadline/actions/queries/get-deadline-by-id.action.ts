@@ -35,9 +35,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -46,9 +46,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
@@ -61,19 +61,21 @@ async function handler(input: Input): Promise<Output> {
 	if (!deadline) {
 		return {
 			data: null,
-			success: false,
 			message: 'Prazo não encontrado.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: deadline })
+	const outputParsed = outputSchema.safeParse({
+		data: deadline,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 

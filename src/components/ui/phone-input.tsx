@@ -34,11 +34,11 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 		return (
 			<Input
 				{...props}
+				onChange={handleChange}
+				placeholder={props.placeholder || ''}
 				ref={ref}
 				type="tel"
 				value={applyPhoneMask(value)}
-				onChange={handleChange}
-				placeholder={props.placeholder || ''}
 			/>
 		)
 	},

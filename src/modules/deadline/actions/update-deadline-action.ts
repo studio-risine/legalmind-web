@@ -14,9 +14,9 @@ import type { z } from 'zod'
 const deadlineUpdateInput = insertDeadlineSchema
 	.pick({
 		dueDate: true,
-		status: true,
-		priority: true,
 		notes: true,
+		priority: true,
+		status: true,
 	})
 	.partial()
 
@@ -35,14 +35,14 @@ export async function updateDeadlineAction(
 	const parsed = deadlineUpdateInput.safeParse(input)
 
 	if (!parsed.success) {
-		return { success: false, error: parsed.error.message }
+		return { error: parsed.error.message, success: false }
 	}
 
 	try {
 		const accountId = await getCurrentAccountId()
 
 		if (!accountId) {
-			return { success: false, error: 'No account found.' }
+			return { error: 'No account found.', success: false }
 		}
 
 		const [row] = await db
@@ -58,17 +58,20 @@ export async function updateDeadlineAction(
 			.returning()
 
 		if (!row) {
-			return { success: false, error: 'Deadline not found or unauthorized' }
+			return {
+				error: 'Deadline not found or unauthorized',
+				success: false,
+			}
 		}
 
 		revalidatePath('/space/deadlines')
 		revalidatePath(`/space/processes/${row.processId}`)
 
-		return { success: true, data: row }
+		return { data: row, success: true }
 	} catch (error) {
 		return {
-			success: false,
 			error: error instanceof Error ? error.message : 'Unknown error',
+			success: false,
 		}
 	}
 }

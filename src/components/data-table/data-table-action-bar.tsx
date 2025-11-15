@@ -54,16 +54,16 @@ function DataTableActionBar<TData>({
 		<AnimatePresence>
 			{visible && (
 				<motion.div
-					role="toolbar"
-					aria-orientation="horizontal"
-					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
-					exit={{ opacity: 0, y: 20 }}
-					transition={{ duration: 0.2, ease: 'easeInOut' }}
+					aria-orientation="horizontal"
 					className={cn(
 						'fixed inset-x-0 bottom-6 z-50 mx-auto flex w-fit flex-wrap items-center justify-center gap-2 rounded-md border bg-background p-2 text-foreground shadow-sm',
 						className,
 					)}
+					exit={{ opacity: 0, y: 20 }}
+					initial={{ opacity: 0, y: 20 }}
+					role="toolbar"
+					transition={{ duration: 0.2, ease: 'easeInOut' }}
 					{...props}
 				>
 					{children}
@@ -91,14 +91,14 @@ function DataTableActionBarAction({
 }: DataTableActionBarActionProps) {
 	const trigger = (
 		<Button
-			variant="secondary"
-			size={size}
 			className={cn(
 				'gap-1.5 border border-secondary bg-secondary/50 hover:bg-secondary/70 [&>svg]:size-3.5',
 				size === 'icon' ? 'size-7' : 'h-7',
 				className,
 			)}
 			disabled={disabled || isPending}
+			size={size}
+			variant="secondary"
 			{...props}
 		>
 			{isPending ? <Loader className="animate-spin" /> : children}
@@ -111,8 +111,8 @@ function DataTableActionBarAction({
 		<Tooltip>
 			<TooltipTrigger asChild>{trigger}</TooltipTrigger>
 			<TooltipContent
-				sideOffset={6}
 				className="border bg-accent font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
+				sideOffset={6}
 			>
 				<p>{tooltip}</p>
 			</TooltipContent>
@@ -143,27 +143,27 @@ function DataTableActionBarSelection<TData>({
 				</span>
 			</div>
 			<Separator
-				orientation="vertical"
 				className="mr-1 ml-2 data-[orientation=vertical]:h-4"
+				orientation="vertical"
 			/>
 			<Tooltip>
 				<TooltipTrigger asChild>
 					<Button
-						variant="ghost"
-						size="icon"
 						className="size-5"
 						onClick={onClearSelection}
+						size="icon"
+						variant="ghost"
 					>
 						<X className="size-3.5" />
 					</Button>
 				</TooltipTrigger>
 				<TooltipContent
-					sideOffset={10}
 					className="flex items-center gap-2 border bg-accent px-2 py-1 font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
+					sideOffset={10}
 				>
 					<p>Limpar seleção</p>
 					<kbd className="select-none rounded border bg-background px-1.5 py-px font-mono font-normal text-[0.7rem] text-foreground shadow-xs">
-						<abbr title="Escape" className="no-underline">
+						<abbr className="no-underline" title="Escape">
 							Esc
 						</abbr>
 					</kbd>

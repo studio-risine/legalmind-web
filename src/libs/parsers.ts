@@ -7,8 +7,8 @@ import type {
 } from '../types/data-table'
 
 const sortingItemSchema = z.object({
-	id: z.string(),
 	desc: z.boolean(),
+	id: z.string(),
 })
 
 export const getSortingStateParser = <TData>(
@@ -21,6 +21,12 @@ export const getSortingStateParser = <TData>(
 		: null
 
 	return createParser({
+		eq: (a, b) =>
+			a.length === b.length &&
+			a.every(
+				(item, index) =>
+					item.id === b[index]?.id && item.desc === b[index]?.desc,
+			),
 		parse: (value) => {
 			try {
 				const parsed = JSON.parse(value)
@@ -38,21 +44,15 @@ export const getSortingStateParser = <TData>(
 			}
 		},
 		serialize: (value) => JSON.stringify(value),
-		eq: (a, b) =>
-			a.length === b.length &&
-			a.every(
-				(item, index) =>
-					item.id === b[index]?.id && item.desc === b[index]?.desc,
-			),
 	})
 }
 
 const filterItemSchema = z.object({
+	filterId: z.string(),
 	id: z.string(),
+	operator: z.enum(dataTableConfig.operators),
 	value: z.union([z.string(), z.array(z.string())]),
 	variant: z.enum(dataTableConfig.filterVariants),
-	operator: z.enum(dataTableConfig.operators),
-	filterId: z.string(),
 })
 
 export type FilterItemSchema = z.infer<typeof filterItemSchema>
@@ -67,6 +67,15 @@ export const getFiltersStateParser = <TData>(
 		: null
 
 	return createParser({
+		eq: (a, b) =>
+			a.length === b.length &&
+			a.every(
+				(filter, index) =>
+					filter.id === b[index]?.id &&
+					filter.value === b[index]?.value &&
+					filter.variant === b[index]?.variant &&
+					filter.operator === b[index]?.operator,
+			),
 		parse: (value) => {
 			try {
 				const parsed = JSON.parse(value)
@@ -84,14 +93,5 @@ export const getFiltersStateParser = <TData>(
 			}
 		},
 		serialize: (value) => JSON.stringify(value),
-		eq: (a, b) =>
-			a.length === b.length &&
-			a.every(
-				(filter, index) =>
-					filter.id === b[index]?.id &&
-					filter.value === b[index]?.value &&
-					filter.variant === b[index]?.variant &&
-					filter.operator === b[index]?.operator,
-			),
 	})
 }

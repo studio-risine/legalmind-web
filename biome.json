@@ -11,24 +11,24 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"suspicious": {
-				"noExplicitAny": "error",
-				"noImplicitAnyLet": "error",
-				"noUnknownAtRules": "off",
-				"useIterableCallbackReturn": "off"
-			},
-			"style": {
-				"noNonNullAssertion": "off"
+			"a11y": {
+				"useAriaPropsSupportedByRole": "off",
+				"useFocusableInteractive": "off",
+				"useKeyWithClickEvents": "off",
+				"useSemanticElements": "off"
 			},
 			"correctness": {
 				"noUnusedVariables": "off",
 				"useExhaustiveDependencies": "off"
 			},
-			"a11y": {
-				"useFocusableInteractive": "off",
-				"useSemanticElements": "off",
-				"useKeyWithClickEvents": "off",
-				"useAriaPropsSupportedByRole": "off"
+			"style": {
+				"noNonNullAssertion": "off"
+			},
+			"suspicious": {
+				"noExplicitAny": "error",
+				"noImplicitAnyLet": "error",
+				"noUnknownAtRules": "off",
+				"useIterableCallbackReturn": "off"
 			}
 		}
 	}

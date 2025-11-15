@@ -3,7 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('@modules/auth/actions/user-auth.action', () => ({
 	userAuthAction: vi.fn(),
 }))
-vi.mock('@modules/client/factories', () => ({ clientRepository: vi.fn() }))
+vi.mock('@modules/client/factories', () => ({
+	clientRepository: vi.fn(),
+}))
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }))
 
 const { userAuthAction } = await import(
@@ -19,11 +21,11 @@ import type { ClientRepository } from '../../repositories/client-repository'
 
 function mockRepo(): ClientRepository {
 	return {
-		insert: vi.fn(),
+		delete: vi.fn(),
 		findById: vi.fn(),
 		findMany: vi.fn(),
+		insert: vi.fn(),
 		update: vi.fn(),
-		delete: vi.fn(),
 	}
 }
 
@@ -32,9 +34,9 @@ describe('updateClientAction', () => {
 
 	it('fails on invalid input (bad id)', async () => {
 		const invalidInput = {
+			data: { name: 'X' },
 			id: 'not-a-uuid',
 			spaceId: 'space-1',
-			data: { name: 'X' },
 		} as unknown as Parameters<typeof updateClientAction>[0]
 		const result = await updateClientAction(invalidInput)
 		expect(result.success).toBe(false)
@@ -43,15 +45,15 @@ describe('updateClientAction', () => {
 
 	it('fails if unauthenticated', async () => {
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: false,
 			data: null,
 			error: null,
+			success: false,
 		})
 		vi.mocked(clientRepository).mockReturnValue(mockRepo())
 		const result = await updateClientAction({
+			data: { name: 'New' },
 			id: '550e8400-e29b-41d4-a716-446655440000',
 			spaceId: 'space-1',
-			data: { name: 'New' },
 		})
 		expect(result.success).toBe(false)
 		expect(result.message).toMatch(/Usuário não autenticado/)
@@ -64,23 +66,23 @@ describe('updateClientAction', () => {
 		})
 		vi.mocked(clientRepository).mockReturnValue(repo)
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: {
-				id: 'acc-1',
 				aud: 'authenticated',
 				created_at: new Date().toISOString(),
+				id: 'acc-1',
 			} as unknown as import('@supabase/supabase-js').User,
 			error: null,
+			success: true,
 		})
 		const result = await updateClientAction({
+			data: { name: 'Changed' },
 			id: '550e8400-e29b-41d4-a716-446655440000',
 			spaceId: 'space-1',
-			data: { name: 'Changed' },
 		})
 		expect(repo.update).toHaveBeenCalledWith({
+			data: { name: 'Changed' },
 			id: '550e8400-e29b-41d4-a716-446655440000',
 			spaceId: 'space-1',
-			data: { name: 'Changed' },
 		})
 		expect(result.success).toBe(true)
 		expect(result.data).toBe('550e8400-e29b-41d4-a716-446655440000')
@@ -89,21 +91,23 @@ describe('updateClientAction', () => {
 
 	it('handles repository failure', async () => {
 		const repo = mockRepo()
-		vi.mocked(repo.update).mockResolvedValue({ clientId: '' })
+		vi.mocked(repo.update).mockResolvedValue({
+			clientId: '',
+		})
 		vi.mocked(clientRepository).mockReturnValue(repo)
 		vi.mocked(userAuthAction).mockResolvedValue({
-			success: true,
 			data: {
-				id: 'acc-1',
 				aud: 'authenticated',
 				created_at: new Date().toISOString(),
+				id: 'acc-1',
 			} as unknown as import('@supabase/supabase-js').User,
 			error: null,
+			success: true,
 		})
 		const result = await updateClientAction({
+			data: { name: 'New name' },
 			id: '550e8400-e29b-41d4-a716-446655440000',
 			spaceId: 'space-1',
-			data: { name: 'New name' },
 		})
 		expect(result.success).toBe(false)
 		expect(result.message).toMatch(/Ocorreu um erro ao atualizar/)

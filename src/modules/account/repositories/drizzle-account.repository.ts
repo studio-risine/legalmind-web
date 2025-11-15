@@ -1,6 +1,5 @@
 import { db } from '@infra/db'
 import { type Account, accounts, type InsertAccount } from '@infra/db/schemas'
-
 import { eq } from 'drizzle-orm'
 import type {
 	AccountRepository,

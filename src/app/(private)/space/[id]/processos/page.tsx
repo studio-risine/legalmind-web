@@ -16,8 +16,11 @@ export default async function Page({ params, searchParams }: PageProps) {
 	const { search, page, pageSize } = await loadSearchParams(searchParams)
 
 	const breadcrumb = [
-		{ label: 'Meu Space', href: `/space/${spaceId}` },
-		{ label: 'Processos', href: `/space/${spaceId}/processos` },
+		{ href: `/space/${spaceId}`, label: 'Meu Space' },
+		{
+			href: `/space/${spaceId}/processos`,
+			label: 'Processos',
+		},
 	]
 
 	return (
@@ -35,10 +38,10 @@ export default async function Page({ params, searchParams }: PageProps) {
 
 					<Suspense fallback={'loading'}>
 						<ProcessDisplay
-							spaceId={spaceId}
-							search={search}
 							page={page}
 							pageSize={pageSize}
+							search={search}
+							spaceId={spaceId}
 						/>
 					</Suspense>
 				</div>

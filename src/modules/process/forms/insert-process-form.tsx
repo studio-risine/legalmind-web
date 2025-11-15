@@ -26,7 +26,6 @@ import z from 'zod'
 
 const schema = z.object({
 	clientId: z.uuid('Cliente inválido'),
-	title: titleSchemaDefault.describe('Título do processo'),
 	description: z.string().optional(),
 	processNumber: z
 		.string({
@@ -36,6 +35,7 @@ const schema = z.object({
 		.max(25, 'Número do processo inválido')
 		.regex(/^\d{7}-\d{2}\.\d{4}\.\d{1}\.\d{2}\.\d{4}$/),
 	status: z.enum(processStatusEnum.enumValues).default('ACTIVE'),
+	title: titleSchemaDefault.describe('Título do processo'),
 })
 
 type FormData = z.input<typeof schema>
@@ -57,20 +57,20 @@ export function InsertProcessForm({
 	const [isPending, startTransition] = useTransition()
 
 	const form = useForm<FormData>({
-		resolver: zodResolver(schema),
 		defaultValues: {
 			clientId: '',
-			title: '',
-			processNumber: '',
 			description: '',
+			processNumber: '',
 			status: 'ACTIVE',
+			title: '',
 		},
+		resolver: zodResolver(schema),
 	})
 
 	const formState = useMemo(
 		() => ({
-			isValid: form.formState.isValid,
 			errors: form.formState.errors,
+			isValid: form.formState.isValid,
 		}),
 		[form.formState.isValid, form.formState.errors],
 	)
@@ -78,12 +78,12 @@ export function InsertProcessForm({
 	const onSubmit = (formData: FormData) => {
 		startTransition(async () => {
 			const { error, success, message, data } = await insertProcessAction({
-				spaceId,
 				clientId: formData.clientId,
-				title: formData.title,
 				description: formData.description || undefined,
 				processNumber: formData.processNumber,
+				spaceId,
 				status: formData.status ?? 'ACTIVE',
+				title: formData.title,
 			})
 
 			if (error || !success) {
@@ -104,7 +104,9 @@ export function InsertProcessForm({
 
 	useEffect(() => {
 		const loadClients = async () => {
-			const { data, success } = await queryClientsAction({ spaceId })
+			const { data, success } = await queryClientsAction({
+				spaceId,
+			})
 
 			if (!success) {
 				setClients([])
@@ -149,12 +151,12 @@ export function InsertProcessForm({
 								<FormControl>
 									<Input
 										{...field}
-										id={field.name}
-										type="text"
-										placeholder="Ex: Ação de cobrança"
 										aria-invalid={fieldState.invalid}
-										value={field.value || ''}
 										disabled={isPending}
+										id={field.name}
+										placeholder="Ex: Ação de cobrança"
+										type="text"
+										value={field.value || ''}
 									/>
 								</FormControl>
 								{fieldState.invalid && (
@@ -176,12 +178,12 @@ export function InsertProcessForm({
 								<FormControl>
 									<Input
 										{...field}
-										id={field.name}
-										type="text"
-										placeholder="0000000-00.0000.0.00.0000"
 										aria-invalid={fieldState.invalid}
-										value={maskProcessNumber(field.value) || ''}
 										disabled={isPending}
+										id={field.name}
+										placeholder="0000000-00.0000.0.00.0000"
+										type="text"
+										value={maskProcessNumber(field.value) || ''}
 									/>
 								</FormControl>
 								{fieldState.invalid && (
@@ -200,9 +202,9 @@ export function InsertProcessForm({
 									Cliente <span className="text-red-400">*</span>
 								</FormLabel>
 								<Select
+									disabled={isPending}
 									onValueChange={field.onChange}
 									value={field.value}
-									disabled={isPending}
 								>
 									<FormControl>
 										<SelectTrigger aria-invalid={fieldState.invalid}>
@@ -233,9 +235,9 @@ export function InsertProcessForm({
 									Status <span className="text-red-400">*</span>
 								</FormLabel>
 								<Select
+									disabled={isPending}
 									onValueChange={field.onChange}
 									value={field.value}
-									disabled={isPending}
 								>
 									<FormControl>
 										<SelectTrigger aria-invalid={fieldState.invalid}>
@@ -266,12 +268,12 @@ export function InsertProcessForm({
 								<FormControl>
 									<Textarea
 										{...field}
+										aria-invalid={fieldState.invalid}
+										disabled={isPending}
 										id={field.name}
 										placeholder="Descrição do processo..."
-										aria-invalid={fieldState.invalid}
-										value={field.value || ''}
-										disabled={isPending}
 										rows={4}
+										value={field.value || ''}
 									/>
 								</FormControl>
 								{fieldState.invalid && (

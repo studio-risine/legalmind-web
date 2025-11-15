@@ -38,10 +38,12 @@ export function DataTable<TData>({
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header) => (
 									<TableHead
-										key={header.id}
 										colSpan={header.colSpan}
+										key={header.id}
 										style={{
-											...getCommonPinningStyles({ column: header.column }),
+											...getCommonPinningStyles({
+												column: header.column,
+											}),
 										}}
 									>
 										{header.isPlaceholder
@@ -59,14 +61,16 @@ export function DataTable<TData>({
 						{table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map((row) => (
 								<TableRow
-									key={row.id}
 									data-state={row.getIsSelected() && 'selected'}
+									key={row.id}
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell
 											key={cell.id}
 											style={{
-												...getCommonPinningStyles({ column: cell.column }),
+												...getCommonPinningStyles({
+													column: cell.column,
+												}),
 											}}
 										>
 											{flexRender(
@@ -80,8 +84,8 @@ export function DataTable<TData>({
 						) : (
 							<TableRow>
 								<TableCell
-									colSpan={table.getAllColumns().length}
 									className="h-24 text-center"
+									colSpan={table.getAllColumns().length}
 								>
 									No results.
 								</TableCell>

@@ -19,13 +19,13 @@ export class DrizzleClientRepository implements ClientRepository {
 		const [client] = await db
 			.insert(clients)
 			.values({
-				spaceId: input.spaceId,
-				name: input.name,
-				email: input.email,
-				phoneNumber: input.phoneNumber,
-				type: input.type,
 				documentNumber: input.documentNumber,
+				email: input.email,
+				name: input.name,
+				phoneNumber: input.phoneNumber,
+				spaceId: input.spaceId,
 				status: input.status,
+				type: input.type,
 			})
 			.returning({ id: clients.id })
 

@@ -134,8 +134,8 @@ export function DataTableDateFilter<TData>({
 					{hasSelectedDates && (
 						<>
 							<Separator
-								orientation="vertical"
 								className="mx-0.5 data-[orientation=vertical]:h-4"
+								orientation="vertical"
 							/>
 							<span>{dateText}</span>
 						</>
@@ -157,8 +157,8 @@ export function DataTableDateFilter<TData>({
 				{hasSelectedDate && (
 					<>
 						<Separator
-							orientation="vertical"
 							className="mx-0.5 data-[orientation=vertical]:h-4"
+							orientation="vertical"
 						/>
 						<span>{dateText}</span>
 					</>
@@ -170,14 +170,14 @@ export function DataTableDateFilter<TData>({
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
-				<Button variant="outline" size="sm">
+				<Button size="sm" variant="outline">
 					{hasValue ? (
 						<div
-							role="button"
 							aria-label={`Clear ${title} filter`}
-							tabIndex={0}
-							onClick={onReset}
 							className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+							onClick={onReset}
+							role="button"
+							tabIndex={0}
 						>
 							<XCircle />
 						</div>
@@ -187,26 +187,26 @@ export function DataTableDateFilter<TData>({
 					{label}
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className="w-auto p-0" align="start">
+			<PopoverContent align="start" className="w-auto p-0">
 				{multiple ? (
 					<Calendar
 						captionLayout="dropdown"
 						mode="range"
+						onSelect={onSelect}
 						selected={
 							getIsDateRange(selectedDates)
 								? selectedDates
 								: { from: undefined, to: undefined }
 						}
-						onSelect={onSelect}
 					/>
 				) : (
 					<Calendar
 						captionLayout="dropdown"
 						mode="single"
+						onSelect={onSelect}
 						selected={
 							!getIsDateRange(selectedDates) ? selectedDates[0] : undefined
 						}
-						onSelect={onSelect}
 					/>
 				)}
 			</PopoverContent>

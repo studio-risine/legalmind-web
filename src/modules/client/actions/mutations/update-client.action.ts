@@ -37,16 +37,16 @@ export interface Output {
 }
 
 const inputSchema = z.object({
+	data: z.object({
+		documentNumber: z.string().min(11).max(18).optional(),
+		email: emailSchemaDefault.optional(),
+		name: nameSchemaDefault.optional(),
+		phoneNumber: z.string().optional(),
+		status: clientStatusSchema.optional(),
+		type: clientTypesSchema.optional(),
+	}),
 	id: z.uuid('Invalid client id'),
 	spaceId: spaceIdSchemaDefault,
-	data: z.object({
-		name: nameSchemaDefault.optional(),
-		email: emailSchemaDefault.optional(),
-		phoneNumber: z.string().optional(),
-		type: clientTypesSchema.optional(),
-		documentNumber: z.string().min(11).max(18).optional(),
-		status: clientStatusSchema.optional(),
-	}),
 })
 
 const outputSchema = z.object({
@@ -59,9 +59,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -70,35 +70,37 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
 	const repository = clientRepository()
 	const result = await repository.update({
+		data: inputParsed.data.data,
 		id: inputParsed.data.id,
 		spaceId: inputParsed.data.spaceId,
-		data: inputParsed.data.data,
 	})
 
 	if (!result.clientId) {
 		return {
 			data: null,
-			success: false,
 			message: 'Ocorreu um erro ao atualizar o cliente, tente novamente.',
+			success: false,
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: result.clientId })
+	const outputParsed = outputSchema.safeParse({
+		data: result.clientId,
+	})
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 
@@ -106,8 +108,8 @@ async function handler(input: Input): Promise<Output> {
 
 	return {
 		data: result.clientId,
-		success: true,
 		message: 'Cliente atualizado com sucesso!',
+		success: true,
 	}
 }
 

@@ -11,17 +11,19 @@ import { core } from './schema'
 import { spaces } from './spaces'
 
 export const clients = core.table('clients', {
+	deletedAt: timestamp('deleted_at', {
+		withTimezone: true,
+	}),
+	documentNumber: text('document_number').notNull(),
+	email: text('email'),
 	id: uuidPrimaryKey,
+	name: text('name').notNull(),
+	phoneNumber: text('phone_number'),
 	spaceId: text('space_id')
 		.notNull()
 		.references(() => spaces.id, { onDelete: 'cascade' }),
-	name: text('name').notNull(),
-	email: text('email'),
-	phoneNumber: text('phone_number'),
-	type: clientTypeEnum('type').notNull(),
-	documentNumber: text('document_number').notNull(),
 	status: clientStatusEnum('status').notNull(),
-	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+	type: clientTypeEnum('type').notNull(),
 	...timestamps,
 })
 

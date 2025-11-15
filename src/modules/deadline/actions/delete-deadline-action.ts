@@ -18,7 +18,7 @@ export async function deleteDeadlineAction(
 		const accountId = await getCurrentAccountId()
 
 		if (!accountId) {
-			return { success: false, error: 'No account found.' }
+			return { error: 'No account found.', success: false }
 		}
 
 		// Soft delete: set deletedAt timestamp
@@ -35,7 +35,10 @@ export async function deleteDeadlineAction(
 			.returning()
 
 		if (!row) {
-			return { success: false, error: 'Deadline not found or already deleted' }
+			return {
+				error: 'Deadline not found or already deleted',
+				success: false,
+			}
 		}
 
 		revalidatePath('/space/deadlines')
@@ -44,8 +47,8 @@ export async function deleteDeadlineAction(
 		return { success: true }
 	} catch (error) {
 		return {
-			success: false,
 			error: error instanceof Error ? error.message : 'Unknown error',
+			success: false,
 		}
 	}
 }

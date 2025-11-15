@@ -14,15 +14,15 @@ export class DrizzleSpaceRepository implements SpaceRepository {
 			const [space] = await tx
 				.insert(spaces)
 				.values({
+					createdBy: input.createdBy,
 					name: input.name,
 					type: input.type,
-					createdBy: input.createdBy,
 				})
 				.returning({ id: spaces.id })
 
 			await tx.insert(spacesToAccounts).values({
-				spaceId: space.id,
 				accountId: input.createdBy,
+				spaceId: space.id,
 			})
 
 			return space
@@ -48,11 +48,11 @@ export class DrizzleSpaceRepository implements SpaceRepository {
 	}): Promise<Space | undefined> {
 		const result = await db
 			.select({
+				createdAt: spaces.createdAt,
+				createdBy: spaces.createdBy,
 				id: spaces.id,
 				name: spaces.name,
 				type: spaces.type,
-				createdBy: spaces.createdBy,
-				createdAt: spaces.createdAt,
 				updatedAt: spaces.updatedAt,
 			})
 			.from(spaces)

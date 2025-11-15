@@ -13,46 +13,46 @@ import {
 function generateMainNavigationRoutes(spaceId: string) {
 	return [
 		{
-			id: 'home',
-			title: 'Home',
 			icon: RiHome9Line,
+			id: 'home',
 			link: `/space/${spaceId}`,
+			title: 'Home',
 		},
 		{
-			id: 'processes',
-			title: 'Processos',
 			icon: RiFolderLine,
+			id: 'processes',
 			link: `/space/${spaceId}/processos`,
+			title: 'Processos',
 		},
 		{
-			id: 'publications',
-			title: 'Publicações',
 			icon: RiArticleLine,
+			id: 'publications',
 			link: `/space/${spaceId}/publicacoes`,
+			title: 'Publicações',
 		},
 		{
-			id: 'customers-support',
-			title: 'Atendimentos',
 			icon: RiChat3Line,
+			id: 'customers-support',
 			link: `/space/${spaceId}/atendimentos`,
+			title: 'Atendimentos',
 		},
 		{
-			id: 'clients',
-			title: 'Clientes',
 			icon: RiUser6Line,
+			id: 'clients',
 			link: `/space/${spaceId}/clientes`,
+			title: 'Clientes',
 		},
 		{
-			id: 'finance',
-			title: 'Financeiro',
 			icon: RiWallet2Line,
+			id: 'finance',
 			link: `/space/${spaceId}/financeiro`,
+			title: 'Financeiro',
 		},
 		{
-			id: 'settings',
-			title: 'Configurações',
 			icon: RiSettings2Line,
+			id: 'settings',
 			link: `/space/${spaceId}/configuracoes`,
+			title: 'Configurações',
 		},
 	]
 }
