@@ -1,0 +1,121 @@
+openapi: 3.1.0
+info:
+  title: Processo Module API
+  version: 0.1.0
+servers:
+  - url: https://api.example.com
+paths:
+  /processes:
+    post:
+      summary: Create or import a process
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [numero_cnj]
+              properties:
+                numero_cnj: { type: string }
+                partes_resumo: { type: string }
+                classe: { type: string }
+                vara: { type: string }
+      responses:
+        '201': { description: Process created }
+    get:
+      summary: List processes
+      parameters:
+        - in: query
+          name: status
+          schema: { type: string, enum: [ativo, arquivado] }
+      responses:
+        '200': { description: List of processes }
+  /processes/{id}:
+    get:
+      summary: Get process detail
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Process detail }
+  /processes/{id}/deadlines:
+    get:
+      summary: List deadlines for a process
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Deadlines list }
+    post:
+      summary: Create a deadline
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [descricao, due_date]
+              properties:
+                descricao: { type: string }
+                due_date: { type: string, format: date-time }
+                antecedencia_dias: { type: integer, default: 5 }
+      responses:
+        '201': { description: Deadline created }
+  /deadlines/{deadlineId}:
+    patch:
+      summary: Update deadline status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status: { type: string, enum: [pendente, concluido] }
+      responses:
+        '200': { description: Deadline updated }
+  /processes/{id}/documents:
+    post:
+      summary: Upload document metadata (pre-signed flow assumed)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [titulo, categoria]
+              properties:
+                titulo: { type: string }
+                categoria: { type: string }
+                fase_ref: { type: string }
+                mime: { type: string }
+                size_bytes: { type: integer }
+      responses:
+        '201': { description: Document registered }
+    get:
+      summary: List documents
+      responses:
+        '200': { description: Documents list }
+  /processes/{id}/events:
+    get:
+      summary: Timeline events (andamentos)
+      responses:
+        '200': { description: Events list }
+  /events/{eventId}/view:
+    post:
+      summary: Mark event as viewed
+      responses:
+        '200': { description: Event marked viewed }
+  /processes/{id}/export:
+    get:
+      summary: Export process summary (CSV or PDF)
+      parameters:
+        - in: query
+          name: format
+          schema: { type: string, enum: [csv, pdf] }
+      responses:
+        '200': { description: Export delivered }

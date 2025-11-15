@@ -7,23 +7,20 @@ type ProcessStatusProps = {
 
 export const processStatusMap: Record<ProcessStatus, string> = {
 	ACTIVE: 'Ativo',
-	PENDING: 'Pendente',
-	SUSPENDED: 'Suspenso',
 	ARCHIVED: 'Arquivado',
 	CLOSED: 'Encerrado',
+	PENDING: 'Pendente',
+	SUSPENDED: 'Suspenso',
 }
 
 export function ProcessStatusBadge({ status }: ProcessStatusProps) {
 	return (
-		<Badge variant="secondary" className="flex items-center gap-2">
+		<Badge className="flex items-center gap-2" variant="secondary">
 			{status === 'ACTIVE' && (
-				<span
-					data-testid="badge"
-					className="h-2 w-2 rounded-full bg-emerald-300"
-				/>
+				<span className="h-2 w-2 rounded-full bg-emerald-300" data-testid="badge" />
 			)}
 
-			<span className="font-medium text-muted-foreground" data-testid="badge">
+			<span className="font-medium" data-testid="badge">
 				{status ? processStatusMap[status] : 'Sem status'}
 			</span>
 		</Badge>

@@ -7,7 +7,7 @@ import { spaceTypeEnum } from './enums'
 import { core } from './schema'
 
 export const spaces = core.table('spaces', {
-	id: text('id')
+	_id: text('id')
 		.primaryKey()
 		.$defaultFn(() => nanoid()),
 	name: text('name').notNull(),
@@ -21,4 +21,4 @@ export type Space = z.output<typeof spaceSelectSchema>
 export const insertSpaceSchema = createInsertSchema(spaces)
 export type InsertSpace = z.input<typeof insertSpaceSchema>
 
-export type SpaceId = Space['id']
+export type SpaceId = Space['_id']

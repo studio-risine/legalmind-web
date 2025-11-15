@@ -1,11 +1,5 @@
 import { db } from '@infra/db'
-import {
-	type Client,
-	clients,
-	deadlines,
-	type InsertClient,
-	processes,
-} from '@infra/db/schemas'
+import { type Client, clients, deadlines, type InsertClient, processes } from '@infra/db/schemas'
 import { and, count, eq, ilike, isNull, or, sql } from 'drizzle-orm'
 import type {
 	ClientRepository,
@@ -19,35 +13,34 @@ export class DrizzleClientRepository implements ClientRepository {
 		const [client] = await db
 			.insert(clients)
 			.values({
-				spaceId: input.spaceId,
-				name: input.name,
-				email: input.email,
-				phoneNumber: input.phoneNumber,
-				type: input.type,
 				documentNumber: input.documentNumber,
+				email: input.email,
+				name: input.name,
+				phoneNumber: input.phoneNumber,
+				spaceId: input.spaceId,
 				status: input.status,
+				type: input.type,
 			})
-			.returning({ id: clients.id })
+			.returning({ id: clients._id })
 
 		return {
 			clientId: client.id,
 		}
 	}
 
-	async findById(params: {
-		id: string
-		spaceId: string
-	}): Promise<Client | undefined> {
+	async findById(params: { id: string; spaceId: string }): Promise<{ data: Client | undefined }> {
 		const client = await db.query.clients.findFirst({
 			where: (clients, { eq, and, isNull }) =>
 				and(
-					eq(clients.id, params.id),
+					eq(clients._id, params.id),
 					eq(clients.spaceId, params.spaceId),
 					isNull(clients.deletedAt),
 				),
 		})
 
-		return client
+		return {
+			data: client,
+		}
 	}
 
 	async findMany(params: FindManyParams): Promise<{
@@ -57,13 +50,11 @@ export class DrizzleClientRepository implements ClientRepository {
 		const limit = params.limit ?? 25
 		const offset = params.offset ?? 0
 
-		const conditions = [
-			eq(clients.spaceId, params.spaceId),
-			isNull(clients.deletedAt),
-		]
+		const conditions = [eq(clients.spaceId, params.spaceId), isNull(clients.deletedAt)]
 
 		if (params.search) {
 			conditions.push(
+				// biome-ignore lint/style/noNonNullAssertion: <explanation>
 				or(
 					ilike(clients.name, `%${params.search}%`),
 					ilike(clients.email, `%${params.search}%`),
@@ -108,12 +99,12 @@ export class DrizzleClientRepository implements ClientRepository {
 			})
 			.where(
 				and(
-					eq(clients.id, params.id),
+					eq(clients._id, params.id),
 					eq(clients.spaceId, params.spaceId),
 					isNull(clients.deletedAt),
 				),
 			)
-			.returning({ id: clients.id })
+			.returning({ id: clients._id })
 
 		return {
 			clientId: client.id,
@@ -123,11 +114,9 @@ export class DrizzleClientRepository implements ClientRepository {
 	async delete(params: DeleteClientParams): Promise<void> {
 		const now = new Date()
 
-		// Soft-delete cascade: Client → Processes → Deadlines
 		await db.transaction(async (tx) => {
-			// 1. Find all processes for this client
 			const clientProcesses = await tx
-				.select({ id: processes.id })
+				.select({ id: processes._id })
 				.from(processes)
 				.where(
 					and(
@@ -139,7 +128,6 @@ export class DrizzleClientRepository implements ClientRepository {
 
 			const processIds = clientProcesses.map((process) => process.id)
 
-			// 2. Soft-delete all deadlines for these processes
 			if (processIds.length > 0) {
 				await tx
 					.update(deadlines)
@@ -153,7 +141,6 @@ export class DrizzleClientRepository implements ClientRepository {
 						),
 					)
 
-				// 3. Soft-delete all processes
 				await tx
 					.update(processes)
 					.set({ deletedAt: now })
@@ -166,13 +153,12 @@ export class DrizzleClientRepository implements ClientRepository {
 					)
 			}
 
-			// 4. Soft-delete the client
 			await tx
 				.update(clients)
 				.set({ deletedAt: now })
 				.where(
 					and(
-						eq(clients.id, params.id),
+						eq(clients._id, params.id),
 						eq(clients.spaceId, params.spaceId),
 						isNull(clients.deletedAt),
 					),

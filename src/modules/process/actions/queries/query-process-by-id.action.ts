@@ -4,23 +4,23 @@ import { type Process, processSchema } from '@infra/db/schemas'
 import { formatZodError } from '@libs/zod/error-handlers'
 import { userAuthAction } from '@modules/auth/actions/user-auth.action'
 import { getProcessRepository } from '@modules/process/factories'
+import { getSpaceIdFromHeaders } from '@modules/space/http/get-space-id-headers'
 import type { AuthError } from '@supabase/supabase-js'
 import { cache } from 'react'
 import z, { type ZodError } from 'zod'
 
 const inputSchema = z.object({
-	id: z.string().uuid('Invalid process id'),
-	spaceId: z.string().min(1, 'Space ID é obrigatório'),
+	id: z.string('Invalid process id'),
 })
 
 const outputSchema = z.object({
-	row: processSchema,
+	data: processSchema,
 })
 
 type Input = z.input<typeof inputSchema>
 
 interface Output {
-	data: { row: Process } | null
+	data: Process | null
 	success: boolean
 	message?: string | null
 	error?: ZodError | AuthError | null
@@ -32,9 +32,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -43,42 +43,57 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
-	const repo = getProcessRepository()
-	const row = await repo.findById({
+	const spaceId = await getSpaceIdFromHeaders()
+
+	if (!spaceId) {
+		return {
+			data: null,
+			message: 'Resource not found',
+			success: false,
+		}
+	}
+
+	const repository = getProcessRepository()
+	const process = await repository.findById({
 		id: inputParsed.data.id,
-		spaceId: inputParsed.data.spaceId,
+		spaceId,
 	})
 
-	if (!row) {
+	if (!process) {
 		return {
 			data: null,
-			success: false,
-			message: 'Processo não encontrado',
 			error: null,
+			message: 'Resource not found',
+			success: false,
 		}
 	}
 
-	const parsed = outputSchema.safeParse({ row })
-	if (!parsed.success) {
+	const {
+		data: outputParsedData,
+		success: outputParsedSuccess,
+		error: outputParsedError,
+	} = outputSchema.safeParse(process)
+
+	if (!outputParsedSuccess) {
 		return {
 			data: null,
+			error: outputParsedError,
+			message: formatZodError(outputParsedError),
 			success: false,
-			error: parsed.error,
-			message: formatZodError(parsed.error),
 		}
 	}
 
 	return {
+		data: outputParsedData.data,
 		success: true,
-		data: parsed.data,
 	}
 }
 
-export const queryProcess = cache(handler)
-export const queryProcessWithoutCacheAction = handler
+export const queryProcessById = cache(handler)
+export const queryProcessByIdWithoutCacheAction = handler

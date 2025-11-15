@@ -16,28 +16,25 @@ import type {
 
 export class DrizzleProcessRepository implements ProcessRepository {
 	async insert(params: InsertProcess): Promise<{ processId: string }> {
-		const [result] = await db
-			.insert(processes)
-			.values(params)
-			.returning({ id: processes.id })
+		const [result] = await db.insert(processes).values(params).returning({ id: processes._id })
 
 		return {
 			processId: result.id,
 		}
 	}
-	async findById(params: {
-		id: string
-		spaceId: SpaceId
-	}): Promise<Process | undefined> {
+	async findById(params: { id: string; spaceId: SpaceId }): Promise<{ data: Process | undefined }> {
 		const result = await db.query.processes.findFirst({
-			where: (tbl, { and, eq, isNull }) =>
+			where: (entityTable, { and, eq, isNull }) =>
 				and(
-					eq(tbl.id, params.id),
-					eq(tbl.spaceId, params.spaceId),
-					isNull(tbl.deletedAt),
+					eq(entityTable._id, params.id),
+					eq(entityTable.spaceId, params.spaceId),
+					isNull(entityTable.deletedAt),
 				),
 		})
-		return result
+
+		return {
+			data: result,
+		}
 	}
 	async update(params: UpdateProcessParams): Promise<{ processId: string }> {
 		const now = new Date()
@@ -47,12 +44,12 @@ export class DrizzleProcessRepository implements ProcessRepository {
 			.set({ ...params.data, updatedAt: now })
 			.where(
 				and(
-					eq(processes.id, params.id),
+					eq(processes._id, params.id),
 					eq(processes.spaceId, params.spaceId),
 					isNull(processes.deletedAt),
 				),
 			)
-			.returning({ id: processes.id })
+			.returning({ id: processes._id })
 
 		return { processId: updated.id }
 	}
@@ -76,27 +73,23 @@ export class DrizzleProcessRepository implements ProcessRepository {
 				.set({ deletedAt: now })
 				.where(
 					and(
-						eq(processes.id, params.id),
+						eq(processes._id, params.id),
 						eq(processes.spaceId, params.spaceId),
 						isNull(processes.deletedAt),
 					),
 				)
 		})
 	}
-	async findMany(
-		params: FindManyParams,
-	): Promise<{ data: Process[]; total: number }> {
+	async findMany(params: FindManyParams): Promise<{ data: Process[]; total: number }> {
 		const page = params.page ?? 1
 		const pageSize = params.pageSize ?? 10
 		const { searchQuery, sortBy, sortDirection } = params
 
-		const conditions = [
-			eq(processes.spaceId, params.spaceId),
-			isNull(processes.deletedAt),
-		]
+		const conditions = [eq(processes.spaceId, params.spaceId), isNull(processes.deletedAt)]
 
 		if (searchQuery) {
 			conditions.push(
+				// biome-ignore lint/style/noNonNullAssertion: <explanation>
 				or(
 					ilike(processes.title, `%${searchQuery}%`),
 					ilike(processes.processNumber, `%${searchQuery}%`),
@@ -121,18 +114,22 @@ export class DrizzleProcessRepository implements ProcessRepository {
 		const [result, [{ total }]] = await Promise.all([
 			db
 				.select({
-					id: processes.id,
-					spaceId: processes.spaceId,
-					clientId: processes.clientId,
-					title: processes.title,
-					description: processes.description,
-					processNumber: processes.processNumber,
-					status: processes.status,
+					_id: processes._id,
 					assignedId: processes.assignedId,
-					createdBy: processes.createdBy,
+					clientId: processes.clientId,
+					court: processes.court,
+					courtClass: processes.courtClass,
 					createdAt: processes.createdAt,
-					updatedAt: processes.updatedAt,
+					createdBy: processes.createdBy,
 					deletedAt: processes.deletedAt,
+					description: processes.description,
+					partiesSummary: processes.partiesSummary,
+					phase: processes.phase,
+					processNumber: processes.processNumber,
+					spaceId: processes.spaceId,
+					status: processes.status,
+					title: processes.title,
+					updatedAt: processes.updatedAt,
 				})
 				.from(processes)
 				.where(whereClause)
@@ -150,7 +147,7 @@ export class DrizzleProcessRepository implements ProcessRepository {
 				.offset((page - 1) * pageSize)
 				.limit(pageSize),
 			db
-				.select({ total: count(processes.id) })
+				.select({ total: count(processes._id) })
 				.from(processes)
 				.where(whereClause),
 		])

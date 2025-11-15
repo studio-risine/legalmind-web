@@ -7,11 +7,11 @@ export const notesRelations = relations(notes, ({ one }) => ({
 	// Many-to-one: note to a client
 	client: one(clients, {
 		fields: [notes.clientId],
-		references: [clients.id],
+		references: [clients._id],
 	}),
 	// Many-to-one: note created by a user
 	creator: one(accounts, {
 		fields: [notes.createdBy],
-		references: [accounts.id],
+		references: [accounts._id],
 	}),
 }))

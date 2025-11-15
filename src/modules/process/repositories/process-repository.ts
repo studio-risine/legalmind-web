@@ -36,7 +36,7 @@ type FindByIdParams = {
 
 export interface ProcessRepository {
 	insert(params: InsertProcess): Promise<{ processId: string }>
-	findById(params: FindByIdParams): Promise<Process | undefined>
+	findById(params: FindByIdParams): Promise<{ data: Process | undefined }>
 	findMany(params: FindManyParams): Promise<{ data: Process[]; total: number }>
 	update(params: UpdateProcessParams): Promise<{ processId: string }>
 	delete(params: DeleteProcessParams): Promise<void>

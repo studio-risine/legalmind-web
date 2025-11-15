@@ -1,3 +1,4 @@
+import { getSpaceIdFromHeaders } from '../http/get-space-id-headers'
 import { DrizzleSpaceRepository } from '../repositories/drizzle-space-repository'
 import type { SpaceRepository } from '../repositories/space-repository'
 

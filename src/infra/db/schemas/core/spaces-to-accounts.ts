@@ -7,13 +7,13 @@ import { spaces } from './spaces'
 export const spacesToAccounts = core.table(
 	'spaces_to_accounts',
 	{
-		spaceId: text('space_id')
-			.notNull()
-			.references(() => spaces.id, { onDelete: 'cascade' }),
 		accountId: uuid('account_id')
 			.notNull()
-			.references(() => accounts.id, { onDelete: 'cascade' }),
+			.references(() => accounts._id, { onDelete: 'cascade' }),
 		createdAt: createdAtTimestamp,
+		spaceId: text('space_id')
+			.notNull()
+			.references(() => spaces._id, { onDelete: 'cascade' }),
 	},
 	(t) => ({
 		pk: primaryKey({ columns: [t.spaceId, t.accountId] }),

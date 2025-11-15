@@ -5,13 +5,13 @@ import { formatZodError } from '@libs/zod/error-handlers'
 import { idSchema, spaceIdSchemaDefault } from '@libs/zod/schemas/defaults'
 import { userAuthAction } from '@modules/auth/actions/user-auth.action'
 import { clientRepository } from '@modules/client/factories'
+import { getSpaceIdFromHeaders } from '@modules/space/http/get-space-id-headers'
 import type { AuthError } from '@supabase/supabase-js'
 import { cache } from 'react'
 import z, { type ZodError } from 'zod'
 
 export interface Input {
 	id: string
-	spaceId: string
 }
 
 export interface Output {
@@ -22,8 +22,7 @@ export interface Output {
 }
 
 const inputSchema = z.object({
-	id: idSchema,
-	spaceId: spaceIdSchemaDefault,
+	id: z.uuid('Invalid client id'),
 })
 
 const outputSchema = z.object({
@@ -36,9 +35,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -47,34 +46,44 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
+		}
+	}
+
+	const spaceId = await getSpaceIdFromHeaders()
+
+	if (!spaceId) {
+		return {
+			data: null,
+			message: 'Resource not found',
+			success: false,
 		}
 	}
 
 	const repository = clientRepository()
 	const client = await repository.findById({
 		id: inputParsed.data.id,
-		spaceId: inputParsed.data.spaceId,
+		spaceId,
 	})
 
 	if (!client) {
 		return {
 			data: null,
+			message: 'Resource not found',
 			success: false,
-			message: 'Cliente não encontrado.',
 		}
 	}
 
-	const outputParsed = outputSchema.safeParse({ data: client })
+	const outputParsed = outputSchema.safeParse(client)
 
 	if (!outputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: outputParsed.error,
 			message: formatZodError(outputParsed.error),
+			success: false,
 		}
 	}
 

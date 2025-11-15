@@ -1,9 +1,5 @@
 import { text, timestamp, uuid } from 'drizzle-orm/pg-core'
-import {
-	createInsertSchema,
-	createSelectSchema,
-	createUpdateSchema,
-} from 'drizzle-zod'
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-zod'
 import type z from 'zod'
 import { auditFields, uuidPrimaryKey } from '../helpers'
 import { accounts } from './accounts'
@@ -13,21 +9,23 @@ import { core } from './schema'
 import { spaces } from './spaces'
 
 export const processes = core.table('processes', {
-	id: uuidPrimaryKey,
-	spaceId: text('space_id')
-		.notNull()
-		.references(() => spaces.id, { onDelete: 'cascade' }),
-	clientId: uuid('client_id')
-		.notNull()
-		.references(() => clients.id, { onDelete: 'cascade' }),
-	title: text('title').notNull(),
-	description: text('description'),
-	processNumber: text('process_number').notNull(),
-	status: processStatusEnum('status').notNull().default('ACTIVE'),
+	_id: uuidPrimaryKey,
 	assignedId: uuid('assigned_id')
 		.notNull()
-		.references(() => accounts.id, { onDelete: 'set default' }),
+		.references(() => accounts._id, { onDelete: 'set default' }),
+	clientId: uuid('client_id').references(() => clients._id, { onDelete: 'set default' }),
+	court: text('court'),
+	courtClass: text('court_class'),
 	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+	description: text('description'),
+	partiesSummary: text('parties_summary'),
+	phase: text('phase'),
+	processNumber: text('process_number').notNull().unique(),
+	spaceId: text('space_id')
+		.notNull()
+		.references(() => spaces._id, { onDelete: 'cascade' }),
+	status: processStatusEnum('status').notNull().default('ACTIVE'),
+	title: text('title').notNull(),
 	...auditFields,
 })
 

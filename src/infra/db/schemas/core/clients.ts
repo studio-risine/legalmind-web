@@ -1,9 +1,5 @@
 import { text, timestamp } from 'drizzle-orm/pg-core'
-import {
-	createInsertSchema,
-	createSelectSchema,
-	createUpdateSchema,
-} from 'drizzle-zod'
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-zod'
 import type z from 'zod'
 import { timestamps, uuidPrimaryKey } from '../helpers'
 import { clientStatusEnum, clientTypeEnum } from './enums'
@@ -11,17 +7,17 @@ import { core } from './schema'
 import { spaces } from './spaces'
 
 export const clients = core.table('clients', {
-	id: uuidPrimaryKey,
+	_id: uuidPrimaryKey,
+	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+	documentNumber: text('document_number').notNull(),
+	email: text('email'),
+	name: text('name').notNull(),
+	phoneNumber: text('phone_number'),
 	spaceId: text('space_id')
 		.notNull()
-		.references(() => spaces.id, { onDelete: 'cascade' }),
-	name: text('name').notNull(),
-	email: text('email'),
-	phoneNumber: text('phone_number'),
-	type: clientTypeEnum('type').notNull(),
-	documentNumber: text('document_number').notNull(),
+		.references(() => spaces._id, { onDelete: 'cascade' }),
 	status: clientStatusEnum('status').notNull(),
-	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+	type: clientTypeEnum('type').notNull(),
 	...timestamps,
 })
 

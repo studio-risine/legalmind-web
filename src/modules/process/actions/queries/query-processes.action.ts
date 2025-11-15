@@ -1,10 +1,6 @@
 'use server'
 
-import {
-	type Process,
-	processSchema,
-	processStatusSchema,
-} from '@infra/db/schemas'
+import { type Process, processSchema, processStatusSchema } from '@infra/db/schemas'
 import { formatZodError } from '@libs/zod/error-handlers'
 import { userAuthAction } from '@modules/auth/actions'
 import { getProcessRepository } from '@modules/process/factories'
@@ -13,12 +9,12 @@ import { cache } from 'react'
 import z, { type ZodError } from 'zod'
 
 const inputSchema = z.object({
-	spaceId: z.string().min(1, 'Space ID é obrigatório'),
 	page: z.number().optional().default(1),
 	pageSize: z.number().min(1).max(100).default(10).optional(),
 	searchQuery: z.string().optional(),
 	sortBy: z.enum(['createdAt']).optional(),
 	sortDirection: z.enum(['asc', 'desc']).optional(),
+	spaceId: z.string().min(1, 'Space ID é obrigatório'),
 	status: processStatusSchema.optional(),
 })
 
@@ -45,9 +41,9 @@ async function handler(input: Input): Promise<Output> {
 	if (!inputParsed.success) {
 		return {
 			data: null,
-			success: false,
 			error: inputParsed.error,
 			message: formatZodError(inputParsed.error),
+			success: false,
 		}
 	}
 
@@ -56,22 +52,31 @@ async function handler(input: Input): Promise<Output> {
 	if (!user?.id) {
 		return {
 			data: null,
-			success: false,
 			error: error,
 			message: 'Usuário não autenticado',
+			success: false,
 		}
 	}
 
-	const processRepository = getProcessRepository()
-	const processes = await processRepository.findMany({
-		spaceId: inputParsed.data.spaceId,
+	const repository = getProcessRepository()
+	const processes = await repository.findMany({
 		page: inputParsed.data.page,
 		pageSize: inputParsed.data.pageSize,
 		searchQuery: inputParsed.data.searchQuery,
 		sortBy: inputParsed.data.sortBy,
 		sortDirection: inputParsed.data.sortDirection,
+		spaceId: inputParsed.data.spaceId,
 		status: inputParsed.data.status,
 	})
+
+	if (!processes) {
+		return {
+			data: null,
+			error: null,
+			message: 'Resource not found',
+			success: false,
+		}
+	}
 
 	const {
 		data: outputData,
@@ -82,18 +87,18 @@ async function handler(input: Input): Promise<Output> {
 	if (!outputSuccess) {
 		return {
 			data: null,
-			success: false,
 			error: outputError,
 			message: formatZodError(outputError),
+			success: false,
 		}
 	}
 
 	return {
-		success: true,
 		data: {
 			rows: outputData.data,
 			total: outputData.total,
 		},
+		success: true,
 	}
 }
 

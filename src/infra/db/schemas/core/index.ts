@@ -1,16 +1,19 @@
 // Re-export helpers for convenience
 export * from '../helpers'
-
 // Re-export all tables and relations for convenience
 export * from './accounts'
 export * from './accounts.relations'
+export * from './alerts'
+export * from './audit-logs'
 export * from './clients'
 export * from './clients.relations'
 export * from './deadlines'
 export * from './deadlines.relations'
+export * from './documents'
 export * from './enums'
 export * from './notes'
 export * from './notes.relations'
+export * from './process-events'
 export * from './processes'
 export * from './processes.relations'
 export * from './schema'

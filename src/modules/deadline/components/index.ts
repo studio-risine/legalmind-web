@@ -3,7 +3,7 @@
 
 // Main components (to be implemented)
 // export { DeadlineForm } from './deadline-form'
-// export { DeadlineList } from './deadline-list'
+export { DeadlineList } from './deadline-list'
 // export { DeadlineDetail } from './deadline-detail'
 // export { DeadlineCard } from './deadline-card'
 // export { DeadlineCalendar } from './deadline-calendar'

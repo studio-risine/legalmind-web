@@ -33,7 +33,7 @@ export type DeleteClientParams = {
 
 export interface ClientRepository {
 	insert(params: InsertClient): Promise<{ clientId: string }>
-	findById(params: FindById): Promise<Client | undefined>
+	findById(params: FindById): Promise<{ data: Client | undefined }>
 	findMany(params: FindManyParams): Promise<{ data: Client[]; total: number }>
 	update(params: UpdateClientParams): Promise<{ clientId: string }>
 	delete(params: DeleteClientParams): Promise<void>

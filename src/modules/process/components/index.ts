@@ -1,4 +1,6 @@
 export * from './data-table-process'
 export * from './process-dialog'
 export * from './process-display'
+export * from './process-list-table'
+export * from './process-resumo-tab'
 export * from './status-badge'

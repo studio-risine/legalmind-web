@@ -52,8 +52,8 @@
 	--radius: 0.625rem;
 
 	/* Base (Stone) */
-	--background: oklch(0.98 0.006 90);
-	--foreground: oklch(0.25 0.02 45);
+	--background: var(--color-stone-100);
+	--foreground: var(--color-stone-900);
 
 	/* Cards & Popovers */
 	--card: oklch(1 0 0);
@@ -105,7 +105,7 @@
 .dark {
 	/* Base (Dark Stone) */
 	--background: var(--color-stone-900);
-	--foreground: var(--color-stone-100);
+	--foreground: var(--color-stone-200);
 
 	/* Cards & Popovers */
 	--card: var(--color-stone-800);
@@ -122,7 +122,7 @@
 
 	/* Muted & Accent */
 	--muted: var(--color-stone-600);
-	--muted-foreground: var(--color-stone-300);
+	--muted-foreground: var(--color-stone-400);
 	--accent: var(--color-stone-600);
 	--accent-foreground: var(--color-stone-100);
 

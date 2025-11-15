@@ -10,12 +10,12 @@ export default async function Page() {
 	}
 
 	const { data: space } = await getSpaceByAccountIdAction({
-		accountId: account.id,
+		accountId: account._id,
 	})
 
 	if (!space) {
-		redirect(`/account/onboarding?accountId=${account.id}`)
+		redirect(`/account/onboarding?accountId=${account._id}`)
 	}
 
-	redirect(`/space/${space.id}`)
+	redirect(`/space/${space._id}`)
 }

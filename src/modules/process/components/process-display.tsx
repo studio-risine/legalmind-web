@@ -10,11 +10,7 @@ interface ProcessDisplayProps {
 	page?: number
 }
 
-export async function ProcessDisplay({
-	search,
-	page,
-	pageSize,
-}: ProcessDisplayProps) {
+export async function ProcessDisplay({ search, page, pageSize }: ProcessDisplayProps) {
 	const spaceId = await getSpaceIdFromHeaders()
 
 	if (!spaceId) {
@@ -22,21 +18,21 @@ export async function ProcessDisplay({
 	}
 
 	const { data: processes } = await queryProcesses({
+		page,
+		pageSize,
 		searchQuery: search,
 		spaceId,
-		pageSize,
-		page,
 	})
 
 	const resultProcesses = processes?.rows ?? []
 	const total = processes?.total ?? 0
 
 	const rows: DataTableRows[] = resultProcesses.map((process) => ({
-		id: process.id,
-		processNumber: process.processNumber,
-		title: process.title,
-		status: process.status,
 		createdAt: process.createdAt,
+		id: process._id,
+		processNumber: process.processNumber,
+		status: process.status,
+		title: process.title,
 		updatedAt: process.updatedAt,
 	}))
 

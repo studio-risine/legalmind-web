@@ -21,9 +21,9 @@ export function formatZodError(error: ZodError): string {
 
 export function formatZodErrorDetailed(error: ZodError) {
 	return error.issues.map((issue) => ({
+		code: issue.code,
 		field: issue.path.join('.') || 'root',
 		message: issue.message,
-		code: issue.code,
 		value: 'received' in issue ? issue.received : undefined,
 	}))
 }
@@ -33,29 +33,24 @@ export function formatZodErrorDetailed(error: ZodError) {
  */
 export function createValidationErrorResponse(error: ZodError) {
 	return {
-		success: false,
-		error: 'Validation failed',
 		details: formatZodErrorDetailed(error),
+		error: 'Validation failed',
 		message: formatZodError(error),
+		success: false,
 	}
 }
 
 /**
  * Handler genérico para server actions com validação Zod
  */
-export function withZodValidation<T, R>(
-	schema: ZodSchema<T>,
-	handler: (data: T) => Promise<R>,
-) {
-	return async (
-		input: unknown,
-	): Promise<R | { success: false; error: string }> => {
+export function withZodValidation<T, R>(schema: ZodSchema<T>, handler: (data: T) => Promise<R>) {
+	return async (input: unknown): Promise<R | { success: false; error: string }> => {
 		const parsed = schema.safeParse(input)
 
 		if (!parsed.success) {
 			return {
-				success: false,
 				error: formatZodError(parsed.error),
+				success: false,
 			}
 		}
 
