@@ -1,4 +1,3 @@
-import { ThemeScript } from '@components/ui/theme-script'
 import { fontFamily } from '@config/font-family'
 import './globals.css'
 
@@ -20,9 +19,6 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="pt-BR" suppressHydrationWarning>
-			<head>
-				<ThemeScript />
-			</head>
 			<body className={`${fontFamily.className} antialiased`}>
 				<Providers>{children}</Providers>
 				<Toaster position="top-right" />
